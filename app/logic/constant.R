@@ -2,6 +2,7 @@
 
 # INPUT DATA
 backend_crispy_data_path <- fs::path("app", "data", "backend_crispy_data", ext = "parquet")
+backend_crispy_test_data_path <- fs::path("tests", "testthat", "fixtures", "test-backend_crispy_data", ext = "parquet")
 scenario_data_path <- fs::path("app", "data", "Scenarios_AnalysisInput_2021", ext = "csv")
 
 # ANALYSIS DATA CREATION

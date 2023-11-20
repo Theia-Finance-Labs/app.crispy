@@ -8,7 +8,8 @@ box::use(
   app/view/portfolio_visualizer,
   app/view/equity_change_plots,
   app/view/scenario_plots,
-  app/logic/constant[backend_crispy_data_path, scenario_data_path, use_ald_sector]
+  app/logic/constant[scenario_data_path, use_ald_sector],
+  app/logic/data_load[backend_data_load]
 )
 
 #######
@@ -45,9 +46,7 @@ ui <- function(id) {
 #' @export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
-    backend_crispy_data <- arrow::read_parquet(backend_crispy_data_path) |>
-      dplyr::filter(.data$term == 5) |>
-      dplyr::filter(.data$ald_sector %in% use_ald_sector)
+    backend_crispy_data <- backend_data_load()
 
     scenario_data <- readr::read_csv(scenario_data_path) |>
       dplyr::filter(.data$ald_sector %in% use_ald_sector) |>
