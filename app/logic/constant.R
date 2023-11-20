@@ -1,13 +1,12 @@
 # export constant values from here
 
 # INPUT DATA
-backend_crispy_data_path <- fs::path("data", "backend_crispy_data", ext = "parquet")
-scenario_data_path <- fs::path("data", "Scenarios_AnalysisInput_2021", ext = "csv")
+backend_crispy_data_path <- fs::path("app", "data", "backend_crispy_data", ext = "parquet")
+scenario_data_path <- fs::path("app", "data", "Scenarios_AnalysisInput_2021", ext = "csv")
 
 # ANALYSIS DATA CREATION
 trisk_start_year <- 2022
-maturity_month_term_bridge_fp <- file.path("data", "maturity_month_term_bridge.csv")
-
+maturity_month_term_bridge_fp <- file.path("app", "data", "maturity_month_term_bridge.csv")
 
 max_portfolio_granularity <-
   c(
@@ -65,8 +64,7 @@ available_shock_year <- c(
   # 2032
   # 2034,
   # 2035,
-2040
-
+  2040
 )
 
 
@@ -88,19 +86,21 @@ available_shock_scenario <- c(
   # "NGFS2021_REMIND_DT", "NGFS2021_MESSAGE_DT", "NGFS2021_GCAM_DT",
   # "NGFS2021_REMIND_DN0", "NGFS2021_MESSAGE_DN0", "NGFS2021_GCAM_DN0",
   "NGFS2021_REMIND_B2DS",
-   "Oxford2021_fast",
+  "Oxford2021_fast",
   "NGFS2021_MESSAGE_B2DS",
-  "NGFS2021_GCAM_B2DS", 
+  "NGFS2021_GCAM_B2DS",
   "IPR2021_FPS",
-   "WEO2021_SDS"
+  "WEO2021_SDS"
 )
 
 
-available_scenario_geography <- c("Global", 
-"EmergingMarketAndDevelopingEconomies",
-"OecdAndEu",
-"UnitedStates",
-"SoutheastAsia",
- "China",
- "India",
- "MiddleEast")
+available_scenario_geography <- c(
+  "Global",
+  "EmergingMarketAndDevelopingEconomies",
+  "OecdAndEu",
+  "UnitedStates",
+  "SoutheastAsia",
+  "China",
+  "India",
+  "MiddleEast"
+)

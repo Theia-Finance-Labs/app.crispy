@@ -66,7 +66,7 @@ fetch_completed_runs_parameters <- function(runs_parameters, tracking_uri, exper
       # lengthy block of code to convert the output from MLFlow
       # to the same dataframe format as the `runs_parameters` dataframe
       params_df_list <- lapply(
-        1:nrow(finished_baseline_runs),
+        seq_len(nrow(finished_baseline_runs)),
         function(x) {
           (dplyr::bind_rows(
             dplyr::inner_join(finished_baseline_runs$params[[x]],
@@ -81,7 +81,7 @@ fetch_completed_runs_parameters <- function(runs_parameters, tracking_uri, exper
         }
       )
       params_df_list <- lapply(
-        1:length(params_df_list),
+        seq_len(length(params_df_list)),
         function(x) {
           (params_df_list[[x]] |>
             dplyr::mutate(value.params = ifelse(value.tags, value.params, NA)) |>
@@ -89,7 +89,7 @@ fetch_completed_runs_parameters <- function(runs_parameters, tracking_uri, exper
         }
       )
       params_df_list <- lapply(
-        1:length(params_df_list),
+        seq_len(length(params_df_list)),
         function(x) {
           (tidyr::pivot_wider(params_df_list[[x]],
             names_from = "key",
@@ -167,7 +167,7 @@ write_and_zip_csv_artifacts <-
   }
 
 log_metrics_df <- function(metrics_df) {
-  for (i in 1:nrow(metrics_df)) {
+  for (i in seq_len(nrow(metrics_df))) {
     metric_name <- metrics_df[[i, "metric_name"]]
     metric_name <- stringr::str_replace_all(metric_name, "[^A-Za-z0-9]", "_")
     metric_value <- metrics_df[[i, "metric_value"]]

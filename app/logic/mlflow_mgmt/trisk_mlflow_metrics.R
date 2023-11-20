@@ -22,7 +22,7 @@ compute_trisk_metrics <- function(st_results_wrangled_and_checked) {
 compute_npv_rate_of_change <- function(crispy_output) {
   npv_rate_of_change_df <- crispy_output |>
     dplyr::filter(.data$term == 5 & .data$net_present_value_shock != 0) |>
-    dplyr::mutate(npv_roc = net_present_value_baseline/net_present_value_shock) |>
+    dplyr::mutate(npv_roc = net_present_value_baseline / net_present_value_shock) |>
     dplyr::group_by(ald_sector, ald_business_unit) |>
     dplyr::summarise_at(dplyr::vars(npv_roc), list(avg_npv_roc = purrr::partial(mean, na.rm = TRUE))) |>
     dplyr::ungroup() |>
@@ -38,7 +38,7 @@ compute_npv_rate_of_change <- function(crispy_output) {
 compute_pd_rate_of_change <- function(crispy_output) {
   pd_rate_of_change_df <- crispy_output |>
     dplyr::filter(.data$term == 5 & .data$pd_shock != 0) |>
-    dplyr::mutate(pd_roc = pd_baseline/pd_shock) |>
+    dplyr::mutate(pd_roc = pd_baseline / pd_shock) |>
     dplyr::group_by(ald_sector, ald_business_unit) |>
     dplyr::summarise_at(dplyr::vars(pd_roc), list(avg_pd_roc = purrr::partial(mean, na.rm = TRUE))) |>
     dplyr::ungroup() |>

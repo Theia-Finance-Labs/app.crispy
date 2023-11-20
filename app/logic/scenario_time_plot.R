@@ -14,7 +14,7 @@ pipeline_scenario_time_plot <- function(
     x_var = "year",
     y_var = "fair_share_perc",
     facet_var = "ald_sector") {
-  facets_colors <- r2dii.colours::palette_2dii_plot[c(1:length(unique(scenario_data[[facet_var]]))), ]$hex
+  facets_colors <- r2dii.colours::palette_2dii_plot[seq_along(unique(scenario_data[[facet_var]])), ]$hex
 
   data_scenario_time_plot <- prepare_for_scenario_time_plot(scenario_data, x_var, y_var, facet_var)
 
@@ -43,15 +43,9 @@ draw_scenario_time_plot <- function(
     facets_colors,
     scenario_type) {
   scenario_time_plot <- ggplot(data_scenario_time_plot, aes(x = !!rlang::sym(x_var), y = !!rlang::sym(y_var), color = !!rlang::sym(facet_var))) +
-    geom_line() + # Add line
-    geom_point() + # Add points
-    # geom_text_repel(aes(label = round(!!rlang::sym(y_var), 4)),
-    #   nudge_x = 0.2, # Adjust text position
-    #   nudge_y = 0.2,
-    #   size = 3,
-    #   max.overlaps = 3
-    # ) + # Label points
-    facet_wrap(stats::as.formula(paste0("~", facet_var)), scales = "fixed", nrow = 1) + # Facet based on ald_sector
+    geom_line() +
+    geom_point() +
+    facet_wrap(stats::as.formula(paste0("~", facet_var)), scales = "fixed", nrow = 1) +
     scale_color_manual(values = facets_colors) +
     r2dii.plot::theme_2dii() +
     theme(panel.grid.major.y = element_line(size = .1, color = "black")) +

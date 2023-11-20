@@ -54,10 +54,10 @@ server <- function(id) {
       dplyr::group_by(scenario_geography, scenario, ald_sector, units, year) |>
       dplyr::summarise(fair_share_perc = sum(fair_share_perc), .groups = "drop")
 
-    multi_crispy_data.r <- crispy_generation$server("crispy_generation", backend_crispy_data)
-    analysis_data.r <- portfolio_visualizer$server("portfolio_visualizer", multi_crispy_data.r)
+    multi_crispy_data_r <- crispy_generation$server("crispy_generation", backend_crispy_data)
+    analysis_data_r <- portfolio_visualizer$server("portfolio_visualizer", multi_crispy_data_r)
 
-    equity_change_plots$server("equity_change_plots", analysis_data.r)
-    scenario_plots$server("scenario_plots", scenario_data, analysis_data.r)
+    equity_change_plots$server("equity_change_plots", analysis_data_r)
+    scenario_plots$server("scenario_plots", scenario_data, analysis_data_r)
   })
 }

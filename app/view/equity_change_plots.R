@@ -23,15 +23,15 @@ ui <- function(id) {
 
 
 
-server <- function(id, analysis_data.r) {
+server <- function(id, analysis_data_r) {
   moduleServer(id, function(input, output, session) {
-    observeEvent(analysis_data.r(), {
-      exposure_change_plot <- pipeline_exposure_change_plot(analysis_data.r())
+    observeEvent(analysis_data_r(), {
+      exposure_change_plot <- pipeline_exposure_change_plot(analysis_data_r())
       output$exposure_change_plot <- renderPlot({
         exposure_change_plot
       })
 
-      crispy_npv_change_plot <- pipeline_crispy_npv_change_plot(analysis_data.r())
+      crispy_npv_change_plot <- pipeline_crispy_npv_change_plot(analysis_data_r())
       output$crispy_npv_change_plot <- renderPlot({
         crispy_npv_change_plot
       })

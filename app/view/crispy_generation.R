@@ -96,7 +96,7 @@ server <- function(id, backend_crispy_data) {
 
     update_dropdowns(input, session, backend_crispy_data)
 
-    multi_crispy_data.r <- eventReactive(
+    multi_crispy_data_r <- eventReactive(
       c(
         trisk_params_range$discount_rate,
         trisk_params_range$risk_free_rate,
@@ -120,18 +120,18 @@ server <- function(id, backend_crispy_data) {
           )
       }
     )
-    return(multi_crispy_data.r)
+    return(multi_crispy_data_r)
   })
 }
 
 
-update_dropdowns <- function(input, session, backend_crispy_data){
-    # Observe changes in baseline_scenario dropdown and update shock_scenario dropdown
+update_dropdowns <- function(input, session, backend_crispy_data) {
+  # Observe changes in baseline_scenario dropdown and update shock_scenario dropdown
   observe({
     selected_baseline <- input$baseline_scenario
 
     # Filter the data based on selected baseline scenario
-    new_choices <- unique(backend_crispy_data[backend_crispy_data$baseline_scenario == selected_baseline,]$shock_scenario)
+    new_choices <- unique(backend_crispy_data[backend_crispy_data$baseline_scenario == selected_baseline, ]$shock_scenario)
 
     # Update shock_scenario dropdown with unique values from the filtered data
     update_dropdown_input(session, "shock_scenario", choices = new_choices)
@@ -143,7 +143,12 @@ update_dropdowns <- function(input, session, backend_crispy_data){
     selected_shock <- input$shock_scenario
 
     # Filter the data based on selected baseline and shock scenarios
-    new_choices <- unique(backend_crispy_data[backend_crispy_data$baseline_scenario == selected_baseline & backend_crispy_data$shock_scenario == selected_shock, ]$scenario_geography)
+    new_choices <- unique(backend_crispy_data |>
+      dplyr::filter(
+        .data$baseline_scenario == selected_baseline,
+        .data$shock_scenario == selected_shock
+      ) |>
+      dplyr::pull(scenario_geography))
 
     # Update scenario_geography dropdown with unique values from the filtered data
     update_dropdown_input(session, "scenario_geography", choices = new_choices)

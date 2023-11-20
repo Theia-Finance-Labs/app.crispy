@@ -68,7 +68,7 @@ multirun_trisk_mlflow <-
 
 
     n_completed_runs <- 0
-    for (i in 1:nrow(filtered_run_parameters)) {
+    for (i in seq_along(filtered_run_parameters)) {
       row_params <- filtered_run_parameters[i, ]
       use_params <- row_params[, which(!is.na(row_params))]
 
@@ -173,7 +173,7 @@ run_trisk_mlflow <-
           mlflow::mlflow_set_tag("LOG_STATUS", "SUCCESS")
         },
         error = function(cond) {
-          fileConn <- file(file.path(mlflow_run_output_dir, "error_message.txt"))
+          file_conn <- file(file.path(mlflow_run_output_dir, "error_message.txt"))
           writeLines(as.character(cond), fileConn)
           close(fileConn)
 

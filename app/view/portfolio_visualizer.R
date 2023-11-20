@@ -26,10 +26,10 @@ ui <- function(id) {
 ####### Server
 
 
-server <- function(id, multi_crispy_data.r) {
+server <- function(id, multi_crispy_data_r) {
   moduleServer(id, function(input, output, session) {
     # Initial portfolio data structure
-    portfolio_data.r <- reactiveVal({
+    portfolio_data_r <- reactiveVal({
       tibble::tibble(
         ald_sector = character(),
         exposure_value_usd = numeric(),
@@ -38,30 +38,30 @@ server <- function(id, multi_crispy_data.r) {
       )
     })
 
-    analysis_data.r <- eventReactive(c(
-      portfolio_data.r(),
-      multi_crispy_data.r()
+    analysis_data_r <- eventReactive(c(
+      portfolio_data_r(),
+      multi_crispy_data_r()
     ), ignoreInit = TRUE, {
-      if (!is.null(portfolio_data.r()) & !is.null(multi_crispy_data.r())) {
-        if (nrow(portfolio_data.r()) == 0) {
+      if (!is.null(portfolio_data_r()) & !is.null(multi_crispy_data_r())) {
+        if (nrow(portfolio_data_r()) == 0) {
           # initialise the porfolio sector column
-          portfolio_data <- portfolio_data.r()
+          portfolio_data <- portfolio_data_r()
           portfolio_data <- portfolio_data |>
-            dplyr::right_join(multi_crispy_data.r() |>
+            dplyr::right_join(multi_crispy_data_r() |>
               dplyr::distinct(.data$ald_sector))
-          portfolio_data.r(portfolio_data)
+          portfolio_data_r(portfolio_data)
         }
 
         stress.test.plot.report::main_load_analysis_data(
-          portfolio_data = portfolio_data.r(),
-          multi_crispy_data = multi_crispy_data.r(),
+          portfolio_data = portfolio_data_r(),
+          multi_crispy_data = multi_crispy_data_r(),
           portfolio_crispy_merge_cols = portfolio_crispy_merge_cols
         )
       }
     })
 
-    observeEvent(analysis_data.r(), ignoreInit = TRUE, {
-      table_to_display <- analysis_data.r() |>
+    observeEvent(analysis_data_r(), ignoreInit = TRUE, {
+      table_to_display <- analysis_data_r() |>
         dplyr::select(
           .data$portfolio.ald_sector,
           .data$portfolio.exposure_value_usd,
@@ -92,19 +92,19 @@ server <- function(id, multi_crispy_data.r) {
     # Update data structure on cell edit
     observeEvent(input$portfolio_table_cell_edit, {
       info <- input$portfolio_table_cell_edit
-      portfolio_data <- portfolio_data.r()
+      portfolio_data <- portfolio_data_r()
       # data can be edited only in the second column
       if (info$col == 2) {
         if ((typeof(info$value) == "integer") |
           (typeof(info$value) == "double")) {
           portfolio_data[info$row, info$col] <- info$value
-          portfolio_data.r(portfolio_data)
+          portfolio_data_r(portfolio_data)
         }
       }
     })
 
 
 
-    return(analysis_data.r)
+    return(analysis_data_r)
   })
 }
