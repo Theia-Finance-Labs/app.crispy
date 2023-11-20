@@ -1,0 +1,40 @@
+box::use(
+  shiny[moduleServer, NS, plotOutput, renderPlot, observeEvent, fluidRow],
+  semantic.dashboard[column, box]
+)
+
+box::use(
+  app/logic/exposure_change_plot[pipeline_exposure_change_plot],
+  app/logic/crispy_npv_change_plot[pipeline_crispy_npv_change_plot]
+)
+
+
+####### UI
+
+ui <- function(id) {
+  ns <- NS(id)
+  fluidRow(
+    box(width = 8, plotOutput(ns("crispy_npv_change_plot"))),
+    box(width = 8, plotOutput(ns("exposure_change_plot")))
+  )
+}
+
+####### Server
+
+
+
+server <- function(id, analysis_data.r) {
+  moduleServer(id, function(input, output, session) {
+    observeEvent(analysis_data.r(), {
+      exposure_change_plot <- pipeline_exposure_change_plot(analysis_data.r())
+      output$exposure_change_plot <- renderPlot({
+        exposure_change_plot
+      })
+
+      crispy_npv_change_plot <- pipeline_crispy_npv_change_plot(analysis_data.r())
+      output$crispy_npv_change_plot <- renderPlot({
+        crispy_npv_change_plot
+      })
+    })
+  })
+}

@@ -4,5 +4,9 @@
 .Ruserdata
 .DS_Store
 .vscode
+
+# project specific 
 scripts/raw_data
 private_repos/
+workspace/
+data/backend_crispy_data.parquet
