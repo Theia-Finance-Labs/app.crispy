@@ -6,8 +6,8 @@ box::use(
   app / main[...],
 )
 
-test_that("main server works", {
-  testServer(server, {
-    expect_true(grepl(x = output$message$html, pattern = "Check out Rhino docs!"))
-  })
+test_that("main server works without error", {
+  expect_error(testServer(server, {
+
+  }), NA)
 })

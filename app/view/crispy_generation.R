@@ -4,7 +4,7 @@ box::use(
 )
 
 box::use(
-  app/logic/constant[
+  app / logic / constant[
     available_discount_rate,
     available_risk_free_rate,
     available_growth_rate,

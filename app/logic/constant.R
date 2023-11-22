@@ -63,8 +63,8 @@ available_shock_year <- c(
   2030,
   # 2032
   # 2034,
-  # 2035,
-  2040
+  2035
+  # 2040
 )
 
 
@@ -97,10 +97,10 @@ available_shock_scenario <- c(
 available_scenario_geography <- c(
   "Global",
   "EmergingMarketAndDevelopingEconomies",
-  "OecdAndEu",
-  "UnitedStates",
-  "SoutheastAsia",
-  "China",
-  "India",
-  "MiddleEast"
+  "OecdAndEu"
+  # "UnitedStates",
+  # "SoutheastAsia",
+  # "China",
+  # "India",
+  # "MiddleEast"
 )

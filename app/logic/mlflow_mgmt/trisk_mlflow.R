@@ -1,12 +1,12 @@
 box::use(
-  app/logic/mlflow_mgmt/mlflow_utils[
+  app / logic / mlflow_mgmt / mlflow_utils[
     set_mlflow_experiment,
     generate_and_filter_run_parameters,
     create_tags_list,
     log_metrics_df,
     write_and_zip_csv_artifacts
   ],
-  app/logic/mlflow_mgmt/trisk_mlflow_metrics[compute_trisk_metrics]
+  app / logic / mlflow_mgmt / trisk_mlflow_metrics[compute_trisk_metrics]
 )
 
 
@@ -68,7 +68,7 @@ multirun_trisk_mlflow <-
 
 
     n_completed_runs <- 0
-    for (i in seq_along(filtered_run_parameters)) {
+    for (i in seq_len(nrow(filtered_run_parameters))) {
       row_params <- filtered_run_parameters[i, ]
       use_params <- row_params[, which(!is.na(row_params))]
 
@@ -174,8 +174,8 @@ run_trisk_mlflow <-
         },
         error = function(cond) {
           file_conn <- file(file.path(mlflow_run_output_dir, "error_message.txt"))
-          writeLines(as.character(cond), fileConn)
-          close(fileConn)
+          writeLines(as.character(cond), file_conn)
+          close(file_conn)
 
           mlflow::mlflow_set_tag("LOG_STATUS", "FAILED")
         },
