@@ -28,13 +28,14 @@ load_backend_crispy_data <- function() {
       pd_shock = numeric()
     )
   }
+  return(backend_crispy_data)
 }
 
 load_scenario_data <- function() {
   if (file.exists(scenario_data_path)) {
     scenario_data <- readr::read_csv(scenario_data_path) |>
       dplyr::filter(.data$ald_sector %in% use_ald_sector) |>
-      dplyr::group_by_at(scenario_geography, scenario, ald_sector, units, year) |>
+      dplyr::group_by(scenario_geography, scenario, ald_sector, units, year) |>
       dplyr::summarise(fair_share_perc = sum(fair_share_perc), .groups = "drop")
   } else {
     tibble::tibble(
@@ -48,4 +49,5 @@ load_scenario_data <- function() {
       fair_share_perc = numeric()
     )
   }
+  return(scenario_data)
 }
