@@ -38,7 +38,7 @@ load_scenario_data <- function() {
       dplyr::group_by(scenario_geography, scenario, ald_sector, units, year) |>
       dplyr::summarise(fair_share_perc = sum(fair_share_perc), .groups = "drop")
   } else {
-    tibble::tibble(
+    scenario_data <- tibble::tibble(
       scenario_geography = character(),
       scenario = character(),
       ald_sector = character(),
