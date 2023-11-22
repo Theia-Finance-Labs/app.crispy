@@ -5,7 +5,7 @@ box::use(
 )
 
 box::use(
-  app/logic/constant[max_crispy_granularity, portfolio_crispy_merge_cols]
+  app / logic / constant[max_crispy_granularity, portfolio_crispy_merge_cols]
 )
 
 

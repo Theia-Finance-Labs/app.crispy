@@ -1,9 +1,9 @@
 box::use(
-  scripts / backend_data_generation / constant[
+  scripts / constant[
     mlflow_python_bin, mlflow_bin, mlflow_uri, exp_name, artifact_names, mlflow_download_dir
-    ],
-  app / logic / constant[backend_crispy_test_data_path]
-  app/logic/mlflow_mgmt/mlflow_data_collect[]
+  ],
+  app / logic / constant[backend_crispy_test_data_path, max_crispy_granularity],
+  app / logic / mlflow_mgmt / mlflow_data_collect[download_mlflow_search_result]
 )
 
 Sys.setenv(
@@ -26,7 +26,10 @@ all_runs <-
 
 ### CRISPY COLLECT
 
-download_mlflow_search_result(mlflow_uri, exp_name, all_runs, trisk_output_dir)
+download_mlflow_search_result(mlflow_uri, exp_name, all_runs, mlflow_download_dir)
 
-multi_crispy_data <- stress.test.plot.report::main_load_multi_crispy_data(crispy_outputs_dir = mlflow_download_dir, max_crispy_granularity = max_crispy_granularity)
-multi_crispy_data |> arrow::write_parquet(fs::path("data", "backend_crispy_data.parquet"))
+multi_crispy_data <- stress.test.plot.report::main_load_multi_crispy_data(
+  crispy_outputs_dir = mlflow_download_dir,
+  max_crispy_granularity = max_crispy_granularity
+)
+multi_crispy_data |> arrow::write_parquet(backend_crispy_test_data_path)

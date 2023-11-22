@@ -25,4 +25,4 @@ abcd_stress_test_input <-
     sector_list = sector_list
   )
 
-arrow::write_parquet(abcd_stress_test_input, abcd_stress_test_input_path)
+readr::write_csv(abcd_stress_test_input, abcd_stress_test_input_path)

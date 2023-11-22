@@ -1,22 +1,22 @@
 read_csv_from_zipped_artifacts <- function(tracking_uri,
-           experiment_name,
-           run_id,
-           csv_filename) {
-    mlflow::mlflow_set_tracking_uri(uri = tracking_uri)
-    mlflow::mlflow_client()
+                                           experiment_name,
+                                           run_id,
+                                           csv_filename) {
+  mlflow::mlflow_set_tracking_uri(uri = tracking_uri)
+  mlflow::mlflow_client()
 
-    artifacts_path <-
-      mlflow::mlflow_download_artifacts(path = "", run_id = run_id)
-    f_conn <-
-      unz(file.path(artifacts_path, "artifacts.zip"), csv_filename)
-    artifact <- readr::read_csv(f_conn, show_col_types = FALSE)
-    return(artifact)
-  }
+  artifacts_path <-
+    mlflow::mlflow_download_artifacts(path = "", run_id = run_id)
+  f_conn <-
+    unz(file.path(artifacts_path, "artifacts.zip"), csv_filename)
+  artifact <- readr::read_csv(f_conn, show_col_types = FALSE)
+  return(artifact)
+}
 
 
-download_mlflow_search_result <- function(mlflow_uri, exp_name, all_runs, trisk_output_dir){
+download_mlflow_search_result <- function(mlflow_uri, exp_name, all_runs, trisk_output_dir) {
   # Initializes the progress bar
-  pb <- txtProgressBar(
+  pb <- utils::txtProgressBar(
     min = 0, # Minimum value of the progress bar
     max = nrow(all_runs), # Maximum value of the progress bar
     style = 3, # Progress bar style (also available style = 1 and style = 2)
@@ -34,10 +34,11 @@ download_mlflow_search_result <- function(mlflow_uri, exp_name, all_runs, trisk_
       csv_filename = "crispy_output.csv"
     )
 
-    trisk_output_dir <- fs::path(trisk_output_path, run_id)
-    dir.create(trisk_output_dir)
-    crispy |> readr::write_csv(fs::path(trisk_output_dir, paste0("crispy_output_", run_id), ext = "csv"))
+    trisk_run_output_dir <- fs::path(trisk_output_dir, run_id)
+    dir.create(trisk_run_output_dir, showWarnings = FALSE, recursive = TRUE)
+    crispy |> readr::write_csv(fs::path(trisk_run_output_dir, paste0("crispy_output_", run_id), ext = "csv"))
 
     i <- i + 1
-    setTxtProgressBar(pb, i)
-}}
+    utils::setTxtProgressBar(pb, i)
+  }
+}

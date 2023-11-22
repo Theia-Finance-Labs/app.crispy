@@ -1,5 +1,5 @@
 box::use(
-  scripts/constant[trisk_input_path, trisk_output_path]
+  scripts / constant[trisk_input_path, trisk_output_path]
 )
 
 library(r2dii.climate.stress.test)

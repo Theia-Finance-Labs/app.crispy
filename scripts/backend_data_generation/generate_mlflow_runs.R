@@ -1,24 +1,28 @@
 box::use(
-  # app/logic/mlflow_mgmt/trisk_mlflow[multirun_trisk_mlflow],
-  scripts / backend_data_generation / constant[
+  app / logic / mlflow_mgmt / trisk_mlflow[multirun_trisk_mlflow],
+  scripts / constant[
     mlflow_python_bin, mlflow_bin,
-    mlflow_uri, exp_name, trisk_input_path, 
-    trisk_output_path
-    ],
+    mlflow_uri, exp_name, trisk_input_path,
+    trisk_output_path, artifact_names
+  ],
   app / logic / constant[
-    available_baseline_scenario, available_shock_scenario, 
+    available_baseline_scenario, available_shock_scenario,
     available_discount_rate, available_risk_free_rate,
-    available_growth_rate, available_shock_year, 
-    available_scenario_geography, artifact_names
-    ]
+    available_growth_rate, available_shock_year,
+    available_scenario_geography
+  ]
 )
+
+library(r2dii.climate.stress.test)
 
 Sys.setenv(
   MLFLOW_PYTHON_BIN = mlflow_python_bin,
   MLFLOW_BIN = mlflow_bin
 )
 
-library(r2dii.climate.stress.test)
+
+dir.create(fs::path(trisk_output_path), showWarnings = FALSE)
+unlink(fs::path(trisk_output_path, "*"), recursive = TRUE)
 # In a terminal opened in the project folder, execute this command to start a local mlflow server
 # mlflow server --backend-store-uri ~/backup_mlflow_outputs/mlfow_outputs/mlruns --default-artifact-root ~/backup_mlflow_outputs/mlfow_outputs/mlartifacts --serve-artifacts --host 127.0.0.1 --port 5000
 

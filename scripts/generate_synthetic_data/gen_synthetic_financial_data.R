@@ -13,5 +13,4 @@ prewrangled_financial_data_stress_test <- STDataMGMT::prepare_financial_data(
   minimum_ratio_sample = 0,
   allowed_range_npm = c(-Inf, Inf)
 )
-
-arrow::write_parquet(prewrangled_financial_data_stress_test, prewrangled_financial_data_stress_test_path)
+readr::write_csv(prewrangled_financial_data_stress_test, prewrangled_financial_data_stress_test_path)
