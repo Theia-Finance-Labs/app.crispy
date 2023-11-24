@@ -1,5 +1,10 @@
 # export constant values from here
 
+
+# ======================================================
+# ======================================================
+# TODO move to .RProfile env var
+
 # INPUT DATA
 backend_crispy_data_path <- fs::path("app", "data", "backend_crispy_data", ext = "parquet")
 scenario_data_path <- fs::path("app", "data", "Scenarios_AnalysisInput_2021", ext = "csv")
@@ -7,6 +12,9 @@ scenario_data_path <- fs::path("app", "data", "Scenarios_AnalysisInput_2021", ex
 # ANALYSIS DATA CREATION
 trisk_start_year <- 2022
 maturity_month_term_bridge_fp <- file.path("app", "data", "maturity_month_term_bridge.csv")
+# ======================================================
+# ======================================================
+
 
 max_portfolio_granularity <-
   c(

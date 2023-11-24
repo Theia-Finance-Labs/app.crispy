@@ -1,10 +1,10 @@
 box::use(
-  shiny[moduleServer, NS, observe, div, tags, reactiveValues, eventReactive, p, tagList],
+  shiny[moduleServer, NS, observe, div, tags, reactiveValues, eventReactive, p, tagList, observeEvent],
   shiny.semantic[slider_input, dropdown_input, segment, update_dropdown_input]
 )
 
 box::use(
-  app / logic / constant[
+  app/logic/constant[
     available_discount_rate,
     available_risk_free_rate,
     available_growth_rate,
@@ -12,7 +12,8 @@ box::use(
     available_baseline_scenario,
     available_shock_scenario,
     available_scenario_geography
-  ]
+  ],
+  app/logic/ui_renaming[RENAMING_SCENARIOS, REV_RENAMING_SCENARIOS]
 )
 
 
@@ -114,8 +115,8 @@ server <- function(id, backend_crispy_data) {
             .data$risk_free_rate == trisk_params_range$risk_free_rate,
             .data$growth_rate == trisk_params_range$growth_rate,
             .data$shock_year == trisk_params_range$shock_year,
-            .data$baseline_scenario == trisk_params_range$baseline_scenario,
-            .data$shock_scenario == trisk_params_range$shock_scenario,
+            .data$baseline_scenario == REV_RENAMING_SCENARIOS[trisk_params_range$baseline_scenario],
+            .data$shock_scenario == REV_RENAMING_SCENARIOS[trisk_params_range$shock_scenario],
             .data$scenario_geography == trisk_params_range$scenario_geography
           )
       }
@@ -126,21 +127,32 @@ server <- function(id, backend_crispy_data) {
 
 
 update_dropdowns <- function(input, session, backend_crispy_data) {
-  # Observe changes in baseline_scenario dropdown and update shock_scenario dropdown
+  # Observe changes in backend_crispy_data and update baseline_scenario dropdown
   observe({
-    selected_baseline <- input$baseline_scenario
+    # Filter the data based on selected baseline scenario
+    new_choices <- unique(backend_crispy_data$baseline_scenario)
+    new_choices <- RENAMING_SCENARIOS[new_choices]
+
+    # Update shock_scenario dropdown with unique values from the filtered data
+    update_dropdown_input(session, "baseline_scenario", choices = new_choices)
+  })
+
+  # Observe changes in baseline_scenario dropdown and update shock_scenario dropdown
+  observeEvent(input$baseline_scenario, ignoreInit = TRUE, {
+    selected_baseline <- REV_RENAMING_SCENARIOS[input$baseline_scenario]
 
     # Filter the data based on selected baseline scenario
     new_choices <- unique(backend_crispy_data[backend_crispy_data$baseline_scenario == selected_baseline, ]$shock_scenario)
+    new_choices <- RENAMING_SCENARIOS[new_choices]
 
     # Update shock_scenario dropdown with unique values from the filtered data
     update_dropdown_input(session, "shock_scenario", choices = new_choices)
   })
 
   # Observe changes in both baseline_scenario and shock_scenario dropdowns to update scenario_geography dropdown
-  observe({
-    selected_baseline <- input$baseline_scenario
-    selected_shock <- input$shock_scenario
+  observeEvent(c(input$baseline_scenario, input$shock_scenario), ignoreInit = TRUE, {
+    selected_baseline <- REV_RENAMING_SCENARIOS[input$baseline_scenario]
+    selected_shock <- REV_RENAMING_SCENARIOS[input$shock_scenario]
 
     # Filter the data based on selected baseline and shock scenarios
     new_choices <- unique(backend_crispy_data |>

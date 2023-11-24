@@ -1,12 +1,12 @@
 box::use(
-  app / logic / mlflow_mgmt / mlflow_utils[
+  app/logic/mlflow_mgmt/mlflow_utils[
     set_mlflow_experiment,
     generate_and_filter_run_parameters,
     create_tags_list,
     log_metrics_df,
     write_and_zip_csv_artifacts
   ],
-  app / logic / mlflow_mgmt / trisk_mlflow_metrics[compute_trisk_metrics]
+  app/logic/mlflow_mgmt/trisk_mlflow_metrics[compute_trisk_metrics]
 )
 
 

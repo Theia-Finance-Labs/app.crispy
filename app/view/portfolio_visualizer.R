@@ -5,7 +5,8 @@ box::use(
 )
 
 box::use(
-  app / logic / constant[max_crispy_granularity, portfolio_crispy_merge_cols]
+  app/logic/constant[max_crispy_granularity, portfolio_crispy_merge_cols],
+  app/logic/ui_renaming[rename_tibble_columns]
 )
 
 
@@ -52,11 +53,16 @@ server <- function(id, multi_crispy_data_r) {
           portfolio_data_r(portfolio_data)
         }
 
+
         stress.test.plot.report::main_load_analysis_data(
           portfolio_data = portfolio_data_r(),
           multi_crispy_data = multi_crispy_data_r(),
           portfolio_crispy_merge_cols = portfolio_crispy_merge_cols
-        )
+        ) |>
+          dplyr::mutate(
+            crispy_perc_value_change = round(crispy_perc_value_change, digits = 4),
+            crispy_value_loss = round(crispy_value_loss, digits = 2)
+          )
       }
     })
 
@@ -68,6 +74,7 @@ server <- function(id, multi_crispy_data_r) {
           .data$crispy_perc_value_change,
           .data$crispy_value_loss
         )
+      table_to_display <- rename_tibble_columns(table_to_display, class = "analysis_columns")
 
       # Render the editable table
       output$portfolio_table <- renderDT(
@@ -102,8 +109,6 @@ server <- function(id, multi_crispy_data_r) {
         }
       }
     })
-
-
 
     return(analysis_data_r)
   })
