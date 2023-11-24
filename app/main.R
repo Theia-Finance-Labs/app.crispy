@@ -4,11 +4,16 @@ box::use(
   semantic.dashboard[dashboardPage, dashboardHeader, dashboardSidebar, dashboardBody, icon, box],
 )
 box::use(
-  app/view/crispy_generation,
-  app/view/portfolio_visualizer,
-  app/view/equity_change_plots,
-  app/view/scenario_plots,
-  app/logic/data_load[load_backend_crispy_data, load_scenario_data]
+  app / view / params_picker,
+  app / view / portfolio_visualizer,
+  app / view / equity_change_plots,
+  app / view / scenario_plots,
+  app / logic / data_load[
+    load_backend_crispy_data, 
+    load_backend_trajectories_data, 
+    load_backend_trisk_run_data, 
+    get_run_id_from_params_selection
+    ]
 )
 
 #######
@@ -23,7 +28,7 @@ ui <- function(id) {
     title = "CRISPY",
     dashboardHeader(title = "Crispy app"),
     dashboardSidebar(
-      crispy_generation$ui(ns("crispy_generation")),
+      params_picker$ui(ns("params_picker")),
       size = "very wide"
     ),
     dashboardBody(
@@ -46,12 +51,26 @@ ui <- function(id) {
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
     backend_crispy_data <- load_backend_crispy_data()
-    scenario_data <- load_scenario_data()
+    backend_trajectories_data <- load_backend_trajectories_data()
+    backend_trisk_run_data <- load_backend_trisk_run_data()
 
-    multi_crispy_data_r <- crispy_generation$server("crispy_generation", backend_crispy_data)
-    analysis_data_r <- portfolio_visualizer$server("portfolio_visualizer", multi_crispy_data_r)
+    trisk_params_selection <- params_picker$server("params_picker", backend_trisk_run_data)
+
+    run_id_r <- get_run_id_from_params_selection(backend_trisk_run_data, trisk_params_selection)
+
+    crispy_data_r <- eventReactive(run_id_r, ignoreInit=TRUE, {
+      browser()
+      backend_crispy_data |>
+        dplyr::filter(run_id == run_id_r())
+    })
+    trajectories_data_r <- eventReactive(run_id_r, ignoreInit=TRUE, {
+      backend_trajectories_data |>
+        dplyr::filter(run_id == run_id_r())
+    })
+
+    analysis_data_r <- portfolio_visualizer$server("portfolio_visualizer", crispy_data_r)
 
     equity_change_plots$server("equity_change_plots", analysis_data_r)
-    scenario_plots$server("scenario_plots", scenario_data, analysis_data_r)
+    scenario_plots$server("scenario_plots", trajectories_data_r)
   })
 }

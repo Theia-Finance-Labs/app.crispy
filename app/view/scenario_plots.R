@@ -25,23 +25,13 @@ ui <- function(id) {
 ####### Server
 
 
-server <- function(id, scenario_data, analysis_data_r) {
+server <- function(id, trajectories_data_r) {
   moduleServer(id, function(input, output, session) {
     ### BASELINE SCENARIO
 
-    # Reactive expression to prepare data for plotting
-    baseline_scenario_data_r <- reactive({
-      req(analysis_data_r()) # Ensure that analysis_data is available
-      scenario_data |>
-        dplyr::filter(
-          .data$scenario %in% analysis_data_r()$crispy.baseline_scenario,
-          .data$scenario_geography %in% analysis_data_r()$crispy.scenario_geography
-        )
-    })
-
-    observeEvent(baseline_scenario_data_r(), ignoreInit = TRUE, {
+    observeEvent(trajectories_data_r(), ignoreInit = TRUE, {
       # Render plot
-      scenario_time_plot <- pipeline_scenario_time_plot(baseline_scenario_data_r(),
+      scenario_time_plot <- pipeline_scenario_time_plot(trajectories_data_r(),
         scenario_type = "baseline"
       )
       output$baseline_scenario_plot <- renderPlot({
@@ -52,19 +42,9 @@ server <- function(id, scenario_data, analysis_data_r) {
 
     ### SHOCK SCENARIO
 
-    # Reactive expression to prepare data for plotting
-    shock_scenario_data_r <- reactive({
-      req(analysis_data_r()) # Ensure that analysis_data is available
-      scenario_data |>
-        dplyr::filter(
-          .data$scenario %in% analysis_data_r()$crispy.shock_scenario,
-          .data$scenario_geography %in% analysis_data_r()$crispy.scenario_geography
-        )
-    })
-
-    observeEvent(shock_scenario_data_r(), ignoreInit = TRUE, {
+    observeEvent(trajectories_data_r(), ignoreInit = TRUE, {
       # Render plot
-      scenario_time_plot <- pipeline_scenario_time_plot(shock_scenario_data_r(),
+      scenario_time_plot <- pipeline_scenario_time_plot(trajectories_data_r(),
         scenario_type = "shock"
       )
       output$shock_scenario_plot <- renderPlot({

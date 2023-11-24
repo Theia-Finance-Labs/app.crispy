@@ -14,7 +14,7 @@ read_csv_from_zipped_artifacts <- function(tracking_uri,
 }
 
 
-download_mlflow_search_result <- function(mlflow_uri, exp_name, all_runs, trisk_output_dir) {
+download_mlflow_search_result <- function(mlflow_uri, exp_name, all_runs, trisk_output_dir, output_filename) {
   # Initializes the progress bar
   pb <- utils::txtProgressBar(
     min = 0, # Minimum value of the progress bar
@@ -31,12 +31,17 @@ download_mlflow_search_result <- function(mlflow_uri, exp_name, all_runs, trisk_
       tracking_uri = mlflow_uri,
       experiment_name = exp_name,
       run_id = run_id,
-      csv_filename = "crispy_output.csv"
+      csv_filename = output_filename
     )
 
     trisk_run_output_dir <- fs::path(trisk_output_dir, run_id)
     dir.create(trisk_run_output_dir, showWarnings = FALSE, recursive = TRUE)
-    crispy |> readr::write_csv(fs::path(trisk_run_output_dir, paste0("crispy_output_", run_id), ext = "csv"))
+    crispy |> readr::write_csv(
+      fs::path(
+        trisk_run_output_dir,
+        paste0(tools::file_path_sans_ext(output_filename),"_", run_id),
+         ext = "csv")
+         )
 
     i <- i + 1
     utils::setTxtProgressBar(pb, i)
