@@ -55,6 +55,7 @@ RENAMING_ANALYSIS_COLUMNS <- c(
   "pd_difference" = "Difference in PD"
 )
 
+
 rename_tibble_columns <- function(table_to_rename, class) {
   if (class == "analysis_columns") {
     names(table_to_rename) <- RENAMING_ANALYSIS_COLUMNS[names(table_to_rename)]

@@ -2,7 +2,7 @@ box::use(
   dplyr[select_at],
   ggplot2[
     ggplot, geom_line, geom_point, facet_wrap, theme_minimal, labs, aes,
-    scale_color_manual, theme, element_line
+    scale_color_manual, theme, element_line, scale_y_continuous
   ],
   dplyr[select_at],
   ggrepel[geom_text_repel]
@@ -10,9 +10,8 @@ box::use(
 
 pipeline_scenario_time_plot <- function(
     scenario_data,
-    scenario_type,
     x_var = "year",
-    y_var = "fair_share_perc",
+    y_var,
     facet_var = "ald_sector") {
   facets_colors <- r2dii.colours::palette_2dii_plot[seq_along(unique(scenario_data[[facet_var]])), ]$hex
 
@@ -20,7 +19,7 @@ pipeline_scenario_time_plot <- function(
 
   scenario_time_plot <- draw_scenario_time_plot(
     data_scenario_time_plot,
-    x_var, y_var, facet_var, facets_colors, scenario_type
+    x_var, y_var, facet_var, facets_colors
   )
 
   return(scenario_time_plot)
@@ -40,19 +39,18 @@ draw_scenario_time_plot <- function(
     x_var,
     y_var,
     facet_var,
-    facets_colors,
-    scenario_type) {
+    facets_colors) {
   scenario_time_plot <- ggplot(data_scenario_time_plot, aes(x = !!rlang::sym(x_var), y = !!rlang::sym(y_var), color = !!rlang::sym(facet_var))) +
     geom_line() +
     geom_point() +
     facet_wrap(stats::as.formula(paste0("~", facet_var)), scales = "fixed", nrow = 1) +
+    scale_y_continuous(labels = scales::percent) +
     scale_color_manual(values = facets_colors) +
     r2dii.plot::theme_2dii() +
     theme(panel.grid.major.y = element_line(size = .1, color = "black")) +
     labs(
-      title = paste0("Line Plot by ", scenario_type, " scenario"),
       x = "Year",
-      y = "Fair Share Percentage"
+      y = "Production as a percentage of the maximum"
     )
 
 

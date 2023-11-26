@@ -27,7 +27,7 @@ ui <- function(id) {
 ####### Server
 
 
-server <- function(id, multi_crispy_data_r) {
+server <- function(id, crispy_data_r) {
   moduleServer(id, function(input, output, session) {
     # Initial portfolio data structure
     portfolio_data_r <- reactiveVal({
@@ -41,22 +41,21 @@ server <- function(id, multi_crispy_data_r) {
 
     analysis_data_r <- eventReactive(c(
       portfolio_data_r(),
-      multi_crispy_data_r()
+      crispy_data_r()
     ), ignoreInit = TRUE, {
-      if (!is.null(portfolio_data_r()) & !is.null(multi_crispy_data_r())) {
+      if (!is.null(portfolio_data_r()) & !is.null(crispy_data_r())) {
         if (nrow(portfolio_data_r()) == 0) {
           # initialise the porfolio sector column
           portfolio_data <- portfolio_data_r()
           portfolio_data <- portfolio_data |>
-            dplyr::right_join(multi_crispy_data_r() |>
+            dplyr::right_join(crispy_data_r() |>
               dplyr::distinct(.data$ald_sector))
           portfolio_data_r(portfolio_data)
         }
 
-
         stress.test.plot.report::main_load_analysis_data(
           portfolio_data = portfolio_data_r(),
-          multi_crispy_data = multi_crispy_data_r(),
+          multi_crispy_data = crispy_data_r(),
           portfolio_crispy_merge_cols = portfolio_crispy_merge_cols
         ) |>
           dplyr::mutate(

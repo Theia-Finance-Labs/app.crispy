@@ -36,7 +36,10 @@ download_mlflow_search_result(mlflow_uri, exp_name, all_runs, mlflow_download_di
 multi_crispy_data <- stress.test.plot.report::main_load_multi_crispy_data(
   crispy_outputs_dir = mlflow_download_dir,
   max_crispy_granularity = max_crispy_granularity
-)
+) |>
+  dplyr::mutate(
+    run_id = sub("^crispy_output_(.*)\\.csv", "\\1", .data$run_id)
+  )
 
 multi_crispy_data |> 
   dplyr::select(
@@ -98,5 +101,12 @@ multi_trajectories |>
     production_target_scenario = sum(production_target_scenario, na.rm=TRUE),
     production_shock_scenario = sum(production_shock_scenario, na.rm=TRUE),
     .groups="drop"
-  ) |> arrow::write_parquet(backend_trajectories_data_path)
+  ) |> 
+  dplyr::group_by(run_id, ald_sector) |>
+  dplyr::mutate(
+    production_baseline_scenario=production_baseline_scenario / max(production_baseline_scenario),
+    production_target_scenario=production_target_scenario / max(production_target_scenario),
+    production_shock_scenario=production_shock_scenario / max(production_shock_scenario)
+    ) |>
+  arrow::write_parquet(backend_trajectories_data_path)
 

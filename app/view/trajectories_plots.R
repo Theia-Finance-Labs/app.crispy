@@ -32,10 +32,11 @@ server <- function(id, trajectories_data_r) {
     observeEvent(trajectories_data_r(), ignoreInit = TRUE, {
       # Render plot
       scenario_time_plot <- pipeline_scenario_time_plot(trajectories_data_r(),
-        scenario_type = "baseline"
+        y_var = "production_baseline_scenario"
       )
       output$baseline_scenario_plot <- renderPlot({
-        scenario_time_plot
+        scenario_time_plot +
+          ggplot2::labs(title = "Production trajectories for the Baseline scenario")
       })
     })
 
@@ -45,10 +46,11 @@ server <- function(id, trajectories_data_r) {
     observeEvent(trajectories_data_r(), ignoreInit = TRUE, {
       # Render plot
       scenario_time_plot <- pipeline_scenario_time_plot(trajectories_data_r(),
-        scenario_type = "shock"
+        y_var = "production_shock_scenario"
       )
       output$shock_scenario_plot <- renderPlot({
-        scenario_time_plot
+        scenario_time_plot +
+          ggplot2::labs(title = "Production trajectories for the Baseline scenario")
       })
     })
   })
