@@ -4,11 +4,11 @@ box::use(
   semantic.dashboard[dashboardPage, dashboardHeader, dashboardSidebar, dashboardBody, icon, box],
 )
 box::use(
-  app / view / crispy_generation,
-  app / view / portfolio_visualizer,
-  app / view / equity_change_plots,
-  app / view / scenario_plots,
-  app / logic / data_load[load_backend_crispy_data, load_scenario_data]
+  app/view/crispy_generation,
+  app/view/portfolio_visualizer,
+  app/view/equity_change_plots,
+  app/view/scenario_plots,
+  app/logic/data_load[load_backend_crispy_data, load_scenario_data]
 )
 
 #######

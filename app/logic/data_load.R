@@ -1,5 +1,5 @@
 box::use(
-  app / logic / constant[scenario_data_path, use_ald_sector, backend_crispy_data_path]
+  app/logic/constant[scenario_data_path, use_ald_sector, backend_crispy_data_path]
 )
 
 
