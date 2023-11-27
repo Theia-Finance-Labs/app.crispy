@@ -7,7 +7,8 @@
 
 # INPUT DATA
 backend_crispy_data_path <- fs::path("app", "data", "backend_crispy_data", ext = "parquet")
-scenario_data_path <- fs::path("app", "data", "Scenarios_AnalysisInput_2021", ext = "csv")
+backend_trajectories_data_path <- fs::path("app", "data", "backend_trajectories_data", ext = "parquet")
+backend_trisk_run_data_path <- fs::path("app", "data", "backend_trisk_run_data", ext = "parquet")
 
 # ANALYSIS DATA CREATION
 trisk_start_year <- 2022
