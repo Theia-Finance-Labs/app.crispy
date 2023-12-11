@@ -50,32 +50,35 @@ use_ald_sector <- c(
 )
 
 available_discount_rate <- c(
-  # 0.015,
+  0.02,
   0.044,
-  # 0.07,
+  0.07,
   0.1
 )
 available_risk_free_rate <- c(
   0,
-  # 0.02,
+  0.02,
   0.05
 )
 available_growth_rate <- c(
   0.01,
-  # 0.02,
-  0.042
+  0.02,
+  0.095
+
 )
 available_shock_year <- c(
   2025,
-  # 2027,
+  2027,
   # 2029,
   2030,
-  # 2032
+  2032,
   # 2034,
   2035
   # 2040
 )
 
+available_carbon_price_model  <- c("no_carbon_tax", "NZ2050", "NDC", "DN0", "B2DS")
+available_market_passthrough  <- c(0, 0.5, 1)
 
 available_baseline_scenario <- c(
   "IPR2021_baseline",
@@ -106,10 +109,10 @@ available_shock_scenario <- c(
 available_scenario_geography <- c(
   "Global",
   "EmergingMarketAndDevelopingEconomies",
-  "OecdAndEu"
-  # "UnitedStates",
-  # "SoutheastAsia",
-  # "China",
-  # "India",
-  # "MiddleEast"
+  "OecdAndEu",
+  "UnitedStates",
+  "SoutheastAsia",
+  "China",
+  "India",
+  "MiddleEast"
 )

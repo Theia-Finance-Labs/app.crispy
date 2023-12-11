@@ -17,9 +17,6 @@ box::use(
 
 ui <- function(id) {
   ns <- NS(id)
-  # Left Column (1/3 width)
-
-
   # First row with 3 taking the entire page width
   box(width = 16, DTOutput(outputId = ns("portfolio_table")))
 }
@@ -81,7 +78,11 @@ server <- function(id, crispy_data_r) {
           datatable(table_to_display,
             editable = list(target = "cell", disable = list(columns = c(1, 3, 4))),
             options = list(
-              columnDefs = list(
+        lengthChange = FALSE,  # Remove "Show XXX entries" option
+        paging = FALSE,        # Remove pagination
+        searching = FALSE ,     # Remove search input
+        info = FALSE  , # Remove "Showing N of X entries"
+              columnDefs = list( # Change colors of text in cells
                 list(targets = 3:4, createdCell = JS(
                   "function(cell, cellData, rowData) {
               $(cell).css('color', cellData < 0 ? 'red' : 'green');

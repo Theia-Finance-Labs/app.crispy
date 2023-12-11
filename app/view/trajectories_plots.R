@@ -15,10 +15,10 @@ ui <- function(id) {
   ns <- NS(id)
   list(
     # Third row with 1 taking the entire page width
-    box(width = 16, plotOutput(ns("baseline_scenario_plot"))),
+    box(width = 16, plotOutput(ns("baseline_scenario_plot"), height = "900px")),
 
     # Fourth row with 2 taking the entire page width
-    box(width = 16, plotOutput(ns("shock_scenario_plot")))
+    box(width = 16, plotOutput(ns("shock_scenario_plot"), height = "900px"))
   )
 }
 
@@ -45,12 +45,13 @@ server <- function(id, trajectories_data_r) {
 
     observeEvent(trajectories_data_r(), ignoreInit = TRUE, {
       # Render plot
+      
       scenario_time_plot <- pipeline_scenario_time_plot(trajectories_data_r(),
         y_var = "production_shock_scenario"
       )
       output$shock_scenario_plot <- renderPlot({
         scenario_time_plot +
-          ggplot2::labs(title = "Production trajectories for the Baseline scenario")
+          ggplot2::labs(title = "Production trajectories for the Shock scenario")
       })
     })
   })
