@@ -93,8 +93,8 @@ multi_trajectories |>
   dplyr::group_by(
     run_id, 
     year, 
-    ald_sector
-    # ald_business_unit
+    ald_sector,
+    ald_business_unit
     ) |>
   dplyr::summarise(
     production_baseline_scenario = sum(production_baseline_scenario, na.rm=TRUE),
@@ -102,11 +102,12 @@ multi_trajectories |>
     production_shock_scenario = sum(production_shock_scenario, na.rm=TRUE),
     .groups="drop"
   ) |> 
-  dplyr::group_by(run_id, ald_sector) |>
+  dplyr::group_by(run_id, ald_sector, ald_business_unit) |>
   dplyr::mutate(
     production_baseline_scenario=production_baseline_scenario / max(production_baseline_scenario),
     production_target_scenario=production_target_scenario / max(production_target_scenario),
     production_shock_scenario=production_shock_scenario / max(production_shock_scenario)
     ) |>
+  dplyr::filter( year < max(year)) |>
   arrow::write_parquet(backend_trajectories_data_path)
 
