@@ -64,7 +64,6 @@ available_growth_rate <- c(
   0.01,
   0.02,
   0.095
-
 )
 available_shock_year <- c(
   2025,
@@ -77,8 +76,8 @@ available_shock_year <- c(
   # 2040
 )
 
-available_carbon_price_model  <- c("no_carbon_tax", "NZ2050", "NDC", "DN0", "B2DS")
-available_market_passthrough  <- c(0, 0.5, 1)
+available_carbon_price_model <- c("no_carbon_tax", "NZ2050", "NDC", "DN0", "B2DS")
+available_market_passthrough <- c(0, 0.5, 1)
 
 available_baseline_scenario <- c(
   "IPR2021_baseline",

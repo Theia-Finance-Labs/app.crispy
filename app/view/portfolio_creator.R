@@ -78,10 +78,10 @@ server <- function(id, crispy_data_r) {
           datatable(table_to_display,
             editable = list(target = "cell", disable = list(columns = c(1, 3, 4))),
             options = list(
-        lengthChange = FALSE,  # Remove "Show XXX entries" option
-        paging = FALSE,        # Remove pagination
-        searching = FALSE ,     # Remove search input
-        info = FALSE  , # Remove "Showing N of X entries"
+              lengthChange = FALSE, # Remove "Show XXX entries" option
+              paging = FALSE, # Remove pagination
+              searching = FALSE, # Remove search input
+              info = FALSE, # Remove "Showing N of X entries"
               columnDefs = list( # Change colors of text in cells
                 list(targets = 3:4, createdCell = JS(
                   "function(cell, cellData, rowData) {
