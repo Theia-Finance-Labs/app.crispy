@@ -18,6 +18,8 @@ library(DT)
 # library(mlflow)
 # library(gridExtra)
 # library(ggpubr)
+library(zip)
+
 
 library(r2dii.climate.stress.test)
 library(stress.test.plot.report)

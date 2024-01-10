@@ -1,12 +1,12 @@
 box::use(
   app/logic/mlflow_mgmt/mlflow_utils[
     set_mlflow_experiment,
-    generate_and_filter_run_parameters,
     create_tags_list,
     log_metrics_df,
     write_and_zip_csv_artifacts
   ],
-  app/logic/mlflow_mgmt/trisk_mlflow_metrics[compute_trisk_metrics]
+  app/logic/mlflow_mgmt/trisk_mlflow_metrics[compute_trisk_metrics],
+  app/logic/mlflow_mgmt/mlflow_parameters[generate_and_filter_run_parameters]
 )
 
 
@@ -65,7 +65,6 @@ multirun_trisk_mlflow <-
     )
 
     print(paste("Starting the execution of", nrow(filtered_run_parameters), "total runs"))
-
 
     n_completed_runs <- 0
     for (i in seq_len(nrow(filtered_run_parameters))) {
@@ -153,13 +152,22 @@ run_trisk_mlflow <-
         }
       }
 
+      # Convert parameters to YAML format
+      yaml_content <- yaml::as.yaml(all_params)
+      # Write YAML to a file
+      yaml_file <- fs::path(tempdir(), "parameters.yaml")
+      write(yaml_content, file = yaml_file)
+      # Log the YAML file as an artifact
+      mlflow::mlflow_log_artifact(yaml_file)
+
+
       tryCatch(
         {
           st_results_wrangled_and_checked <- r2dii.climate.stress.test::run_trisk(return_results = TRUE, ...)
           print("TRISK run completed")
 
-          metrics_df <- compute_trisk_metrics(st_results_wrangled_and_checked)
-          log_metrics_df(metrics_df)
+          #metrics_df <- compute_trisk_metrics(st_results_wrangled_and_checked)
+          #log_metrics_df(metrics_df)
 
 
           if (!is.null(artifact_names)) {

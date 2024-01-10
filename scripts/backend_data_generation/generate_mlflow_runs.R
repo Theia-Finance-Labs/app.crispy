@@ -9,6 +9,7 @@ box::use(
     available_baseline_scenario, available_shock_scenario,
     available_discount_rate, available_risk_free_rate,
     available_growth_rate, available_shock_year,
+    available_carbon_price_model, available_market_passthrough,
     available_scenario_geography
   ]
 )
@@ -70,14 +71,14 @@ params_grid <- list(
   growth_rate = available_growth_rate,
   # div_netprofit_prop_coef = c(0.8, 0.85, 0.9, 0.95, 1),
   shock_year = available_shock_year,
-  scenario_geography = available_scenario_geography
+  scenario_geography = available_scenario_geography,
   # settlement_factor = c(0, 0.3, 0.6, 1),
   # exp_share_damages_paid = c(0, 0.027, 0.1, 0.5, 1),
   # scc = c(0, 40, 400, 4000, 10000),
   # carbon_price_model = c(
   # "no_carbon_tax", "NZ2050", "NDC", "DN0", "B2DS")
-  # carbon_price_model= c("no_carbon_tax", "NZ2050", "NDC", "DN0", "B2DS")
-  # market_passthrough = c(0, 0.3, 0.6, 1))
+  carbon_price_model= available_carbon_price_model,
+  market_passthrough = available_market_passthrough 
 
   # In a single experiment, do not change the names of parameters being tweaked in the param grid
 )
@@ -88,5 +89,5 @@ multirun_trisk_mlflow(
   trisk_output_path = trisk_output_path,
   scenario_pairs = scenario_pairs,
   params_grid = params_grid,
-  artifact_names = artifact_names,
+  artifact_names = artifact_names
 )
