@@ -1,21 +1,28 @@
 box::use(
-  shiny[moduleServer, NS, observe, div, tags, reactiveVal, reactiveValues, eventReactive, p, tagList, observeEvent, img],
-  shiny.semantic[slider_input, dropdown_input, segment, update_dropdown_input]
+  shiny[
+    moduleServer, NS, observe, div, tags, reactiveVal, reactiveValues, eventReactive, p, tagList, observeEvent, img,
+    HTML
+  ],
+  shiny.semantic[slider_input, dropdown_input, segment, update_dropdown_input, actionButton],
+  shinyjs[useShinyjs]
 )
 
 box::use(
-  app/logic/constant[
+  app / logic / constant[
+    backend_trisk_run_folder,
+    trisk_input_path,
     available_discount_rate,
     available_risk_free_rate,
     available_growth_rate,
     available_shock_year,
     available_baseline_scenario,
     available_shock_scenario,
-    available_scenario_geography
+    available_scenario_geography,
+    max_crispy_granularity
   ],
-  app/logic/ui_renaming[RENAMING_SCENARIOS, REV_RENAMING_SCENARIOS]
+  app / logic / ui_renaming[RENAMING_SCENARIOS, REV_RENAMING_SCENARIOS],
+  app / logic / trisk_mgmt[run_trisk_with_params, append_st_results_to_backend_data, check_if_run_exists, get_run_data_from_run_id]
 )
-
 
 
 ####### UI
@@ -23,6 +30,17 @@ box::use(
 ui <- function(id) {
   ns <- NS(id)
   div(
+    useShinyjs(), # Initialize shinyjs
+    # Custom Semantic UI Modal
+    tags$div(
+      id = "mymodal",
+      class = "ui modal",
+      tags$div(class = "header", "Processing"),
+      tags$div(
+        class = "content",
+        tags$p("Please wait...")
+      )
+    ),
     # First segment in the left half
     div(
       class = "eight wide column",
@@ -88,39 +106,67 @@ ui <- function(id) {
 ####### Server
 
 
-server <- function(id, backend_trisk_run_data) {
+
+
+server <- function(id) {
   moduleServer(id, function(input, output, session) {
-    update_dropdowns(input, session, backend_trisk_run_data)
-
-    run_id_r <- reactiveVal()
-
-    observeEvent(
-      c(
-        input$discount_rate,
-        input$risk_free_rate,
-        input$growth_rate,
-        input$shock_year,
-        input$baseline_scenario,
-        input$shock_scenario,
-        input$scenario_geography
-      ),
-      ignoreInit = TRUE,
-      {
-        run_id_selected <- backend_trisk_run_data |>
-          dplyr::filter(
-            .data$discount_rate == input$discount_rate,
-            .data$risk_free_rate == input$risk_free_rate,
-            .data$growth_rate == input$growth_rate,
-            .data$shock_year == input$shock_year,
-            .data$baseline_scenario == REV_RENAMING_SCENARIOS[input$baseline_scenario],
-            .data$shock_scenario == REV_RENAMING_SCENARIOS[input$shock_scenario],
-            .data$scenario_geography == input$scenario_geography
-          ) |>
-          dplyr::pull(run_id)
-
-        run_id_r(run_id_selected)
-      }
+    update_dropdowns(input, session,
+      available_baseline_scenario,
+      available_shock_scenario,
+      available_scenario_geography,
+      possible_combinations = r2dii.climate.stress.test::stress_test_arguments_combinations
     )
+
+    run_id_r <- reactiveVal(NULL)
+
+    trisk_run_params_r <- shiny::reactive({
+      reactiveValues(
+        discount_rate = as.numeric(input$discount_rate),
+        risk_free_rate = as.numeric(input$risk_free_rate),
+        growth_rate = as.numeric(input$growth_rate),
+        shock_year = as.numeric(input$shock_year),
+        baseline_scenario = REV_RENAMING_SCENARIOS[input$baseline_scenario],
+        shock_scenario = REV_RENAMING_SCENARIOS[input$shock_scenario],
+        scenario_geography = input$scenario_geography
+      )
+    })
+
+    observeEvent(trisk_run_params_r(), {
+      trisk_run_params <- shiny::reactiveValuesToList(trisk_run_params_r())
+
+      if (!any(sapply(trisk_run_params, function(x) {
+        is.na(x) | (nchar(x) == 0)
+      }))) {
+        run_id <- check_if_run_exists(trisk_run_params, backend_trisk_run_folder)
+        if (is.null(run_id)) {
+          shinyjs::runjs("$('#mymodal').modal({closable: false}).modal('show');")
+          tryCatch(
+            {
+              st_results_wrangled_and_checked <- run_trisk_with_params(
+                trisk_run_params,
+                trisk_input_path
+              )
+              append_st_results_to_backend_data(
+                st_results_wrangled_and_checked,
+                backend_trisk_run_folder,
+                max_crispy_granularity
+              )
+            },
+            error = function(e) {
+              cat(e$message)
+              # Do nothing on error
+              NULL
+            }
+          )
+          run_id <- check_if_run_exists(trisk_run_params, backend_trisk_run_folder)
+        }
+
+        run_id_r(run_id)
+      }
+
+      # Close the modal dialog and re-enable UI
+      shinyjs::runjs("$('#mymodal').modal('hide');")
+    })
 
 
     return(run_id_r)
@@ -129,11 +175,17 @@ server <- function(id, backend_trisk_run_data) {
 
 
 
-update_dropdowns <- function(input, session, backend_trisk_run_data) {
-  # Observe changes in backend_trisk_run_data and update baseline_scenario dropdown
+
+update_dropdowns <- function(input, session,
+                             available_baseline_scenario,
+                             available_shock_scenario,
+                             available_scenario_geography,
+                             possible_combinations) {
+  # Observe changes in possible_combinations and update baseline_scenario dropdown
   observe({
     # Filter the data based on selected baseline scenario
-    new_choices <- unique(backend_trisk_run_data$baseline_scenario)
+    new_choices <- unique(possible_combinations$baseline_scenario)
+    new_choices <- new_choices[new_choices %in% available_baseline_scenario]
     new_choices <- RENAMING_SCENARIOS[new_choices]
 
     # Update shock_scenario dropdown with unique values from the filtered data
@@ -145,7 +197,8 @@ update_dropdowns <- function(input, session, backend_trisk_run_data) {
     selected_baseline <- REV_RENAMING_SCENARIOS[input$baseline_scenario]
 
     # Filter the data based on selected baseline scenario
-    new_choices <- unique(backend_trisk_run_data[backend_trisk_run_data$baseline_scenario == selected_baseline, ]$shock_scenario)
+    new_choices <- unique(possible_combinations[possible_combinations$baseline_scenario == selected_baseline, ]$shock_scenario)
+    new_choices <- new_choices[new_choices %in% available_shock_scenario]
     new_choices <- RENAMING_SCENARIOS[new_choices]
 
     # Update shock_scenario dropdown with unique values from the filtered data
@@ -158,10 +211,11 @@ update_dropdowns <- function(input, session, backend_trisk_run_data) {
     selected_shock <- REV_RENAMING_SCENARIOS[input$shock_scenario]
 
     # Filter the data based on selected baseline and shock scenarios
-    new_choices <- unique(backend_trisk_run_data |>
+    new_choices <- unique(possible_combinations |>
       dplyr::filter(
         .data$baseline_scenario == selected_baseline,
-        .data$shock_scenario == selected_shock
+        .data$shock_scenario == selected_shock,
+        .data$scenario_geography %in% available_scenario_geography
       ) |>
       dplyr::pull(scenario_geography))
 
