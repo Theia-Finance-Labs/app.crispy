@@ -113,8 +113,7 @@ server <- function(id) {
     update_dropdowns(input, session,
       available_baseline_scenario,
       available_shock_scenario,
-      available_scenario_geography,
-      possible_combinations = r2dii.climate.stress.test::stress_test_arguments_combinations
+      available_scenario_geography
     )
 
     run_id_r <- reactiveVal(NULL)
@@ -179,12 +178,19 @@ server <- function(id) {
 update_dropdowns <- function(input, session,
                              available_baseline_scenario,
                              available_shock_scenario,
-                             available_scenario_geography,
-                             possible_combinations) {
+                             available_scenario_geography) {
+
+  
+  possible_combinations <- r2dii.climate.stress.test::get_scenario_geography_x_ald_sector(trisk_input_path)
   # Observe changes in possible_combinations and update baseline_scenario dropdown
   observe({
+    possible_baselines <- possible_combinations |> 
+      dplyr::distinct(.data$baseline_scenario) |>
+      dplyr::filter(!is.na(.data$baseline_scenario)) |>
+      dplyr::pull()
+
     # Filter the data based on selected baseline scenario
-    new_choices <- unique(possible_combinations$baseline_scenario)
+    new_choices <- possible_baselines
     new_choices <- new_choices[new_choices %in% available_baseline_scenario]
     new_choices <- RENAMING_SCENARIOS[new_choices]
 
@@ -196,9 +202,15 @@ update_dropdowns <- function(input, session,
   observeEvent(input$baseline_scenario, ignoreInit = TRUE, {
     selected_baseline <- REV_RENAMING_SCENARIOS[input$baseline_scenario]
 
+    possible_shocks <- possible_combinations |> 
+      dplyr::filter(.data$baseline_scenario == selected_baseline) |>
+      dplyr::distinct(.data$shock_scenario) |>
+      dplyr::filter(!is.na(.data$shock_scenario)) |>
+      dplyr::pull()
+
+
     # Filter the data based on selected baseline scenario
-    new_choices <- unique(possible_combinations[possible_combinations$baseline_scenario == selected_baseline, ]$shock_scenario)
-    new_choices <- new_choices[new_choices %in% available_shock_scenario]
+    new_choices <- possible_shocks
     new_choices <- RENAMING_SCENARIOS[new_choices]
 
     # Update shock_scenario dropdown with unique values from the filtered data
@@ -209,15 +221,21 @@ update_dropdowns <- function(input, session,
   observeEvent(c(input$baseline_scenario, input$shock_scenario), ignoreInit = TRUE, {
     selected_baseline <- REV_RENAMING_SCENARIOS[input$baseline_scenario]
     selected_shock <- REV_RENAMING_SCENARIOS[input$shock_scenario]
-
-    # Filter the data based on selected baseline and shock scenarios
-    new_choices <- unique(possible_combinations |>
+  
+    
+    possible_geographies <- possible_combinations |> 
       dplyr::filter(
         .data$baseline_scenario == selected_baseline,
-        .data$shock_scenario == selected_shock,
-        .data$scenario_geography %in% available_scenario_geography
-      ) |>
-      dplyr::pull(scenario_geography))
+        .data$shock_scenario == selected_shock ) |>
+      dplyr::group_by(.data$shock_scenario, .data$baseline_scenario, .data$scenario_geography) |>
+      dplyr::filter(all(c("Power", "Coal", "Oil&Gas") %in% .data$ald_sector )) |>
+      dplyr::distinct(.data$scenario_geography) |>
+      dplyr::filter(!is.na(.data$scenario_geography)) |>
+      dplyr::pull()
+
+
+    # Filter the data based on selected baseline and shock scenarios
+    new_choices <- possible_geographies
 
     # Update scenario_geography dropdown with unique values from the filtered data
     update_dropdown_input(session, "scenario_geography", choices = new_choices)
