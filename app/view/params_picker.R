@@ -18,6 +18,10 @@ box::use(
     available_baseline_scenario,
     available_shock_scenario,
     available_scenario_geography,
+    available_financial_stimulus,
+    available_carbon_price_model,
+    available_market_passthrough,
+    available_dividend_rate,
     max_crispy_granularity
   ],
   app / logic / ui_renaming[RENAMING_SCENARIOS, REV_RENAMING_SCENARIOS],
@@ -63,6 +67,12 @@ ui <- function(id) {
     div(
       class = "eight wide column",
       segment(
+        p("Shock Year"),
+        slider_input(
+          ns("shock_year"),
+          custom_ticks = available_shock_year,
+          value = NULL
+        ),
         p("Discount Rate"),
         slider_input(
           ns("discount_rate"),
@@ -81,12 +91,29 @@ ui <- function(id) {
           custom_ticks = available_growth_rate,
           value = NULL
         ),
-        p("Shock Year"),
+        p("Dividend Rate"),
         slider_input(
-          ns("shock_year"),
-          custom_ticks = available_shock_year,
+          ns("dividend_rate"),
+          custom_ticks = available_dividend_rate,
           value = NULL
-        )
+        ),
+        p("Financial Stimulus"),
+        slider_input(
+          ns("financial_stimulus"),
+          custom_ticks = available_financial_stimulus,
+          value = NULL
+        ),
+        p("Carbon Price Model"),
+        dropdown_input(ns("carbon_price_model"),
+          choices = available_carbon_price_model,
+          value="no_carbon_tax"
+        ),
+        p("Market Passthrough"),
+        slider_input(
+          ns("market_passthrough"),
+          custom_ticks = available_market_passthrough,
+          value = NULL
+        ),
       )
     ),
     img(
@@ -120,17 +147,22 @@ server <- function(id) {
 
     trisk_run_params_r <- shiny::reactive({
       reactiveValues(
+        baseline_scenario = REV_RENAMING_SCENARIOS[input$baseline_scenario],
+        shock_scenario = REV_RENAMING_SCENARIOS[input$shock_scenario],
+        scenario_geography = input$scenario_geography,
+        shock_year = as.numeric(input$shock_year),
         discount_rate = as.numeric(input$discount_rate),
         risk_free_rate = as.numeric(input$risk_free_rate),
         growth_rate = as.numeric(input$growth_rate),
-        shock_year = as.numeric(input$shock_year),
-        baseline_scenario = REV_RENAMING_SCENARIOS[input$baseline_scenario],
-        shock_scenario = REV_RENAMING_SCENARIOS[input$shock_scenario],
-        scenario_geography = input$scenario_geography
-      )
+        div_netprofit_prop_coef = as.numeric(input$dividend_rate),
+        financial_stimulus = as.numeric(input$financial_stimulus),
+        carbon_price_model = input$carbon_price_model,
+        market_passthrough = as.numeric(input$market_passthrough)
+        )
     })
 
     observeEvent(trisk_run_params_r(), {
+      
       trisk_run_params <- shiny::reactiveValuesToList(trisk_run_params_r())
 
       if (!any(sapply(trisk_run_params, function(x) {
@@ -153,6 +185,26 @@ server <- function(id) {
             },
             error = function(e) {
               cat(e$message)
+              cat("Failed with parameters : ")
+
+
+              # Function to format each list element
+              format_element <- function(name, value) {
+                if(is.numeric(value)) {
+                  return(paste(name, "=", value, sep = ""))
+                } else {
+                  return(paste(name, "=", sprintf('"%s"', value), sep = ""))
+                }
+              }
+
+              # Apply the function to each element and concatenate them
+              formatted_list <- sapply(names(trisk_run_params), function(name) {
+                format_element(name, trisk_run_params[[name]])
+              }, USE.NAMES = FALSE)
+
+              # Print the formatted string
+              cat(paste(formatted_list, collapse = ", "), "\n")
+
               # Do nothing on error
               NULL
             }

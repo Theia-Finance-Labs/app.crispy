@@ -1147,7 +1147,7 @@
       "RemoteUsername": "2DegreesInvesting",
       "RemoteRepo": "r2dii.climate.stress.test",
       "RemoteRef": "fix/speed_improvements",
-      "RemoteSha": "d45f39d6a3e0842ad46bddfea1e2de664282e7f8",
+      "RemoteSha": "3e22ab6be61345f0ebddc112052fdd8c32202349",
       "Requirements": [
         "R",
         "dplyr",
@@ -1164,7 +1164,7 @@
         "withr",
         "zoo"
       ],
-      "Hash": "2a353a11f673b0a32cdc7e6ce4304d8b"
+      "Hash": "79c0f31ab2f065f10d556baba7f9791e"
     },
     "r2dii.colours": {
       "Package": "r2dii.colours",
