@@ -3,7 +3,7 @@ box::use(
     moduleServer, NS, observe, div, tags, reactiveVal, reactiveValues, eventReactive, p, tagList, observeEvent, img,
     HTML
   ],
-  shiny.semantic[slider_input, dropdown_input, segment, update_dropdown_input, actionButton],
+  shiny.semantic[slider_input, dropdown_input, segment, update_dropdown_input,update_slider],
   shinyjs[useShinyjs]
 )
 
@@ -73,12 +73,6 @@ ui <- function(id) {
           custom_ticks = available_shock_year,
           value = NULL
         ),
-        p("Discount Rate"),
-        slider_input(
-          ns("discount_rate"),
-          custom_ticks = available_discount_rate,
-          value = NULL
-        ),
         p("Risk-Free Rate"),
         slider_input(
           ns("risk_free_rate"),
@@ -89,6 +83,12 @@ ui <- function(id) {
         slider_input(
           ns("growth_rate"),
           custom_ticks = available_growth_rate,
+          value = NULL
+        ),
+        p("Discount Rate"),
+        slider_input(
+          ns("discount_rate"),
+          custom_ticks = available_discount_rate,
           value = NULL
         ),
         p("Dividend Rate"),
@@ -137,11 +137,14 @@ ui <- function(id) {
 
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
+
     update_dropdowns(input, session,
       available_baseline_scenario,
       available_shock_scenario,
       available_scenario_geography
     )
+
+    update_discount_and_growth(input, session)
 
     run_id_r <- reactiveVal(NULL)
 
@@ -185,26 +188,7 @@ server <- function(id) {
             },
             error = function(e) {
               cat(e$message)
-              cat("Failed with parameters : ")
-
-
-              # Function to format each list element
-              format_element <- function(name, value) {
-                if(is.numeric(value)) {
-                  return(paste(name, "=", value, sep = ""))
-                } else {
-                  return(paste(name, "=", sprintf('"%s"', value), sep = ""))
-                }
-              }
-
-              # Apply the function to each element and concatenate them
-              formatted_list <- sapply(names(trisk_run_params), function(name) {
-                format_element(name, trisk_run_params[[name]])
-              }, USE.NAMES = FALSE)
-
-              # Print the formatted string
-              cat(paste(formatted_list, collapse = ", "), "\n")
-
+              format_error_message(trisk_run_params)
               # Do nothing on error
               NULL
             }
@@ -292,4 +276,60 @@ update_dropdowns <- function(input, session,
     # Update scenario_geography dropdown with unique values from the filtered data
     update_dropdown_input(session, "scenario_geography", choices = new_choices)
   })
+}
+
+update_discount_and_growth <- function(input, session){
+  # When growth rate changes, check if growth rate is higher and adjust if necessary
+  observeEvent(c(input$growth_rate, input$discount_rate), {
+    if (input$growth_rate >= input$discount_rate) {
+      # Find the closest smaller value in 'available_growth_rate'
+      
+      smaller_values <- available_growth_rate[available_growth_rate < input$discount_rate]
+      closest_smaller_value <- sort(smaller_values)[length(smaller_values)]
+      
+      # Update growth_rate slider
+      update_slider(session, "growth_rate", value = as.character(closest_smaller_value))
+    }
+    
+  })
+
+  # # When discount rate changes, check if it exceeds discount rate and adjust if necessary
+  # observeEvent(input$discount_rate, {
+    
+  #   if (input$growth_rate >= input$discount_rate) {
+
+  #     # Find the closest higher value in 'available_discount_rate'
+  #     higher_values <- available_discount_rate[available_discount_rate > input$growth_rate]
+  #     closest_higher_value <- sort(higher_values)[1]
+
+  #     # Update discount_rate slider
+  #     update_slider(session, "discount_rate", value = as.character(closest_higher_value))
+  #   }
+  
+  # })
+
+}
+
+
+format_error_message <- function(trisk_run_params){
+      cat("Failed with parameters : ")
+
+
+    # Function to format each list element
+    format_element <- function(name, value) {
+      if(is.numeric(value)) {
+        return(paste(name, "=", value, sep = ""))
+      } else {
+        return(paste(name, "=", sprintf('"%s"', value), sep = ""))
+      }
+    }
+
+    # Apply the function to each element and concatenate them
+    formatted_list <- sapply(names(trisk_run_params), function(name) {
+      format_element(name, trisk_run_params[[name]])
+    }, USE.NAMES = FALSE)
+
+    # Print the formatted string
+    cat(paste(formatted_list, collapse = ", "), "\n")
+
 }

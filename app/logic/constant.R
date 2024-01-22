@@ -49,12 +49,7 @@ use_ald_sector <- c(
   "Coal"
 )
 
-available_discount_rate <- c(
-  0.02,
-  0.04,
-  0.07,
-  0.1
-)
+
 available_risk_free_rate <- c(
   0,
   0.01,
@@ -65,11 +60,20 @@ available_risk_free_rate <- c(
 )
 available_growth_rate <- c(
   0.01,
+  0.03,
+  0.05,
+  0.07,
+  0.09
+)
+
+available_discount_rate <- c(
+  0.02,
   0.04,
   0.06,
-  0.07,
-  0.095
+  0.08,
+  0.1
 )
+
 available_shock_year <- c(
   2025,
   2027,
