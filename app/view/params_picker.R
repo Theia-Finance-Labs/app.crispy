@@ -3,7 +3,7 @@ box::use(
     moduleServer, NS, observe, div, tags, reactiveVal, reactiveValues, eventReactive, p, tagList, observeEvent, img,
     HTML
   ],
-  shiny.semantic[slider_input, dropdown_input, segment, update_dropdown_input,update_slider],
+  shiny.semantic[slider_input, dropdown_input, segment, update_dropdown_input, update_slider],
   shinyjs[useShinyjs]
 )
 
@@ -106,7 +106,7 @@ ui <- function(id) {
         p("Carbon Price Model"),
         dropdown_input(ns("carbon_price_model"),
           choices = available_carbon_price_model,
-          value="no_carbon_tax"
+          value = "no_carbon_tax"
         ),
         p("Market Passthrough"),
         slider_input(
@@ -137,8 +137,8 @@ ui <- function(id) {
 
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
-
-    update_dropdowns(input, session,
+    update_dropdowns(
+      input, session,
       available_baseline_scenario,
       available_shock_scenario,
       available_scenario_geography
@@ -161,11 +161,10 @@ server <- function(id) {
         financial_stimulus = as.numeric(input$financial_stimulus),
         carbon_price_model = input$carbon_price_model,
         market_passthrough = as.numeric(input$market_passthrough)
-        )
+      )
     })
 
     observeEvent(trisk_run_params_r(), {
-      
       trisk_run_params <- shiny::reactiveValuesToList(trisk_run_params_r())
 
       if (!any(sapply(trisk_run_params, function(x) {
@@ -215,12 +214,10 @@ update_dropdowns <- function(input, session,
                              available_baseline_scenario,
                              available_shock_scenario,
                              available_scenario_geography) {
-
-  
   possible_combinations <- r2dii.climate.stress.test::get_scenario_geography_x_ald_sector(trisk_input_path)
   # Observe changes in possible_combinations and update baseline_scenario dropdown
   observe({
-    possible_baselines <- possible_combinations |> 
+    possible_baselines <- possible_combinations |>
       dplyr::distinct(.data$baseline_scenario) |>
       dplyr::filter(!is.na(.data$baseline_scenario)) |>
       dplyr::pull()
@@ -238,7 +235,7 @@ update_dropdowns <- function(input, session,
   observeEvent(input$baseline_scenario, ignoreInit = TRUE, {
     selected_baseline <- REV_RENAMING_SCENARIOS[input$baseline_scenario]
 
-    possible_shocks <- possible_combinations |> 
+    possible_shocks <- possible_combinations |>
       dplyr::filter(.data$baseline_scenario == selected_baseline) |>
       dplyr::distinct(.data$shock_scenario) |>
       dplyr::filter(!is.na(.data$shock_scenario)) |>
@@ -257,14 +254,15 @@ update_dropdowns <- function(input, session,
   observeEvent(c(input$baseline_scenario, input$shock_scenario), ignoreInit = TRUE, {
     selected_baseline <- REV_RENAMING_SCENARIOS[input$baseline_scenario]
     selected_shock <- REV_RENAMING_SCENARIOS[input$shock_scenario]
-  
-    
-    possible_geographies <- possible_combinations |> 
+
+
+    possible_geographies <- possible_combinations |>
       dplyr::filter(
         .data$baseline_scenario == selected_baseline,
-        .data$shock_scenario == selected_shock ) |>
+        .data$shock_scenario == selected_shock
+      ) |>
       dplyr::group_by(.data$shock_scenario, .data$baseline_scenario, .data$scenario_geography) |>
-      dplyr::filter(all(c("Power", "Coal", "Oil&Gas") %in% .data$ald_sector )) |>
+      dplyr::filter(all(c("Power", "Coal", "Oil&Gas") %in% .data$ald_sector)) |>
       dplyr::distinct(.data$scenario_geography) |>
       dplyr::filter(!is.na(.data$scenario_geography)) |>
       dplyr::pull()
@@ -278,58 +276,41 @@ update_dropdowns <- function(input, session,
   })
 }
 
-update_discount_and_growth <- function(input, session){
+update_discount_and_growth <- function(input, session) {
   # When growth rate changes, check if growth rate is higher and adjust if necessary
   observeEvent(c(input$growth_rate, input$discount_rate), {
     if (input$growth_rate >= input$discount_rate) {
       # Find the closest smaller value in 'available_growth_rate'
-      
+
       smaller_values <- available_growth_rate[available_growth_rate < input$discount_rate]
       closest_smaller_value <- sort(smaller_values)[length(smaller_values)]
-      
+
       # Update growth_rate slider
       update_slider(session, "growth_rate", value = as.character(closest_smaller_value))
     }
-    
   })
-
-  # # When discount rate changes, check if it exceeds discount rate and adjust if necessary
-  # observeEvent(input$discount_rate, {
-    
-  #   if (input$growth_rate >= input$discount_rate) {
-
-  #     # Find the closest higher value in 'available_discount_rate'
-  #     higher_values <- available_discount_rate[available_discount_rate > input$growth_rate]
-  #     closest_higher_value <- sort(higher_values)[1]
-
-  #     # Update discount_rate slider
-  #     update_slider(session, "discount_rate", value = as.character(closest_higher_value))
-  #   }
-  
-  # })
 
 }
 
 
-format_error_message <- function(trisk_run_params){
-      cat("Failed with parameters : ")
+format_error_message <- function(trisk_run_params) {
+  cat("Failed with parameters : ")
 
 
-    # Function to format each list element
-    format_element <- function(name, value) {
-      if(is.numeric(value)) {
-        return(paste(name, "=", value, sep = ""))
-      } else {
-        return(paste(name, "=", sprintf('"%s"', value), sep = ""))
-      }
+  # Function to format each list element
+  format_element <- function(name, value) {
+    if (is.numeric(value)) {
+      return(paste(name, "=", value, sep = ""))
+    } else {
+      return(paste(name, "=", sprintf('"%s"', value), sep = ""))
     }
+  }
 
-    # Apply the function to each element and concatenate them
-    formatted_list <- sapply(names(trisk_run_params), function(name) {
-      format_element(name, trisk_run_params[[name]])
-    }, USE.NAMES = FALSE)
+  # Apply the function to each element and concatenate them
+  formatted_list <- sapply(names(trisk_run_params), function(name) {
+    format_element(name, trisk_run_params[[name]])
+  }, USE.NAMES = FALSE)
 
-    # Print the formatted string
-    cat(paste(formatted_list, collapse = ", "), "\n")
-
+  # Print the formatted string
+  cat(paste(formatted_list, collapse = ", "), "\n")
 }

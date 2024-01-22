@@ -52,11 +52,10 @@ load_backend_trisk_run_metadata <- function(backend_trisk_run_folder) {
       dividend_rate = numeric(),
       growth_rate = numeric(),
       shock_year = numeric(),
-      div_netprofit_prop_coef=numeric(),
-      financial_stimulus=numeric(),
-      carbon_price_model=character(),
-      market_passthrough=numeric()
-
+      div_netprofit_prop_coef = numeric(),
+      financial_stimulus = numeric(),
+      carbon_price_model = character(),
+      market_passthrough = numeric()
     )
   }
   return(backend_trisk_run_metadata)
