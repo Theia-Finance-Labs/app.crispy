@@ -17,14 +17,6 @@ maturity_month_term_bridge_fp <- file.path("app", "data", "maturity_month_term_b
 # ======================================================
 
 
-max_portfolio_granularity <-
-  c(
-    # "portfolio_id",
-    # "asset_type",
-    "ald_sector"
-    # "ald_business_unit",
-    # "term"
-  )
 max_crispy_granularity <- c(
   "run_id",
   "scenario_geography",
@@ -92,13 +84,13 @@ available_financial_stimulus <- c(1, 2, 3, 4, 5)
 
 available_dividend_rate <- c(0.8, 0.9, 1)
 
-available_baseline_scenario <- c(
-  "IPR2021_baseline",
-  "Oxford2021_base",
+hide_baseline_scenario <- c(
+  # "IPR2021_baseline",
+  # "Oxford2021_base",
   # "NGFS2023_MESSAGE_CP",
   # "NGFS2023_GCAM_CP",
   # "NGFS2023_REMIND_CP",
-  "WEO2021_STEPS"
+  # "WEO2021_STEPS",
   # "NGFS2023_GCAM_NDC",
   # "NGFS2023_REMIND_NDC",
   # "NGFS2023_MESSAGE_NDC",
@@ -106,7 +98,7 @@ available_baseline_scenario <- c(
   # "NGFS2023_REMIND_FW",
   # "NGFS2023_GCAM_FW"
 )
-available_shock_scenario <- c(
+hide_shock_scenario <- c(
   # "NGFS2023_REMIND_NZ2050",
   # "NGFS2023_MESSAGE_NZ2050",
   # "NGFS2023_GCAM_NZ2050",
@@ -122,21 +114,21 @@ available_shock_scenario <- c(
   # "NGFS2023_REMIND_B2DS",
   # "NGFS2023_MESSAGE_B2DS",
   # "NGFS2023_GCAM_B2DS",
-  "Oxford2021_fast",
-  "IPR2021_RPS",
-  "IPR2021_FPS",
-  "WEO2021_SDS",
-  "WEO2021_NZE_2050"
+  # "Oxford2021_fast",
+  # "IPR2021_RPS",
+  # "IPR2021_FPS",
+  # "WEO2021_SDS",
+  # "WEO2021_NZE_2050"
 )
 
 
-available_scenario_geography <- c(
-  "Global",
-  "EmergingMarketAndDevelopingEconomies",
-  "OecdAndEu",
-  "UnitedStates",
-  "SoutheastAsia",
-  "China",
-  "India",
-  "MiddleEast"
+hide_scenario_geography <- c(
+  # "Global",
+  # "EmergingMarketAndDevelopingEconomies",
+  # "OecdAndEu",
+  # "UnitedStates",
+  # "SoutheastAsia",
+  # "China",
+  # "India",
+  # "MiddleEast"
 )

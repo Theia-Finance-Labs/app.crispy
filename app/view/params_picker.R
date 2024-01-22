@@ -1,7 +1,7 @@
 box::use(
   shiny[
     moduleServer, NS, observe, div, tags, reactiveVal, reactiveValues, eventReactive, p, tagList, observeEvent, img,
-    HTML
+    HTML, conditionalPanel
   ],
   shiny.semantic[slider_input, dropdown_input, segment, update_dropdown_input, update_slider],
   shinyjs[useShinyjs]
@@ -15,14 +15,15 @@ box::use(
     available_risk_free_rate,
     available_growth_rate,
     available_shock_year,
-    available_baseline_scenario,
-    available_shock_scenario,
-    available_scenario_geography,
     available_financial_stimulus,
     available_carbon_price_model,
     available_market_passthrough,
     available_dividend_rate,
-    max_crispy_granularity
+    hide_baseline_scenario,
+    hide_shock_scenario,
+    hide_scenario_geography,
+    max_crispy_granularity,
+    use_ald_sector
   ],
   app / logic / ui_renaming[RENAMING_SCENARIOS, REV_RENAMING_SCENARIOS],
   app / logic / trisk_mgmt[run_trisk_with_params, append_st_results_to_backend_data, check_if_run_exists, get_run_data_from_run_id]
@@ -51,15 +52,15 @@ ui <- function(id) {
       segment(
         p("Baseline Scenario"),
         dropdown_input(ns("baseline_scenario"),
-          choices = available_baseline_scenario
+          choices = NULL
         ),
         p("Target Scenario"),
         dropdown_input(ns("shock_scenario"),
-          choices = available_shock_scenario
+          choices = NULL
         ),
         p("Scenario Geography"),
         dropdown_input(ns("scenario_geography"),
-          choices = available_scenario_geography
+          choices = NULL
         )
       )
     ),
@@ -108,12 +109,16 @@ ui <- function(id) {
           choices = available_carbon_price_model,
           value = "no_carbon_tax"
         ),
-        p("Market Passthrough"),
-        slider_input(
-          ns("market_passthrough"),
-          custom_ticks = available_market_passthrough,
-          value = NULL
-        ),
+        conditionalPanel(
+          condition = "input.carbon_price_model != 'no_carbon_tax'",
+          p("Market Passthrough"),
+          slider_input(
+            ns("market_passthrough"),
+            custom_ticks = available_market_passthrough,
+            value = NULL
+          ),
+        ns=ns
+        )
       )
     ),
     img(
@@ -138,10 +143,10 @@ ui <- function(id) {
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
     update_dropdowns(
-      input, session,
-      available_baseline_scenario,
-      available_shock_scenario,
-      available_scenario_geography
+      input, session, trisk_input_path,
+      hide_baseline_scenario,
+      hide_shock_scenario,
+      hide_scenario_geography
     )
 
     update_discount_and_growth(input, session)
@@ -166,6 +171,9 @@ server <- function(id) {
 
     observeEvent(trisk_run_params_r(), {
       trisk_run_params <- shiny::reactiveValuesToList(trisk_run_params_r())
+      if (trisk_run_params$carbon_price_model == "no_carbon_tax"){
+        trisk_run_params$market_passthrough <- 0
+      }
 
       if (!any(sapply(trisk_run_params, function(x) {
         is.na(x) | (nchar(x) == 0)
@@ -211,21 +219,21 @@ server <- function(id) {
 
 
 update_dropdowns <- function(input, session,
-                             available_baseline_scenario,
-                             available_shock_scenario,
-                             available_scenario_geography) {
+                             trisk_input_path,
+                             hide_baseline_scenario,
+                             hide_shock_scenario,
+                             hide_scenario_geography) {
   possible_combinations <- r2dii.climate.stress.test::get_scenario_geography_x_ald_sector(trisk_input_path)
   # Observe changes in possible_combinations and update baseline_scenario dropdown
   observe({
     possible_baselines <- possible_combinations |>
       dplyr::distinct(.data$baseline_scenario) |>
       dplyr::filter(!is.na(.data$baseline_scenario)) |>
+      dplyr::filter(!.data$baseline_scenario %in% hide_baseline_scenario) |>
       dplyr::pull()
 
-    # Filter the data based on selected baseline scenario
-    new_choices <- possible_baselines
-    new_choices <- new_choices[new_choices %in% available_baseline_scenario]
-    new_choices <- RENAMING_SCENARIOS[new_choices]
+    # rename the scenarios to front end appropriate name
+    new_choices <- RENAMING_SCENARIOS[possible_baselines]
 
     # Update shock_scenario dropdown with unique values from the filtered data
     update_dropdown_input(session, "baseline_scenario", choices = new_choices)
@@ -239,12 +247,12 @@ update_dropdowns <- function(input, session,
       dplyr::filter(.data$baseline_scenario == selected_baseline) |>
       dplyr::distinct(.data$shock_scenario) |>
       dplyr::filter(!is.na(.data$shock_scenario)) |>
+      dplyr::filter(!.data$shock_scenario %in% hide_shock_scenario) |>
       dplyr::pull()
 
-
-    # Filter the data based on selected baseline scenario
-    new_choices <- possible_shocks
-    new_choices <- RENAMING_SCENARIOS[new_choices]
+browser()
+    # rename the scenarios to front end appropriate name
+    new_choices <- RENAMING_SCENARIOS[possible_shocks]
 
     # Update shock_scenario dropdown with unique values from the filtered data
     update_dropdown_input(session, "shock_scenario", choices = new_choices)
@@ -255,20 +263,20 @@ update_dropdowns <- function(input, session,
     selected_baseline <- REV_RENAMING_SCENARIOS[input$baseline_scenario]
     selected_shock <- REV_RENAMING_SCENARIOS[input$shock_scenario]
 
-
+    # Filter the data based on selected baseline and shock scenarios
     possible_geographies <- possible_combinations |>
       dplyr::filter(
         .data$baseline_scenario == selected_baseline,
         .data$shock_scenario == selected_shock
       ) |>
       dplyr::group_by(.data$shock_scenario, .data$baseline_scenario, .data$scenario_geography) |>
-      dplyr::filter(all(c("Power", "Coal", "Oil&Gas") %in% .data$ald_sector)) |>
+      dplyr::filter(all(use_ald_sector %in% .data$ald_sector)) |> # Only use geographies present in all use_ald_sector
+      dplyr::ungroup() |>
       dplyr::distinct(.data$scenario_geography) |>
       dplyr::filter(!is.na(.data$scenario_geography)) |>
+      dplyr::filter(!.data$scenario_geography %in% hide_scenario_geography) |>
       dplyr::pull()
 
-
-    # Filter the data based on selected baseline and shock scenarios
     new_choices <- possible_geographies
 
     # Update scenario_geography dropdown with unique values from the filtered data
@@ -296,7 +304,6 @@ update_discount_and_growth <- function(input, session) {
 format_error_message <- function(trisk_run_params) {
   cat("Failed with parameters : ")
 
-
   # Function to format each list element
   format_element <- function(name, value) {
     if (is.numeric(value)) {
@@ -314,3 +321,4 @@ format_error_message <- function(trisk_run_params) {
   # Print the formatted string
   cat(paste(formatted_list, collapse = ", "), "\n")
 }
+

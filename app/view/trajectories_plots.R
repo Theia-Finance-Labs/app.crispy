@@ -4,8 +4,7 @@ box::use(
 )
 
 box::use(
-  app / logic / constant[use_ald_sector],
-  app / logic / scenario_time_plot[pipeline_scenario_time_plot]
+  app / logic / plots / scenario_time_plot[pipeline_scenario_time_plot]
 )
 
 
