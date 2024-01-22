@@ -117,7 +117,7 @@ ui <- function(id) {
             custom_ticks = available_market_passthrough,
             value = NULL
           ),
-        ns=ns
+          ns = ns
         )
       )
     ),
@@ -171,7 +171,7 @@ server <- function(id) {
 
     observeEvent(trisk_run_params_r(), {
       trisk_run_params <- shiny::reactiveValuesToList(trisk_run_params_r())
-      if (trisk_run_params$carbon_price_model == "no_carbon_tax"){
+      if (trisk_run_params$carbon_price_model == "no_carbon_tax") {
         trisk_run_params$market_passthrough <- 0
       }
 
@@ -250,7 +250,7 @@ update_dropdowns <- function(input, session,
       dplyr::filter(!.data$shock_scenario %in% hide_shock_scenario) |>
       dplyr::pull()
 
-browser()
+
     # rename the scenarios to front end appropriate name
     new_choices <- RENAMING_SCENARIOS[possible_shocks]
 
@@ -297,7 +297,6 @@ update_discount_and_growth <- function(input, session) {
       update_slider(session, "growth_rate", value = as.character(closest_smaller_value))
     }
   })
-
 }
 
 
@@ -321,4 +320,3 @@ format_error_message <- function(trisk_run_params) {
   # Print the formatted string
   cat(paste(formatted_list, collapse = ", "), "\n")
 }
-

@@ -7,6 +7,7 @@ box::use(
 )
 
 test_that("main server works without error", {
+  setwd(file.path("..", ".."))
   expect_error(testServer(server, {
 
   }), NA)
