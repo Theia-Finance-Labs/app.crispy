@@ -12,8 +12,18 @@ box::use(
     load_backend_trajectories_data,
     load_backend_crispy_data
   ],
-  app / logic / constant[backend_trisk_run_folder]
+  app / logic / constant[
+    backend_trisk_run_folder,
+    max_crispy_granularity,
+    portfolio_crispy_merge_cols,
+    trisk_input_path,
+    available_vars,
+    hide_vars,
+    use_ald_sector
+  ]
 )
+
+
 
 #######
 ####### UI
@@ -27,7 +37,7 @@ ui <- function(id) {
     title = "CRISPY",
     dashboardHeader(title = "Crispy app"),
     dashboardSidebar(
-      params_picker$ui(ns("params_picker")),
+      params_picker$ui(ns("params_picker"), available_vars),
       size = "very wide"
     ),
     dashboardBody(
@@ -49,7 +59,15 @@ ui <- function(id) {
 #' @export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
-    run_id_r <- params_picker$server("params_picker")
+    run_id_r <- params_picker$server(
+      "params_picker",
+      backend_trisk_run_folder,
+      trisk_input_path,
+      available_vars,
+      hide_vars,
+      max_crispy_granularity,
+      use_ald_sector
+    )
 
     crispy_data_r <- shiny::reactive({
       if (!is.null(run_id_r())) {
@@ -63,7 +81,10 @@ server <- function(id) {
       }
     })
 
-    analysis_data_r <- portfolio_creator$server("portfolio_creator", crispy_data_r)
+    analysis_data_r <- portfolio_creator$server(
+      "portfolio_creator", crispy_data_r, max_crispy_granularity,
+      portfolio_crispy_merge_cols
+    )
 
     equity_change_plots$server("equity_change_plots", analysis_data_r)
     trajectories_plots$server("trajectories_plots", trajectories_data_r)

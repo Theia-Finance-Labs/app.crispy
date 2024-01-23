@@ -5,7 +5,6 @@ box::use(
 )
 
 box::use(
-  app / logic / constant[max_crispy_granularity, portfolio_crispy_merge_cols],
   app / logic / ui_renaming[rename_tibble_columns]
 )
 
@@ -24,7 +23,9 @@ ui <- function(id) {
 ####### Server
 
 
-server <- function(id, crispy_data_r) {
+server <- function(
+    id, crispy_data_r, max_crispy_granularity,
+    portfolio_crispy_merge_cols) {
   moduleServer(id, function(input, output, session) {
     # Initial portfolio data structure
     portfolio_data_r <- reactiveVal({

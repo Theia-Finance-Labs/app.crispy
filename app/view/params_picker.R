@@ -8,23 +8,6 @@ box::use(
 )
 
 box::use(
-  app / logic / constant[
-    backend_trisk_run_folder,
-    trisk_input_path,
-    available_discount_rate,
-    available_risk_free_rate,
-    available_growth_rate,
-    available_shock_year,
-    available_financial_stimulus,
-    available_carbon_price_model,
-    available_market_passthrough,
-    available_dividend_rate,
-    hide_baseline_scenario,
-    hide_shock_scenario,
-    hide_scenario_geography,
-    max_crispy_granularity,
-    use_ald_sector
-  ],
   app / logic / ui_renaming[RENAMING_SCENARIOS, REV_RENAMING_SCENARIOS],
   app / logic / trisk_mgmt[run_trisk_with_params, append_st_results_to_backend_data, check_if_run_exists, get_run_data_from_run_id]
 )
@@ -32,7 +15,7 @@ box::use(
 
 ####### UI
 
-ui <- function(id) {
+ui <- function(id, available_vars) {
   ns <- NS(id)
   div(
     useShinyjs(), # Initialize shinyjs
@@ -71,42 +54,42 @@ ui <- function(id) {
         p("Shock Year"),
         slider_input(
           ns("shock_year"),
-          custom_ticks = available_shock_year,
+          custom_ticks = available_vars$available_shock_year,
           value = NULL
         ),
         p("Risk-Free Rate"),
         slider_input(
           ns("risk_free_rate"),
-          custom_ticks = available_risk_free_rate,
+          custom_ticks = available_vars$available_risk_free_rate,
           value = NULL
         ),
         p("Growth Rate"),
         slider_input(
           ns("growth_rate"),
-          custom_ticks = available_growth_rate,
+          custom_ticks = available_vars$available_growth_rate,
           value = NULL
         ),
         p("Discount Rate"),
         slider_input(
           ns("discount_rate"),
-          custom_ticks = available_discount_rate,
+          custom_ticks = available_vars$available_discount_rate,
           value = NULL
         ),
         p("Dividend Rate"),
         slider_input(
           ns("dividend_rate"),
-          custom_ticks = available_dividend_rate,
+          custom_ticks = available_vars$available_dividend_rate,
           value = NULL
         ),
         p("Financial Stimulus"),
         slider_input(
           ns("financial_stimulus"),
-          custom_ticks = available_financial_stimulus,
+          custom_ticks = available_vars$available_financial_stimulus,
           value = NULL
         ),
         p("Carbon Price Model"),
         dropdown_input(ns("carbon_price_model"),
-          choices = available_carbon_price_model,
+          choices = available_vars$available_carbon_price_model,
           value = "no_carbon_tax"
         ),
         conditionalPanel(
@@ -114,7 +97,7 @@ ui <- function(id) {
           p("Market Passthrough"),
           slider_input(
             ns("market_passthrough"),
-            custom_ticks = available_market_passthrough,
+            custom_ticks = available_vars$available_market_passthrough,
             value = NULL
           ),
           ns = ns
@@ -140,16 +123,18 @@ ui <- function(id) {
 
 
 
-server <- function(id) {
+server <- function(id, backend_trisk_run_folder,
+                   trisk_input_path,
+                   available_vars,
+                   hide_vars,
+                   max_crispy_granularity,
+                   use_ald_sector) {
   moduleServer(id, function(input, output, session) {
     update_dropdowns(
-      input, session, trisk_input_path,
-      hide_baseline_scenario,
-      hide_shock_scenario,
-      hide_scenario_geography
+      input, session, trisk_input_path, hide_vars, use_ald_sector
     )
 
-    update_discount_and_growth(input, session)
+    sync_discount_and_growth(input, session)
 
     run_id_r <- reactiveVal(NULL)
 
@@ -220,16 +205,15 @@ server <- function(id) {
 
 update_dropdowns <- function(input, session,
                              trisk_input_path,
-                             hide_baseline_scenario,
-                             hide_shock_scenario,
-                             hide_scenario_geography) {
+                             hide_vars,
+                             use_ald_sector) {
   possible_combinations <- r2dii.climate.stress.test::get_scenario_geography_x_ald_sector(trisk_input_path)
   # Observe changes in possible_combinations and update baseline_scenario dropdown
   observe({
     possible_baselines <- possible_combinations |>
       dplyr::distinct(.data$baseline_scenario) |>
       dplyr::filter(!is.na(.data$baseline_scenario)) |>
-      dplyr::filter(!.data$baseline_scenario %in% hide_baseline_scenario) |>
+      dplyr::filter(!.data$baseline_scenario %in% hide_vars$hide_baseline_scenario) |>
       dplyr::pull()
 
     # rename the scenarios to front end appropriate name
@@ -247,7 +231,7 @@ update_dropdowns <- function(input, session,
       dplyr::filter(.data$baseline_scenario == selected_baseline) |>
       dplyr::distinct(.data$shock_scenario) |>
       dplyr::filter(!is.na(.data$shock_scenario)) |>
-      dplyr::filter(!.data$shock_scenario %in% hide_shock_scenario) |>
+      dplyr::filter(!.data$shock_scenario %in% hide_vars$hide_shock_scenario) |>
       dplyr::pull()
 
 
@@ -274,7 +258,7 @@ update_dropdowns <- function(input, session,
       dplyr::ungroup() |>
       dplyr::distinct(.data$scenario_geography) |>
       dplyr::filter(!is.na(.data$scenario_geography)) |>
-      dplyr::filter(!.data$scenario_geography %in% hide_scenario_geography) |>
+      dplyr::filter(!.data$scenario_geography %in% hide_vars$hide_scenario_geography) |>
       dplyr::pull()
 
     new_choices <- possible_geographies
@@ -284,13 +268,13 @@ update_dropdowns <- function(input, session,
   })
 }
 
-update_discount_and_growth <- function(input, session) {
+sync_discount_and_growth <- function(input, session) {
   # When growth rate changes, check if growth rate is higher and adjust if necessary
   observeEvent(c(input$growth_rate, input$discount_rate), {
     if (input$growth_rate >= input$discount_rate) {
       # Find the closest smaller value in 'available_growth_rate'
 
-      smaller_values <- available_growth_rate[available_growth_rate < input$discount_rate]
+      smaller_values <- available_growth_rate[available_vars$available_growth_rate < input$discount_rate]
       closest_smaller_value <- sort(smaller_values)[length(smaller_values)]
 
       # Update growth_rate slider
