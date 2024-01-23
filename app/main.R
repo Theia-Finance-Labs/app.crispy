@@ -13,10 +13,8 @@ box::use(
     load_backend_crispy_data
   ],
   app / logic / constant[
-    backend_trisk_run_folder,
     max_crispy_granularity,
     portfolio_crispy_merge_cols,
-    trisk_input_path,
     available_vars,
     hide_vars,
     use_ald_sector
@@ -59,6 +57,9 @@ ui <- function(id) {
 #' @export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
+    trisk_input_path <- Sys.getenv("TRISK_INPUT_PATH")
+    backend_trisk_run_folder <- Sys.getenv("BACKEND_TRISK_RUN_FOLDER")
+
     run_id_r <- params_picker$server(
       "params_picker",
       backend_trisk_run_folder,

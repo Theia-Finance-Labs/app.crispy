@@ -1,22 +1,5 @@
 # export constant values from here
 
-
-# ======================================================
-# ======================================================
-# TODO move to .RProfile env var
-
-# INPUT DATA
-trisk_input_path <- fs::path("app", "data", "st_inputs")
-trisk_output_path <- fs::path("app", "data", "st_outputs")
-backend_trisk_run_folder <- fs::path("app", "data", "backend_db")
-
-# ANALYSIS DATA CREATION
-trisk_start_year <- 2022
-maturity_month_term_bridge_fp <- file.path("app", "data", "maturity_month_term_bridge.csv")
-# ======================================================
-# ======================================================
-
-
 max_crispy_granularity <- c(
   "run_id",
   "scenario_geography",
