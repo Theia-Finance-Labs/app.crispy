@@ -33,7 +33,7 @@ ui <- function(id) {
   ns <- NS(id)
   dashboardPage(
     title = "CRISPY",
-    dashboardHeader(title = "Crispy app"),
+    dashboardHeader(title = "Crispy Equities"),
     dashboardSidebar(
       params_picker$ui(ns("params_picker"), available_vars),
       size = "very wide"

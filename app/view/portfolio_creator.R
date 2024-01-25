@@ -34,7 +34,9 @@ server <- function(
     portfolio_data_r <- reactiveVal({
       tibble::tibble(
         ald_sector = character(),
-        exposure_value_usd = numeric()
+        exposure_value_usd = numeric(),
+        loss_given_default = numeric() ,# is always NA
+        pd_portfolio = numeric() # is always NA
       )
     })
 

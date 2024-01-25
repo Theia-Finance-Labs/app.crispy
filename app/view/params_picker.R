@@ -81,12 +81,6 @@ ui <- function(id, available_vars) {
           custom_ticks = available_vars$available_dividend_rate,
           value = NULL
         ),
-        p("Financial Stimulus"),
-        slider_input(
-          ns("financial_stimulus"),
-          custom_ticks = available_vars$available_financial_stimulus,
-          value = NULL
-        ),
         p("Carbon Price Model"),
         dropdown_input(ns("carbon_price_model"),
           choices = available_vars$available_carbon_price_model,
@@ -148,7 +142,6 @@ server <- function(id, backend_trisk_run_folder,
         risk_free_rate = as.numeric(input$risk_free_rate),
         growth_rate = as.numeric(input$growth_rate),
         div_netprofit_prop_coef = as.numeric(input$dividend_rate),
-        financial_stimulus = as.numeric(input$financial_stimulus),
         carbon_price_model = input$carbon_price_model,
         market_passthrough = as.numeric(input$market_passthrough)
       )

@@ -59,7 +59,6 @@ available_vars <- list(
   ),
   available_carbon_price_model = c("no_carbon_tax", "NZ2050", "NDC", "DN0", "B2DS"),
   available_market_passthrough = c(0, 0.2, 0.4, 0.6, 0.8, 1),
-  available_financial_stimulus = c(1, 2, 3, 4, 5),
   available_dividend_rate = c(0.8, 0.9, 1)
 )
 
