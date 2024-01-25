@@ -1528,10 +1528,14 @@
     "stress.test.plot.report": {
       "Package": "stress.test.plot.report",
       "Version": "0.0.0.9000",
-      "Source": "Local",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "2DegreesInvesting",
+      "RemoteRepo": "stress.test.plot.report",
+      "RemoteRef": "master",
+      "RemoteSha": "e976b3e9f90ed645eb14464f67629d91fe960c8b",
       "Remotes": "RMI-PACTA/r2dii.colours",
-      "RemoteType": "local",
-      "RemoteUrl": "/Users/bertrandgallice/2° Investing Dropbox/Bertrand Gallice/stress.test.plot.report",
       "Requirements": [
         "dplyr",
         "forcats",
@@ -1544,7 +1548,7 @@
         "tidyr",
         "tidytext"
       ],
-      "Hash": "a23cdf79feec1e9a342e1c43c73d0a46"
+      "Hash": "7b546e762fd62e437470d38892865425"
     },
     "stringi": {
       "Package": "stringi",

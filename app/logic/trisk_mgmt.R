@@ -36,7 +36,7 @@ append_st_results_to_backend_data <- function(
 
     if (fname == "crispy_output") {
       new_data <- new_data |>
-        stress.test.plot.report::aggregate_crispy_facts(group_cols = max_crispy_granularity)
+        stress.test.plot.report:::aggregate_crispy_facts(group_cols = max_crispy_granularity)
     } else if (fname == "company_trajectories") {
       new_data <- new_data |>
         dplyr::group_by(

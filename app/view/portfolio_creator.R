@@ -51,7 +51,7 @@ server <- function(
           portfolio_data_r(portfolio_data)
         }
 
-        stress.test.plot.report::main_load_analysis_data(
+        stress.test.plot.report:::main_load_analysis_data(
           portfolio_data = portfolio_data_r(),
           multi_crispy_data = crispy_data_r(),
           portfolio_crispy_merge_cols = portfolio_crispy_merge_cols
