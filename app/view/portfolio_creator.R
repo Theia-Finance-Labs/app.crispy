@@ -27,6 +27,9 @@ server <- function(
     id, crispy_data_r, max_crispy_granularity,
     portfolio_crispy_merge_cols) {
   moduleServer(id, function(input, output, session) {
+    
+    # PORTFOLIO DATA =========================
+
     # Initial portfolio data structure
     portfolio_data_r <- reactiveVal({
       tibble::tibble(
@@ -37,22 +40,23 @@ server <- function(
       )
     })
 
+    # PREPARE ANALYSIS DATA ===================================
+
     analysis_data_r <- eventReactive(c(
       portfolio_data_r(),
       crispy_data_r()
     ), ignoreInit = TRUE, {
       if (!is.null(portfolio_data_r()) & !is.null(crispy_data_r())) {
-        if (nrow(portfolio_data_r()) == 0) {
-          # initialise the porfolio sector column
-          portfolio_data <- portfolio_data_r()
-          portfolio_data <- portfolio_data |>
-            dplyr::right_join(crispy_data_r() |>
-              dplyr::distinct(.data$ald_sector))
-          portfolio_data_r(portfolio_data)
-        }
+        
+        # initialise the porfolio sector column
+        portfolio_data <- portfolio_data_r()
+        portfolio_data <- portfolio_data |>
+          dplyr::right_join(crispy_data_r() |>
+            dplyr::distinct(.data$ald_sector))
+        portfolio_data_r(portfolio_data)
 
         stress.test.plot.report:::main_load_analysis_data(
-          portfolio_data = portfolio_data_r(),
+          portfolio_data = portfolio_data,
           multi_crispy_data = crispy_data_r(),
           portfolio_crispy_merge_cols = portfolio_crispy_merge_cols
         ) |>
@@ -62,6 +66,9 @@ server <- function(
           )
       }
     })
+
+
+    # WRANGLE ANALYSIS DATA ===================================
 
     observeEvent(analysis_data_r(), ignoreInit = TRUE, {
       table_to_display <- analysis_data_r() |>

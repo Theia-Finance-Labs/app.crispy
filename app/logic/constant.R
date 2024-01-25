@@ -109,6 +109,7 @@ hide_vars <- list(
     # "SoutheastAsia",
     # "China",
     # "India",
-    # "MiddleEast"
+    # "MiddleEast",
+    "Non-OECD"
   )
 )
