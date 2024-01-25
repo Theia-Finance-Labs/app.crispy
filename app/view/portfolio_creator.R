@@ -78,6 +78,9 @@ server <- function(
         )
       table_to_display <- rename_tibble_columns(table_to_display, class = "analysis_columns")
 
+
+      # TABLE MGMT ===================================
+
       # Render the editable table
       output$portfolio_table <- renderDT(
         {
