@@ -128,7 +128,7 @@ server <- function(id, backend_trisk_run_folder,
       input, session, trisk_input_path, hide_vars, use_ald_sector
     )
 
-    sync_discount_and_growth(input, session)
+    sync_discount_and_growth(input, session, available_vars)
 
     run_id_r <- reactiveVal(NULL)
 
@@ -261,13 +261,13 @@ update_dropdowns <- function(input, session,
   })
 }
 
-sync_discount_and_growth <- function(input, session) {
+sync_discount_and_growth <- function(input, session, available_vars) {
   # When growth rate changes, check if growth rate is higher and adjust if necessary
   observeEvent(c(input$growth_rate, input$discount_rate), {
     if (input$growth_rate >= input$discount_rate) {
       # Find the closest smaller value in 'available_growth_rate'
-
-      smaller_values <- available_growth_rate[available_vars$available_growth_rate < input$discount_rate]
+      
+      smaller_values <- available_vars$available_growth_rate[available_vars$available_growth_rate < input$discount_rate]
       closest_smaller_value <- sort(smaller_values)[length(smaller_values)]
 
       # Update growth_rate slider
