@@ -266,7 +266,7 @@ sync_discount_and_growth <- function(input, session, available_vars) {
   observeEvent(c(input$growth_rate, input$discount_rate), {
     if (input$growth_rate >= input$discount_rate) {
       # Find the closest smaller value in 'available_growth_rate'
-      
+
       smaller_values <- available_vars$available_growth_rate[available_vars$available_growth_rate < input$discount_rate]
       closest_smaller_value <- sort(smaller_values)[length(smaller_values)]
 

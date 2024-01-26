@@ -27,7 +27,6 @@ server <- function(
     id, crispy_data_r, max_crispy_granularity,
     portfolio_crispy_merge_cols) {
   moduleServer(id, function(input, output, session) {
-    
     # PORTFOLIO DATA =========================
 
     # Initial portfolio data structure
@@ -35,7 +34,7 @@ server <- function(
       tibble::tibble(
         ald_sector = character(),
         exposure_value_usd = numeric(),
-        loss_given_default = numeric() ,# is always NA
+        loss_given_default = numeric(), # is always NA
         pd_portfolio = numeric() # is always NA
       )
     })
@@ -47,7 +46,6 @@ server <- function(
       crispy_data_r()
     ), ignoreInit = TRUE, {
       if (!is.null(portfolio_data_r()) & !is.null(crispy_data_r())) {
-        
         # initialise the porfolio sector column
         portfolio_data <- portfolio_data_r()
         portfolio_data <- portfolio_data |>
