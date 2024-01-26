@@ -5,7 +5,7 @@ box::use(
 )
 
 box::use(
-  app / logic / ui_renaming[rename_tibble_columns]
+  app / logic / renamings[rename_tibble_columns]
 )
 
 
