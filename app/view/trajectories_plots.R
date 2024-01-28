@@ -26,7 +26,6 @@ ui <- function(id) {
 
 server <- function(id, trajectories_data_r, max_trisk_granularity) {
   moduleServer(id, function(input, output, session) {
-
     observeEvent(trajectories_data_r(), ignoreInit = TRUE, {
       granul_levels <- dplyr::intersect(colnames(trajectories_data_r()), names(max_trisk_granularity))
       granul_top_level <- names(max_trisk_granularity[granul_levels])[which.max(unlist(max_trisk_granularity[granul_levels]))]
@@ -45,7 +44,6 @@ server <- function(id, trajectories_data_r, max_trisk_granularity) {
         scenario_time_plot_baseline +
           ggplot2::labs(title = "Production trajectories for the Baseline scenario")
       })
-
     })
     observeEvent(trajectories_data_r(), ignoreInit = TRUE, {
       granul_levels <- dplyr::intersect(colnames(trajectories_data_r()), names(max_trisk_granularity))

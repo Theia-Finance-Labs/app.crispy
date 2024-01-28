@@ -33,7 +33,6 @@ RENAMING_SCENARIOS <- c(
   "Oxford2021_base" = "OXFORD BASELINE",
   "Oxford2021_fast" = "OXFORD B2DS"
 )
-REV_RENAMING_SCENARIOS <- stats::setNames(names(RENAMING_SCENARIOS), RENAMING_SCENARIOS)
 
 RENAMING_ANALYSIS_COLUMNS <- c(
   "ald_sector" = "Sector",
@@ -66,25 +65,27 @@ RENAMING_ANALYSIS_COLUMNS <- c(
   "pd_difference" = "Difference in PD"
 )
 
-REV_RENAMING_ANALYSIS_COLUMNS <- stats::setNames(names(RENAMING_ANALYSIS_COLUMNS), RENAMING_ANALYSIS_COLUMNS)
 
-
-rename_tibble_columns <- function(table_to_rename, class, rev=FALSE) {
-    names(table_to_rename) <- rename_string_vector(names(table_to_rename), class=class, rev=rev)
-    return(table_to_rename)
-
+rename_tibble_columns <- function(table_to_rename, words_class, dev_to_ux = TRUE) {
+  names(table_to_rename) <- rename_string_vector(colnames(table_to_rename), words_class = words_class, dev_to_ux = dev_to_ux)
+  return(table_to_rename)
 }
 
 
-rename_string_vector <- function(string_vector, class, rev=FALSE) {
-  if (class == "analysis_columns") {
-    
-    if (!rev){
-      string_vector <- unname(RENAMING_ANALYSIS_COLUMNS[string_vector])
-    } else{
-      string_vector <- unname(REV_RENAMING_ANALYSIS_COLUMNS[string_vector])
+rename_string_vector <- function(string_vector, words_class, dev_to_ux = TRUE) {
+  renaming_classes <- list(
+    "scenarios" = RENAMING_SCENARIOS,
+    "analysis_columns" = RENAMING_ANALYSIS_COLUMNS
+  )
+
+  if (words_class %in% names(renaming_classes)) {
+    RENAMING <- renaming_classes[[words_class]]
+    if (dev_to_ux) {
+      string_vector <- unname(RENAMING[string_vector])
+    } else {
+      REV_RENAMING <- stats::setNames(names(RENAMING), unname(RENAMING))
+      string_vector <- unname(REV_RENAMING[string_vector])
     }
-    
   } else {
     stop("Class not handled for renaming")
   }

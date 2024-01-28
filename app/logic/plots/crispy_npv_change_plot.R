@@ -54,7 +54,7 @@ draw_crispy_npv_change_plot <- function(
     ) +
     # scale_x_discrete(position = "bottom", labels = r2dii.plot::to_title) +
     scale_y_continuous(labels = scales::percent) +
-    labs(y = "Crispy npv change", x = "")+
+    labs(y = "Crispy npv change", x = "") +
     r2dii.plot::theme_2dii() +
     theme(
       legend.position = "none",

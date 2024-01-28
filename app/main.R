@@ -3,7 +3,7 @@
 # Load required packages
 box::use(
   shiny[moduleServer, NS, renderUI, tags, uiOutput, observe, observeEvent, div, a, reactiveVal, p, eventReactive],
-  shiny.semantic[semanticPage, segment, slider_input],
+  shiny.semantic[semanticPage, segment, slider_input, card],
   semantic.dashboard[dashboardPage, dashboardHeader, dashboardSidebar, dashboardBody, icon, box],
 )
 
@@ -37,17 +37,27 @@ ui <- function(id) {
     dashboardHeader(title = "Crispy Equities"),
     dashboardSidebar(
       div(
-        segment(
-          p("Granularity"),
+        box(
+          title = "Granularity",
           slider_input(
             ns("granularity_switch"),
-            custom_ticks = rename_string_vector(names(max_trisk_granularity), class="analysis_columns"),
-            value = rename_string_vector(names(which(max_trisk_granularity == 1)), class="analysis_columns")
+            custom_ticks = rename_string_vector(names(max_trisk_granularity), words_class = "analysis_columns"),
+            value = rename_string_vector(names(which(max_trisk_granularity == 1)), words_class = "analysis_columns")
           )
         ),
-        trisk_generator$ui(ns("trisk_generator"), available_vars)
+        trisk_generator$ui(ns("trisk_generator"), available_vars),
+        shiny::img(
+          src = "static/logo_1in1000.png",
+          height = "20%", width = "auto",
+          style = "
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 10px;
+      margin-bottom: 10px;"
+        )
       ),
-      size = "very wide"
+      size = "wide"
     ),
     dashboardBody(
       # First row with the left (1/3 width) the right (2/3 width)
@@ -64,6 +74,19 @@ ui <- function(id) {
 #' @export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
+    # get granularity columns
+    trisk_granularity_r <- eventReactive(input$granularity_switch, ignoreNULL = TRUE, {
+      granularity_picked <- input$granularity_switch |>
+        rename_string_vector(words_class = "analysis_columns", dev_to_ux = FALSE)
+
+      granularity_level <- max_trisk_granularity[granularity_picked]
+      # Filter names based on values <= given_integer
+      granularity_columns <- names(max_trisk_granularity)[sapply(max_trisk_granularity, function(value) value <= granularity_level)]
+
+      return(granularity_columns)
+    })
+
+
     # This section of code generates TRISK outputs and consumes them for analysis and visualization.
 
     # Generate TRISK outputs
@@ -77,36 +100,22 @@ server <- function(id) {
       use_ald_sector = use_ald_sector
     )
 
-    trisk_granularity_r <- eventReactive(input$granularity_switch, {
-      
-      granularity_picked <- input$granularity_switch |>
-        rename_string_vector(class="analysis_columns", rev=TRUE)
-
-      granularity_level <- max_trisk_granularity[granularity_picked]
-      # Filter names based on values <= given_integer
-      granularity_columns <- names(max_trisk_granularity)[sapply(max_trisk_granularity, function(value) value <= granularity_level)]
-
-      return(granularity_columns)
-    })
-
-
     # Connect to the data sources, filter run perimter, and process to the appropriate granularity
     crispy_data_r <- reactiveVal()
     trajectories_data_r <- reactiveVal()
-    observe({
-      if (!is.null(run_id_r())) {
-        crispy_data_r(
-          load_backend_crispy_data(backend_trisk_run_folder) |>
-            dplyr::filter(.data$run_id == run_id_r()) |>
-            stress.test.plot.report::main_load_multi_crispy_data(granularity = trisk_granularity_r())
-        )
 
-        trajectories_data_r(
-          load_backend_trajectories_data(backend_trisk_run_folder) |>
-            dplyr::filter(.data$run_id == run_id_r()) |>
-            stress.test.plot.report::main_data_load_trajectories_data(granularity = trisk_granularity_r())
-        )
-      }
+    observeEvent(c(run_id_r(), trisk_granularity_r()), ignoreInit = TRUE, {
+      crispy_data_r(
+        load_backend_crispy_data(backend_trisk_run_folder) |>
+          dplyr::filter(.data$run_id == run_id_r()) |>
+          stress.test.plot.report::main_load_multi_crispy_data(granularity = trisk_granularity_r())
+      )
+
+      trajectories_data_r(
+        load_backend_trajectories_data(backend_trisk_run_folder) |>
+          dplyr::filter(.data$run_id == run_id_r()) |>
+          stress.test.plot.report::main_data_load_trajectories_data(granularity = trisk_granularity_r())
+      )
     })
 
     # Manages the porfolio creator module

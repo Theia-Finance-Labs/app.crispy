@@ -43,8 +43,8 @@ draw_scenario_time_plot <- function(
   scenario_time_plot <- ggplot(data_scenario_time_plot, aes(x = !!rlang::sym(x_var), y = !!rlang::sym(y_var), color = !!rlang::sym(linecolor))) +
     geom_line() +
     geom_point() +
-    facet_wrap(stats::as.formula(paste("~", paste(facet_var, collapse = "+"))), scales = "fixed", ncol = 2)  +
-    expand_limits(y=0) +
+    facet_wrap(stats::as.formula(paste("~", paste(facet_var, collapse = "+"))), scales = "fixed", ncol = 2) +
+    expand_limits(y = 0) +
     scale_y_continuous(labels = scales::percent) +
     scale_color_manual(values = facets_colors) +
     r2dii.plot::theme_2dii() +

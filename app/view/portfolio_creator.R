@@ -114,8 +114,8 @@ server <- function(id, crispy_data_r, trisk_granularity_r, max_trisk_granularity
         dplyr::select(
           dplyr::any_of(display_columns)
         )
-      table_to_display <- rename_tibble_columns(table_to_display, class = "analysis_columns")
 
+      table_to_display <- rename_tibble_columns(table_to_display, words_class = "analysis_columns")
 
       # TABLE DISPLAY ===================================
 
@@ -155,8 +155,10 @@ server <- function(id, crispy_data_r, trisk_granularity_r, max_trisk_granularity
       if (info$col == (n_granul_cols + 1)) {
         # update the portfolio data with UI cell change
         displayed_display_columns <- display_columns[display_columns %in% colnames(portfolio_data)]
-        portfolio_data[info$row, displayed_display_columns[info$col]] <- info$value
-        portfolio_data_r(portfolio_data)
+        if (is.numeric(info$value)) {
+          portfolio_data[info$row, displayed_display_columns[info$col]] <- info$value
+          portfolio_data_r(portfolio_data)
+        }
       }
       # Save the new portfolio state in the reactiveValues object
       # Update the portfolio data to the state corresponding to the current granularity
