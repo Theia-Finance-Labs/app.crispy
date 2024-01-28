@@ -17,6 +17,7 @@ box::use(
     load_backend_trajectories_data,
     load_backend_crispy_data
   ],
+  app/logic/renamings[rename_string_vector],
   app/logic/constant[
     trisk_input_path,
     backend_trisk_run_folder,
@@ -40,8 +41,8 @@ ui <- function(id) {
           p("Granularity"),
           slider_input(
             ns("granularity_switch"),
-            custom_ticks = names(max_trisk_granularity),
-            value = names(which(max_trisk_granularity == 1))
+            custom_ticks = rename_string_vector(names(max_trisk_granularity), class="analysis_columns"),
+            value = rename_string_vector(names(which(max_trisk_granularity == 1)), class="analysis_columns")
           )
         ),
         trisk_generator$ui(ns("trisk_generator"), available_vars)
@@ -77,9 +78,14 @@ server <- function(id) {
     )
 
     trisk_granularity_r <- eventReactive(input$granularity_switch, {
-      granularity_level <- max_trisk_granularity[input$granularity_switch]
+      
+      granularity_picked <- input$granularity_switch |>
+        rename_string_vector(class="analysis_columns", rev=TRUE)
+
+      granularity_level <- max_trisk_granularity[granularity_picked]
       # Filter names based on values <= given_integer
       granularity_columns <- names(max_trisk_granularity)[sapply(max_trisk_granularity, function(value) value <= granularity_level)]
+
       return(granularity_columns)
     })
 

@@ -1,8 +1,5 @@
 box::use(
-  ggplot2[
-    ggplot, geom_line, geom_point, facet_wrap, theme_minimal, labs, aes,
-    scale_color_manual, theme, element_line, scale_y_continuous
-  ],
+  ggplot2[...],
   ggrepel[geom_text_repel]
 )
 
@@ -41,11 +38,13 @@ draw_scenario_time_plot <- function(
     facet_var,
     linecolor) {
   facets_colors <- r2dii.colours::palette_2dii_plot[seq_along(unique(data_scenario_time_plot[[linecolor]])), ]$hex
+  max_y <- max(data_scenario_time_plot[[y_var]])
 
   scenario_time_plot <- ggplot(data_scenario_time_plot, aes(x = !!rlang::sym(x_var), y = !!rlang::sym(y_var), color = !!rlang::sym(linecolor))) +
     geom_line() +
     geom_point() +
-    facet_wrap(stats::as.formula(paste("~", paste(facet_var, collapse = "+"))), scales = "fixed", ncol = 2) +
+    facet_wrap(stats::as.formula(paste("~", paste(facet_var, collapse = "+"))), scales = "fixed", ncol = 2)  +
+    expand_limits(y=0) +
     scale_y_continuous(labels = scales::percent) +
     scale_color_manual(values = facets_colors) +
     r2dii.plot::theme_2dii() +

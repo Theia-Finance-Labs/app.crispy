@@ -66,12 +66,27 @@ RENAMING_ANALYSIS_COLUMNS <- c(
   "pd_difference" = "Difference in PD"
 )
 
+REV_RENAMING_ANALYSIS_COLUMNS <- stats::setNames(names(RENAMING_ANALYSIS_COLUMNS), RENAMING_ANALYSIS_COLUMNS)
 
-rename_tibble_columns <- function(table_to_rename, class) {
-  if (class == "analysis_columns") {
-    names(table_to_rename) <- RENAMING_ANALYSIS_COLUMNS[names(table_to_rename)]
+
+rename_tibble_columns <- function(table_to_rename, class, rev=FALSE) {
+    names(table_to_rename) <- rename_string_vector(names(table_to_rename), class=class, rev=rev)
     return(table_to_rename)
+
+}
+
+
+rename_string_vector <- function(string_vector, class, rev=FALSE) {
+  if (class == "analysis_columns") {
+    
+    if (!rev){
+      string_vector <- unname(RENAMING_ANALYSIS_COLUMNS[string_vector])
+    } else{
+      string_vector <- unname(REV_RENAMING_ANALYSIS_COLUMNS[string_vector])
+    }
+    
   } else {
     stop("Class not handled for renaming")
   }
+  return(string_vector)
 }
