@@ -36,12 +36,16 @@ draw_crispy_npv_change_plot <- function(
     data_crispy_npv_change_plot,
     x_var,
     y_var) {
+  # HARDCODED PARAMETERS
   plot_color_gradient <- c(
     r2dii.colours::palette_1in1000_plot |> dplyr::filter(.data$label == "red") |> dplyr::pull(.data$hex),
     r2dii.colours::palette_1in1000_plot |> dplyr::filter(.data$label == "grey") |> dplyr::pull(.data$hex),
     r2dii.colours::palette_1in1000_plot |> dplyr::filter(.data$label == "green") |> dplyr::pull(.data$hex)
   )
   bar_width <- 0.9 # Adjust as needed TODO variabiliser conf
+
+
+  # PLOTTING
 
   crispy_npv_change_plot <- ggplot(data_crispy_npv_change_plot, aes(x = !!rlang::sym(x_var), y = !!rlang::sym(y_var), fill = !!rlang::sym(y_var))) +
     geom_col(width = bar_width) +
