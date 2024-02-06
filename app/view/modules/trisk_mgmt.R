@@ -33,7 +33,7 @@ ui <- function(id) {
     useShinyjs(), # Initialize shinyjs
     # Custom Semantic UI Modal
     tags$div(
-      id = "mymodal",
+      id = ns("mymodal"),
       class = "ui modal",
       tags$div(class = "header", "Processing"),
       tags$div(
@@ -84,8 +84,13 @@ server <- function(
     # fetch or compute trisk on button click
 
     shiny::observeEvent(input$run_trisk, {
-      shinyjs::runjs("$('#mymodal').modal({closable: false}).modal('show');")
-
+      
+      shinyjs::runjs(
+        paste0(
+        "$('#", session$ns("mymodal"), "').modal({closable: false}).modal('show');"
+        )
+      )
+      
       if (!is.null(trisk_run_params_r())) {
         trisk_run_params <- shiny::reactiveValuesToList(trisk_run_params_r())
         run_id <- NULL
@@ -103,7 +108,9 @@ server <- function(
         }
       }
 
-      shinyjs::runjs("$('#mymodal').modal('hide');")
+      shinyjs::runjs(paste0(
+        "$('#", session$ns("mymodal"), "').modal('hide');"
+        ))
       run_id_r(run_id)
     })
 
@@ -162,7 +169,7 @@ trisk_generator <- function(backend_trisk_run_folder, trisk_input_path, trisk_ru
   run_id <- check_if_run_exists(trisk_run_params, backend_trisk_run_folder)
 
   if (is.null(run_id)) {
-    shinyjs::runjs("$('#mymodal').modal({closable: false}).modal('show');")
+    # shinyjs::runjs("$('#mymodal').modal({closable: false}).modal('show');")
     st_results_wrangled_and_checked <- tryCatch(
       {
         run_trisk_with_params(
@@ -185,8 +192,8 @@ trisk_generator <- function(backend_trisk_run_folder, trisk_input_path, trisk_ru
         max_trisk_granularity
       )
     }
-    shinyjs::runjs("$('#mymodal').modal('hide');")
     run_id <- check_if_run_exists(trisk_run_params, backend_trisk_run_folder)
+    # shinyjs::runjs("$('#mymodal').modal('hide');")
   }
 
 
