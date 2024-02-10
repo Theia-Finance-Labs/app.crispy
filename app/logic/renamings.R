@@ -35,6 +35,9 @@ RENAMING_SCENARIOS <- c(
 )
 
 RENAMING_ANALYSIS_COLUMNS <- c(
+  "expiration_date" = "Expiration Date",
+  "company_name" = "Company Name",
+  "company_id" = "Company ID",
   "ald_sector" = "Sector",
   "ald_business_unit" = "Business Unit",
   "exposure_value_usd" = "Exposure (USD)",
@@ -76,6 +79,11 @@ rename_tibble_columns <- function(table_to_rename, words_class, dev_to_ux = TRUE
 # rename a string vector based on a class that refers to a words renaming collection
 # dev_to_ux is a flag to indicate if the renaming is from development to user experience or the other way around
 rename_string_vector <- function(string_vector, words_class, dev_to_ux = TRUE) {
+  if (is.null(string_vector)) {
+    return("")
+  }
+
+
   renaming_classes <- list(
     "scenarios" = RENAMING_SCENARIOS,
     "analysis_columns" = RENAMING_ANALYSIS_COLUMNS

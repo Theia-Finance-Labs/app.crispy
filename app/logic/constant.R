@@ -1,3 +1,5 @@
+# export constant values from here
+
 # ENV CONSTANTS ====================================
 
 trisk_input_path <- Sys.getenv("TRISK_INPUT_PATH")
@@ -6,12 +8,11 @@ backend_trisk_run_folder <- Sys.getenv("BACKEND_TRISK_RUN_FOLDER")
 
 # PROJECT CONSTANTS ====================================
 
-# export constant values from here
-
-
+# Must be ordered from "less granular" to "more granular"
 max_trisk_granularity <- list(
   "ald_sector" = 1,
-  "ald_business_unit" = 2
+  "ald_business_unit" = 2,
+  "company_id" = 3
 )
 
 

@@ -2,11 +2,11 @@ load_backend_crispy_data <- function(backend_trisk_run_folder) {
   backend_crispy_data_path <- fs::path(backend_trisk_run_folder, "crispy_output", ext = "parquet")
 
   if (file.exists(backend_crispy_data_path)) {
-    backend_crispy_data <- arrow::read_parquet(backend_crispy_data_path) |>
-      dplyr::filter(term == 1)
+    backend_crispy_data <- arrow::read_parquet(backend_crispy_data_path)
   } else {
     backend_crispy_data <- tibble::tibble(
       run_id = character(),
+      company_id = character(),
       ald_sector = character(),
       ald_business_unit = character(),
       term = numeric(),
@@ -27,6 +27,7 @@ load_backend_trajectories_data <- function(backend_trisk_run_folder) {
     backend_trajectories_data <- tibble::tibble(
       run_id = character(),
       year = numeric(),
+      company_id = character(),
       ald_sector = character(),
       ald_business_unit = character(),
       production_baseline_scenario = character(),

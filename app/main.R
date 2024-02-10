@@ -26,48 +26,69 @@ box::use(
 )
 
 
-
-
-
 # Define the UI function
 #' @export
 ui <- function(id) {
   ns <- NS(id)
 
 
-
-  dashboardPage(
-    title = "Homepage",
-    # dashboardHeader
-    dashboardHeader(title = "CRISPY"),
-    # dashboardSidebar
-    dashboardSidebar(
-      tags$div(
-        sidebar_parameters$ui(
-          ns("sidebar_parameters"),
-          max_trisk_granularity = max_trisk_granularity,
-          available_vars = available_vars
-        ),
-        shiny::img(
-          src = "static/logo_1in1000.png",
-          height = "20%", width = "auto",
-          style = "
+  shiny.semantic::semanticPage(
+    tags$div(
+      class = "header", # Add a loading overlay
+      shinyjs::useShinyjs(), # Initialize shinyjs
+      tags$head(
+        tags$style(HTML("
+          #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+          }
+        "))
+      ),
+      div(id = "loading-overlay", "Initializing...")
+    ),
+    dashboardPage(
+      title = "Homepage",
+      # dashboardHeader
+      dashboardHeader(title = "CRISPY"),
+      # dashboardSidebar
+      dashboardSidebar(
+        tags$div(
+          sidebar_parameters$ui(
+            ns("sidebar_parameters"),
+            max_trisk_granularity = max_trisk_granularity, # constant
+            available_vars = available_vars # constant
+          ),
+          shiny::img(
+            src = "static/logo_1in1000.png",
+            height = "20%", width = "auto",
+            style = "
             display: block;
             margin-left: auto;
             margin-right: auto;
             margin-top: 10px;
             margin-bottom: 10px;"
-        )
+          )
+        ),
+        size = "wide",
+        visible = TRUE
       ),
-      size = "wide",
-      visible = FALSE
-    ),
-    # dashboardBody
-    dashboardBody(
-      shinyjs::useShinyjs(),
-      # Include custom CSS to display tabs as full width
-      tags$head(
-        tags$style(HTML("
+
+      # dashboardBody
+      dashboardBody(
+        shinyjs::useShinyjs(),
+
+        # Include custom CSS to display tabs as full width
+        tags$head(
+          tags$style(HTML("
           .full-width-tabs {
             width: 100% !important;
             display: flex !important;
@@ -77,56 +98,57 @@ ui <- function(id) {
             text-align: center !important;
           }
         "))
-      ),
-      # Fomantic UI tabs with custom CSS to display as full width
-      tags$div(
-        class = "ui top attached tabular menu full-width-tabs",
-        tags$a(class = "item active", `data-tab` = "first", "Home"),
-        tags$a(class = "item", `data-tab` = "second", "Equities"),
-        tags$a(class = "item", `data-tab` = "third", "Loans")
-      ),
-      # dynamic tabs content, the `data-tab` attribute must match the `data-tab` attribute
-      # of the corresponding tab in the tabular menu
-      tags$div(
-        class = "ui bottom attached active tab segment", `data-tab` = "first",
-        div(
-          class = "ui container",
-          # homepage tab
-          homepage$ui(
-            ns("homepage")
+        ),
+        # Fomantic UI tabs with custom CSS to display as full width
+        tags$div(
+          class = "ui top attached tabular menu full-width-tabs",
+          tags$a(class = "item active", `data-tab` = "first", "Home"),
+          tags$a(class = "item", `data-tab` = "second", "Equities"),
+          tags$a(class = "item", `data-tab` = "third", "Loans")
+        ),
+        # dynamic tabs content, the `data-tab` attribute must match the `data-tab` attribute
+        # of the corresponding tab in the tabular menu
+        tags$div(
+          class = "ui bottom attached active tab segment", `data-tab` = "first",
+          div(
+            class = "ui container",
+            # homepage tab
+            homepage$ui(
+              ns("homepage")
+            )
           )
-        )
-      ),
-      tags$div(
-        class = "ui bottom attached tab segment", `data-tab` = "second",
-        div(
-          class = "ui container",
-          # equities tab
-          crispy_equities$ui(
-            ns("crispy_equities"),
-            max_trisk_granularity = max_trisk_granularity, # constant
-            available_vars = available_vars # constant
+        ),
+        tags$div(
+          class = "ui bottom attached tab segment", `data-tab` = "second",
+          div(
+            class = "ui container",
+            # equities tab
+            crispy_equities$ui(
+              ns("crispy_equities"),
+              max_trisk_granularity = max_trisk_granularity, # constant
+              available_vars = available_vars # constant
+            )
           )
-        )
-      ),
-      tags$div(
-        class = "ui bottom attached tab segment", `data-tab` = "third",
-        div(
-          class = "ui container",
-          # equities tab
-          crispy_loans$ui(
-            ns("crispy_loans"),
-            max_trisk_granularity = max_trisk_granularity, # constant
-            available_vars = available_vars # constant
+        ),
+        tags$div(
+          class = "ui bottom attached tab segment", `data-tab` = "third",
+          div(
+            class = "ui container",
+            # equities tab
+            crispy_loans$ui(
+              ns("crispy_loans"),
+              max_trisk_granularity = max_trisk_granularity, # constant
+              available_vars = available_vars # constant
+            )
           )
-        )
-      ),
-      # this javascript snippet initializes the tabs menu and makes the tabs clickable
-      tags$script(
-        "$(document).ready(function() {
+        ),
+        # this javascript snippet initializes the tabs menu and makes the tabs clickable
+        tags$script(
+          "$(document).ready(function() {
                 // Initialize tabs (if not already initialized)
                 $('.menu .item').tab();
             });"
+        )
       )
     )
   )
@@ -136,11 +158,13 @@ ui <- function(id) {
 #' @export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
+    possible_trisk_combinations <- r2dii.climate.stress.test::get_scenario_geography_x_ald_sector(trisk_input_path)
+
     # the TRISK runs are generated In the sidebar module
     perimeter <- sidebar_parameters$server(
       "sidebar_parameters",
       max_trisk_granularity = max_trisk_granularity, # constant
-      trisk_input_path = trisk_input_path, # constant
+      possible_trisk_combinations = possible_trisk_combinations, # computed constant
       backend_trisk_run_folder = backend_trisk_run_folder, # constant
       available_vars = available_vars, # constant
       hide_vars = hide_vars, # constant
@@ -153,17 +177,21 @@ server <- function(id) {
       "crispy_equities",
       trisk_input_path = trisk_input_path, # constant
       backend_trisk_run_folder = backend_trisk_run_folder, # constant
-      max_trisk_granularity = max_trisk_granularity,
+      max_trisk_granularity = max_trisk_granularity, # constant
       perimeter = perimeter
     )
 
+
     crispy_loans$server(
-      "crispy_loans"
-      # ,
-      # trisk_input_path = trisk_input_path, # constant
-      # backend_trisk_run_folder = backend_trisk_run_folder, # constant
-      # max_trisk_granularity = max_trisk_granularity,
-      # perimeter = perimeter
+      "crispy_loans",
+      trisk_input_path = trisk_input_path, # constant
+      backend_trisk_run_folder = backend_trisk_run_folder, # constant
+      possible_trisk_combinations = possible_trisk_combinations, # computed constant
+      max_trisk_granularity = max_trisk_granularity, # constant
+      perimeter = perimeter
     )
   })
+
+
+  shinyjs::runjs('$("#loading-overlay").hide();')
 }
