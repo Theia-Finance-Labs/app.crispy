@@ -77,23 +77,3 @@ server <- function(id, perimeter, backend_trisk_run_folder, trisk_input_path, po
     )
   })
 }
-
-
-
-
-render_portfolio <- function(output, table_to_display) {
-  output$portfolio_table <- renderDT(
-    {
-      datatable(table_to_display,
-        editable = TRUE,
-        options = list(
-          lengthChange = FALSE, # Remove "Show XXX entries" option
-          paging = FALSE, # Remove pagination
-          searching = FALSE, # Remove search input
-          info = FALSE # Remove "Showing N of X entries"
-        )
-      )
-    },
-    server = FALSE
-  )
-}
