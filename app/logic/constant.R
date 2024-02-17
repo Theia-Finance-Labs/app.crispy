@@ -2,8 +2,9 @@
 
 # ENV CONSTANTS ====================================
 
-trisk_input_path <- Sys.getenv("TRISK_INPUT_PATH")
-backend_trisk_run_folder <- Sys.getenv("BACKEND_TRISK_RUN_FOLDER")
+trisk_input_path <- file.path("app", "data", "st_inputs")
+backend_trisk_run_folder <- file.path("app", "data", "backend_db")
+api_endpoint <- Sys.getenv("TRISK_API_ENDPOINT")
 
 
 # PROJECT CONSTANTS ====================================
@@ -11,8 +12,8 @@ backend_trisk_run_folder <- Sys.getenv("BACKEND_TRISK_RUN_FOLDER")
 # Must be ordered from "less granular" to "more granular"
 max_trisk_granularity <- list(
   "ald_sector" = 1,
-  "ald_business_unit" = 2,
-  "company_id" = 3
+  "ald_business_unit" = 2
+  # "company_id" = 3
 )
 
 
@@ -82,9 +83,9 @@ hide_vars <- list(
     # "NGFS2023_REMIND_NZ2050",
     # "NGFS2023_MESSAGE_NZ2050",
     # "NGFS2023_GCAM_NZ2050",
-    # "NGFS2023_REMIND_DT",
-    # "NGFS2023_MESSAGE_DT",
-    # "NGFS2023_GCAM_DT",
+    "NGFS2023_REMIND_DT",
+    "NGFS2023_MESSAGE_DT",
+    "NGFS2023_GCAM_DT"
     # "NGFS2023_REMIND_DN0",
     # "NGFS2023_MESSAGE_DN0",
     # "NGFS2023_GCAM_DN0",
