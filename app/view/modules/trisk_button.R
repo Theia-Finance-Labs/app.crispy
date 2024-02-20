@@ -92,7 +92,7 @@ server <- function(
             # open the model dialog
             shinyjs::runjs(
               paste0(
-                "$('#", session$ns("mymodal"), "').modal({closable: true}).modal('show');"
+                "$('#", session$ns("mymodal"), "').modal({closable: false}).modal('show');"
               )
             )
 

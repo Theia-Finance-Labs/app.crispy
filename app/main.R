@@ -10,12 +10,12 @@ box::use(
 # Load required modules and logic files
 box::use(
   # modules
-  app / view / sidebar_parameters,
-  app / view / homepage,
-  app / view / crispy_equities,
-  app / view / crispy_loans,
+  app/view/sidebar_parameters,
+  app/view/homepage,
+  app/view/crispy_equities,
+  app/view/crispy_loans,
   # logic
-  app / logic / constant[
+  app/logic/constant[
     trisk_input_path,
     backend_trisk_run_folder,
     max_trisk_granularity,
