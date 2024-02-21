@@ -4,4 +4,4 @@ metadata:
   name: config-domain
   namespace: knative-serving
 data:
-  159.223.251.127: ""
+  143.244.207.98: ""

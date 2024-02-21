@@ -6,25 +6,37 @@ spec:
   template:
     metadata:
       name: trisk-api-service
+      annotations:
+        autoscaling.knative.dev/target: "1" # R is single threaded so 1 pod per API connection
     spec:
       containers:
         - image: registry.digitalocean.com/theia-1in1000-shinyapps/trisk_api:latest
           ports:
             - containerPort: 8080
           env:
-            - name: TARGET
-              value: "World"
             - name: ST_POSTGRES_USERNAME
-              value: "doadmin"
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: postgres_username
             - name: ST_POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: db-credentials
                   key: postgres_password
             - name: ST_POSTGRES_HOST
-              value: "db-postgresql-st-inputs-do-user-15367886-0.c.db.ondigitalocean.com"
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: postgres_host
             - name: ST_POSTGRES_PORT
-              value: "25060"
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: postgres_port
             - name: ST_POSTGRES_DB
-              value: "defaultdb"
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: postgres_db
 

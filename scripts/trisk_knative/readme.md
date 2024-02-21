@@ -104,7 +104,7 @@ kubectl autoscale deployment trisk-api --cpu-percent=50 --min=2 --max=10
 kubectl get hpa
 
 
-<!-- Listing Services -->
+<!-- Listing Resources -->
 kubectl get svc
 kubectl get deployment
 
