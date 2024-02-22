@@ -149,9 +149,6 @@ generate_analysis_data <- function(portfolio_data_r, crispy_data_r, portfolio_as
     if (!is.null(portfolio_data_r()) & !is.null(crispy_data_r())) {
       granularity <- dplyr::intersect(colnames(portfolio_data_r()), colnames(crispy_data_r()))
 
-
-
-
       # initialize the portfolio with a unique portfolio id (and it will always be unique in CRISPY)
       # unique per portfolio type and granularity
       portfolio_data <- portfolio_data_r()
@@ -184,6 +181,7 @@ generate_analysis_data <- function(portfolio_data_r, crispy_data_r, portfolio_as
 
 
       if (nrow(portfolio_data_r() > 0)) {
+        # browser()
         analysis_data <- stress.test.plot.report:::load_input_plots_data_from_tibble(
           portfolio_data = portfolio_data_r(),
           multi_crispy_data = crispy_data_r(),

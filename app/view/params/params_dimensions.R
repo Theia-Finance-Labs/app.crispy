@@ -46,6 +46,27 @@ server <- function(id, max_trisk_granularity) {
 
       return(trisk_granularity)
     })
+
+
+  # observeEvent(input$choice1, {
+  #   update_class(session, "choice1", "ui green button fluid")
+  #   update_class(session, "choice2", "ui primary button fluid")
+  #   update_class(session, "choice3", "ui primary button fluid")
+  # })
+
+  # observeEvent(input$choice2, {
+  #   update_class(session, "choice1", "ui primary button fluid")
+  #   update_class(session, "choice2", "ui green button fluid")
+  #   update_class(session, "choice3", "ui primary button fluid")
+  # })
+
+  # observeEvent(input$choice3, {
+  #   update_class(session, "choice1", "ui primary button fluid")
+  #   update_class(session, "choice2", "ui primary button fluid")
+  #   update_class(session, "choice3", "ui green button fluid")
+  # })
+
+
     return(trisk_granularity_r)
   })
 }

@@ -4,7 +4,7 @@ box::use(
     selectizeInput, updateSelectizeInput, eventReactive,
     div, tags, reactiveValues, HTML
   ],
-  semantic.dashboard[box],
+  semantic.dashboard[box, icon],
   DT[dataTableProxy],
   shiny.semantic[semanticPage, segment],
   shinyjs[runjs, useShinyjs]
@@ -20,36 +20,51 @@ box::use(
 ui <- function(id) {
   ns <- NS(id)
 
-  div(
-    style = "display: flex; flex-wrap: wrap;", # Flex container
-
-    div(
-      class = "ui grid",
+   tags$div(
+      class = "ui grid container", # Main grid container for layout
+      style = "padding: 20px;", # Add some padding around the container
       div(
-        class = "sixteen wide column",
-        shiny.semantic::dropdown_input(ns("ald_sector_dropdown"),
-          choices = NULL,
-          default_text = "Sector"
-        ),
-        shiny.semantic::dropdown_input(ns("ald_business_unit_dropdown"),
-          choices = NULL,
-          default_text = "Business Unit"
-        ),
-        simple_search_dropdown$ui(ns("company_name_simple_search_dropdown"))
+        class = "row",
+        div(
+          class = "sixteen wide column",
+          shiny.semantic::dropdown_input(
+            ns("ald_sector_dropdown"),
+            default_text = "Sector",
+            choices = NULL # Populate with your choices
+          ),
+          shiny.semantic::dropdown_input(
+            ns("ald_business_unit_dropdown"),
+            default_text = "Business Unit",
+            choices = NULL # Populate with your choices
+          ),
+          shiny.semantic::dropdown_input(
+            ns("maturity_year"), 
+            default_text = "Year of maturity", 
+            choices = 2024:2040,
+            value = 2024
+          )
+        )
       ),
       div(
         class = "row",
         div(
           class = "eight wide column",
-          shiny.semantic::button(ns("add_row_btn"), "Add new row", class = "ui button"),
+          shiny.semantic::button(
+            ns("add_row_btn"), 
+            "Add new row", 
+            icon = icon("plus"), 
+            , class = "ui primary button fluid")
         ),
         div(
           class = "eight wide column",
-          shiny.semantic::button(ns("delete_row_btn"), "Delete Selected Rows", class = "ui button")
+          shiny.semantic::button(
+            ns("delete_row_btn"), 
+            "Delete Selected Rows", 
+            icon = icon("delete"), 
+            class = "ui negative button fluid")
         )
       )
     )
-  )
 }
 
 ####### Server
@@ -58,6 +73,10 @@ ui <- function(id) {
 server <- function(id, trisk_granularity_r, portfolio_data_r, crispy_data_r, possible_trisk_combinations) {
   moduleServer(id, function(input, output, session) {
     # ADD ROW =================
+
+    selected_maturity_year <- reactive({
+      input$maturity_year
+    })
 
     selected_ald_sector <- reactive({
       choice <- input$ald_sector_dropdown
@@ -75,6 +94,7 @@ server <- function(id, trisk_granularity_r, portfolio_data_r, crispy_data_r, pos
 
     # synchronise dropdown choices  with the possible combinations
     # at the same time get the company query return value to update selected_company_name_r
+    # TODO selected_company_name_r kept as legacy for later reactivation of the company
     selected_company_name_r <- update_ald_dropdowns(
       input = input,
       session = session,
@@ -88,14 +108,16 @@ server <- function(id, trisk_granularity_r, portfolio_data_r, crispy_data_r, pos
     # add a new row by creating it in the portfolio
     observeEvent(input$add_row_btn, {
       if (
+        !is.null(selected_maturity_year()) &&
         !is.null(selected_ald_sector()) &&
-          !is.null(selected_ald_business_unit_r()) &&
-          !is.null(selected_company_name_r())) {
+          !is.null(selected_ald_business_unit_r()) 
+          # && !is.null(selected_company_name_r())
+          ) {
         user_defined_row <- tibble::as_tibble(list(
-          company_id = ifelse(is.null(selected_company_name_r()), NA, selected_company_name_r()),
+          # company_id = ifelse(is.null(selected_company_name_r()), NA, selected_company_name_r()),
           ald_business_unit = ifelse(is.null(selected_ald_business_unit_r()), NA, selected_ald_business_unit_r()),
           ald_sector = ifelse(is.null(selected_ald_sector()), NA, selected_ald_sector()),
-          expiration_date = "2024-01-01" # TODO HARDCODED DATE , to allow analysis merge with crispy, can be updated in UI
+          expiration_date = paste0(as.character(selected_maturity_year()), "-01-01")
         ))
 
         use_rows <- dplyr::intersect(names(user_defined_row), names(portfolio_data_r()))
@@ -159,26 +181,26 @@ update_ald_dropdowns <- function(input, session,
     )
   })
 
-  # Observe changes in both baseline_scenario and shock_scenario dropdowns to update scenario_geography dropdown
-  company_choices_r <- eventReactive(input$ald_business_unit_dropdown, ignoreInit = TRUE, {
-    if (!is.null(crispy_data_r())) { # TODO remove redundant check ?
-      filtered_crispy <- crispy_data_r() |>
-        dplyr::filter(
-          .data$ald_sector == ifelse(!is.null(input$ald_sector_dropdown), input$ald_sector_dropdown, NA),
-          .data$ald_business_unit == ifelse(!is.null(
-            input$ald_business_unit_dropdown
-          ),
-          input$ald_business_unit_dropdown,
-          NA
-          )
-        )
-      return(unique(filtered_crispy$company_id))
-    }
-  })
+  # # Observe changes in both baseline_scenario and shock_scenario dropdowns to update scenario_geography dropdown
+  # company_choices_r <- eventReactive(input$ald_business_unit_dropdown, ignoreInit = TRUE, {
+  #   if (!is.null(crispy_data_r())) { # TODO remove redundant check ?
+  #     filtered_crispy <- crispy_data_r() |>
+  #       dplyr::filter(
+  #         .data$ald_sector == ifelse(!is.null(input$ald_sector_dropdown), input$ald_sector_dropdown, NA),
+  #         .data$ald_business_unit == ifelse(!is.null(
+  #           input$ald_business_unit_dropdown
+  #         ),
+  #         input$ald_business_unit_dropdown,
+  #         NA
+  #         )
+  #       )
+  #     return(unique(filtered_crispy$company_id))
+  #   }
+  # })
 
-  selected_company_name_r <- simple_search_dropdown$server(
-    "company_name_simple_search_dropdown",
-    variable_choices_r = company_choices_r
-  )
-  return(selected_company_name_r)
+  # selected_company_name_r <- simple_search_dropdown$server(
+  #   "company_name_simple_search_dropdown",
+  #   variable_choices_r = company_choices_r
+  # )
+  # return(selected_company_name_r)
 }
