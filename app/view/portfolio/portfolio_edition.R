@@ -107,12 +107,7 @@ server <- function(id, trisk_granularity_r, portfolio_data_r, crispy_data_r, pos
     # BUTTONS ADD ROWS
     # add a new row by creating it in the portfolio
     observeEvent(input$add_row_btn, {
-      if (
-        !is.null(selected_maturity_year()) &&
-        !is.null(selected_ald_sector()) &&
-          !is.null(selected_ald_business_unit_r()) 
-          # && !is.null(selected_company_name_r())
-          ) {
+
         user_defined_row <- tibble::as_tibble(list(
           # company_id = ifelse(is.null(selected_company_name_r()), NA, selected_company_name_r()),
           ald_business_unit = ifelse(is.null(selected_ald_business_unit_r()), NA, selected_ald_business_unit_r()),
@@ -129,7 +124,7 @@ server <- function(id, trisk_granularity_r, portfolio_data_r, crispy_data_r, pos
           user_defined_row
         )
         portfolio_data_r(updated_portfolio_data)
-      }
+      
     })
 
 

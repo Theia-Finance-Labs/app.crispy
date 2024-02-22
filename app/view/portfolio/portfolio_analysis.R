@@ -241,7 +241,8 @@ display_analysis_data <- function(output, analysis_data_r, display_columns, edit
             }"
               ))
             )
-          )
+          ),
+          class = "display compact" # fit table to container
         )
       },
       server = FALSE
