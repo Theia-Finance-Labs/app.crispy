@@ -3,7 +3,6 @@ trigger_trisk_api_computation <- function(trisk_run_params, api_endpoint) {
   # trisk_api_service <- "trisk-api-service"
   trisk_api_service <- Sys.getenv("TRISK_API_SERVICE")
   url <- paste0("http://", trisk_api_service, ":80/compute_trisk")
-  # url <- "http://164.90.241.52:80/compute_trisk/"
 
   # Define the body of the request
   body <- list(
@@ -14,7 +13,6 @@ trigger_trisk_api_computation <- function(trisk_run_params, api_endpoint) {
 
   # Define the headers, including Host
   headers <- c(
-
     `Host` = paste0("trisk-api.default.", trisk_api_service),
     `Content-Type` = "application/json"
   )

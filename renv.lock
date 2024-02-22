@@ -11,18 +11,18 @@
   "Packages": {
     "DBI": {
       "Package": "DBI",
-      "Version": "1.2.1",
+      "Version": "1.2.2",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
         "methods"
       ],
-      "Hash": "9b4993e98e0e19da84c168460c032fef"
+      "Hash": "164809cd72e1d5160b4cb3aa57f510fe"
     },
     "DT": {
       "Package": "DT",
-      "Version": "0.31",
+      "Version": "0.32",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -35,7 +35,7 @@
         "magrittr",
         "promises"
       ],
-      "Hash": "77b5189f5272ae2b21e3ac2175ad107c"
+      "Hash": "0d3ab8abbb0c3e3daa47d4dc8e17bbae"
     },
     "MASS": {
       "Package": "MASS",
@@ -173,37 +173,6 @@
       ],
       "Hash": "5ea2700d21e038ace58269ecdbeb9ec0"
     },
-    "STDataMGMT": {
-      "Package": "STDataMGMT",
-      "Version": "0.0.0.9000",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteUsername": "2DegreesInvesting",
-      "RemoteRepo": "STDataMGMT",
-      "RemoteRef": "master",
-      "RemoteSha": "d7ed2bd9b6e2debd72fac94f40879a44f5f72793",
-      "Requirements": [
-        "R",
-        "assertr",
-        "countrycode",
-        "crayon",
-        "dplyr",
-        "fastDummies",
-        "fs",
-        "glue",
-        "magrittr",
-        "purrr",
-        "readr",
-        "readxl",
-        "rlang",
-        "stringr",
-        "tibble",
-        "tidyr",
-        "zoo"
-      ],
-      "Hash": "ab6b764d48b2cf632c7c94604b96d0cf"
-    },
     "SnowballC": {
       "Package": "SnowballC",
       "Version": "0.7.1",
@@ -242,22 +211,6 @@
         "sys"
       ],
       "Hash": "cad6cf7f1d5f6e906700b9d3e718c796"
-    },
-    "assertr": {
-      "Package": "assertr",
-      "Version": "3.0.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "MASS",
-        "R",
-        "dplyr",
-        "methods",
-        "rlang",
-        "stats",
-        "utils"
-      ],
-      "Hash": "dd34511e88d11c95e80f8d9bb0606e79"
     },
     "assertthat": {
       "Package": "assertthat",
@@ -327,14 +280,14 @@
     },
     "box": {
       "Package": "box",
-      "Version": "1.1.3",
+      "Version": "1.2.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
         "tools"
       ],
-      "Hash": "ce8187a260e8e3abc2294284badc3b76"
+      "Hash": "d94049c1d9446b0abb413fde9e82a505"
     },
     "brio": {
       "Package": "brio",
@@ -380,7 +333,7 @@
     },
     "callr": {
       "Package": "callr",
-      "Version": "3.7.3",
+      "Version": "3.7.5",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -389,19 +342,7 @@
         "processx",
         "utils"
       ],
-      "Hash": "9b2191ede20fa29828139b9900922e51"
-    },
-    "cellranger": {
-      "Package": "cellranger",
-      "Version": "1.1.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "rematch",
-        "tibble"
-      ],
-      "Hash": "f61dbaec772ccd2e17705c1e872e9e7c"
+      "Hash": "9f0e4fae4963ba775a5e5c520838c87b"
     },
     "checkmate": {
       "Package": "checkmate",
@@ -462,10 +403,10 @@
     },
     "commonmark": {
       "Package": "commonmark",
-      "Version": "1.9.0",
+      "Version": "1.9.1",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "d691c61bff84bd63c383874d2d0c3307"
+      "Hash": "5d8225445acb167abf7797de48b2ee3c"
     },
     "config": {
       "Package": "config",
@@ -476,16 +417,6 @@
         "yaml"
       ],
       "Hash": "8b7222e9d9eb5178eea545c0c4d33fc2"
-    },
-    "countrycode": {
-      "Package": "countrycode",
-      "Version": "1.5.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R"
-      ],
-      "Hash": "bbc5ab5258e5ddf38f2cd2c5a7afa860"
     },
     "cpp11": {
       "Package": "cpp11",
@@ -545,17 +476,6 @@
         "withr"
       ],
       "Hash": "cdc4a473222b0112d4df0bcfbed12d44"
-    },
-    "data.table": {
-      "Package": "data.table",
-      "Version": "1.15.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "methods"
-      ],
-      "Hash": "cfbbb4aed6e78cd45f17123a9ec9981a"
     },
     "desc": {
       "Package": "desc",
@@ -659,19 +579,6 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "8106d78941f34855c440ddb946b8f7a5"
-    },
-    "fastDummies": {
-      "Package": "fastDummies",
-      "Version": "1.7.3",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "data.table",
-        "stringr",
-        "tibble"
-      ],
-      "Hash": "e0f9c0c051e0e8d89996d7f0c400539f"
     },
     "fastmap": {
       "Package": "fastmap",
@@ -856,7 +763,7 @@
     },
     "httpuv": {
       "Package": "httpuv",
-      "Version": "1.6.13",
+      "Version": "1.6.14",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -867,7 +774,7 @@
         "promises",
         "utils"
       ],
-      "Hash": "d23d2879001f3d82ee9dc38a9ef53c4c"
+      "Hash": "16abeb167dbf511f8cc0552efaf05bab"
     },
     "httr": {
       "Package": "httr",
@@ -1307,15 +1214,13 @@
       "Version": "0.0.0.9005",
       "Source": "GitHub",
       "RemoteType": "github",
-      "RemoteHost": "api.github.com",
       "RemoteUsername": "2DegreesInvesting",
       "RemoteRepo": "r2dii.climate.stress.test",
       "RemoteRef": "master",
-      "RemoteSha": "1497dbec053388c525ead3f4fb0e9a927e85f589",
-      "Remotes": "github::2DegreesInvesting/STDataMGMT",
+      "RemoteSha": "053e9d06210ce295a9542ee4da8791c2e91859a5",
+      "RemoteHost": "api.github.com",
       "Requirements": [
         "R",
-        "STDataMGMT",
         "dplyr",
         "fs",
         "ggplot2",
@@ -1330,18 +1235,18 @@
         "withr",
         "zoo"
       ],
-      "Hash": "890fb717d2d9df6b9c31bec0c60fef2c"
+      "Hash": "68774ccb037087f5396116fb4a6d2495"
     },
     "r2dii.colours": {
       "Package": "r2dii.colours",
       "Version": "0.0.0.9000",
       "Source": "GitHub",
       "RemoteType": "github",
-      "RemoteHost": "api.github.com",
       "RemoteUsername": "RMI-PACTA",
       "RemoteRepo": "r2dii.colours",
       "RemoteRef": "master",
-      "RemoteSha": "7aa52ba455d3343bff3868cc63cba748ea41157d",
+      "RemoteSha": "748394821220f708b15d007da829ae826e7015d2",
+      "RemoteHost": "api.github.com",
       "Requirements": [
         "R",
         "dplyr",
@@ -1354,7 +1259,7 @@
         "stringr",
         "tibble"
       ],
-      "Hash": "0f86a9074e01648ea7f672a185595a20"
+      "Hash": "4e8ef50159ce03fcc199fcdc4ab6c68c"
     },
     "r2dii.data": {
       "Package": "r2dii.data",
@@ -1422,28 +1327,6 @@
         "vroom"
       ],
       "Hash": "9de96463d2117f6ac49980577939dfb3"
-    },
-    "readxl": {
-      "Package": "readxl",
-      "Version": "1.4.3",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "cellranger",
-        "cpp11",
-        "progress",
-        "tibble",
-        "utils"
-      ],
-      "Hash": "8cf9c239b96df1bbb133b74aef77ad0a"
-    },
-    "rematch": {
-      "Package": "rematch",
-      "Version": "2.0.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "cbff1b666c6fa6d21202f07e2318d4f1"
     },
     "rematch2": {
       "Package": "rematch2",
@@ -2044,14 +1927,15 @@
     },
     "xfun": {
       "Package": "xfun",
-      "Version": "0.41",
+      "Version": "0.42",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
+        "grDevices",
         "stats",
         "tools"
       ],
-      "Hash": "460a5e0fe46a80ef87424ad216028014"
+      "Hash": "fd1349170df31f7a10bd98b0189e85af"
     },
     "xml2": {
       "Package": "xml2",
@@ -2097,10 +1981,10 @@
     },
     "zip": {
       "Package": "zip",
-      "Version": "2.3.0",
+      "Version": "2.3.1",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "d98c94dacb7e0efcf83b0a133a705504"
+      "Hash": "fcc4bd8e6da2d2011eb64a5e5cc685ab"
     },
     "zoo": {
       "Package": "zoo",
