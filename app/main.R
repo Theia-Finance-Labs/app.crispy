@@ -78,7 +78,7 @@ ui <- function(id) {
             margin-bottom: 10px;"
           )
         ),
-        size = "wide",
+        size = "very wide",
         visible = TRUE
       ),
 

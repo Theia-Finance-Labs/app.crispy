@@ -17,56 +17,85 @@ ui <- function(id, max_trisk_granularity) {
   ns <- NS(id)
   # First segment in the left half // Granularity
   shiny.semantic::segment(
-    div(class = "header", "Dashboard", style = "font-size: 150%;"),
+    tags$div(class = "header", "Dashboard", style = "font-size: 150%;"),
     tags$hr(),
-    div(
+    tags$div(
       class = "description",
-      div(
-        class = "content",
-        p("Granularity"),
-        slider_input(
-          ns("granularity_switch"),
-          custom_ticks = rename_string_vector(names(max_trisk_granularity), words_class = "analysis_columns"),
-          value = rename_string_vector(names(which(max_trisk_granularity == 1)), words_class = "analysis_columns")
-        )
-      )
+  tags$div(
+    class = "ui buttons",
+    shinyjs::useShinyjs(), # Initialize shinyjs
+    tags$head(
+      tags$style(HTML("
+      .ui.buttons .button { margin: 0; }
+    "))
+    ),
+    shiny.semantic::button(
+      ns("granul_1"),
+      rename_string_vector(names(which(max_trisk_granularity == 1)), words_class = "analysis_columns"),
+      class = "ui green button fluid"),
+    shiny.semantic::button(
+      ns("granul_2"),
+      rename_string_vector(names(which(max_trisk_granularity == 2)), words_class = "analysis_columns"),
+      class = "ui primary button fluid")
+    # ,shiny.semantic::button(
+    #   ns("granul_3"), 
+    #   rename_string_vector(names(which(max_trisk_granularity == 3)), words_class = "analysis_columns"),
+    #   class = "ui primary button fluid")
+  )
     )
   )
 }
 # get the column names defining the displayed data granularity
 server <- function(id, max_trisk_granularity) {
   moduleServer(id, function(input, output, session) {
-    trisk_granularity_r <- eventReactive(input$granularity_switch, {
-      granularity_picked <- input$granularity_switch |>
-        rename_string_vector(words_class = "analysis_columns", dev_to_ux = FALSE)
 
-      granularity_level <- max_trisk_granularity[granularity_picked]
-      # Filter names based on values <= given_integer
-      trisk_granularity <- names(max_trisk_granularity)[sapply(max_trisk_granularity, function(value) value <= granularity_level)]
-
-      return(trisk_granularity)
-    })
+  # initialize trisk_granularity_r with the highest coarseness
+  trisk_granularity_r <- reactiveVal(
+    get_trisk_granularity(max_trisk_granularity, 1)
+  )
 
 
-  # observeEvent(input$choice1, {
-  #   update_class(session, "choice1", "ui green button fluid")
-  #   update_class(session, "choice2", "ui primary button fluid")
-  #   update_class(session, "choice3", "ui primary button fluid")
-  # })
+  observeEvent(input$granul_1, {
+    update_class(session$ns("granul_1"), "ui green button fluid")
+    update_class(session$ns("granul_2"), "ui primary button fluid")
+    # update_class(session$ns("granul_3"), "ui primary button fluid")
+    trisk_granularity_r(
+      get_trisk_granularity(max_trisk_granularity, 1)
+    )
+  })
 
-  # observeEvent(input$choice2, {
-  #   update_class(session, "choice1", "ui primary button fluid")
-  #   update_class(session, "choice2", "ui green button fluid")
-  #   update_class(session, "choice3", "ui primary button fluid")
-  # })
+  observeEvent(input$granul_2, {
+    update_class(session$ns("granul_1"), "ui primary button fluid")
+    update_class(session$ns("granul_2"), "ui green button fluid")
+    browser()
+    # update_class(session$ns("granul_3"), "ui primary button fluid")
+    trisk_granularity_r(
+      get_trisk_granularity(max_trisk_granularity, 2)
+    )
+  })
 
-  # observeEvent(input$choice3, {
-  #   update_class(session, "choice1", "ui primary button fluid")
-  #   update_class(session, "choice2", "ui primary button fluid")
-  #   update_class(session, "choice3", "ui green button fluid")
+  # observeEvent(input$granul_3, {
+  #   update_class(session, "granul_1", "ui primary button fluid")
+  #   update_class(session, "granul_2", "ui primary button fluid")
+  #   update_class(session, "granul_3", "ui green button fluid")
+  #   trisk_granularity_r(names(which(max_trisk_granularity == 3)))
   # })
 
 
     return(trisk_granularity_r)
   })
+}
+
+
+# will return a vector of the column names defining the displayed data granularity
+# or a single value if the granularity is the highest
+get_trisk_granularity <- function(max_trisk_granularity, granularity_level){
+  granul_and_lower <- sapply(max_trisk_granularity, function(value) value <= granularity_level)
+  trisk_granularity <- names(max_trisk_granularity)[granul_and_lower]
+  return(trisk_granularity )
+}
+
+# Function to update button classes, now correctly utilized
+update_class <- function(input_id, class) {
+  shinyjs::runjs(sprintf("$('#%s').attr('class', '%s');", input_id, class))
 }
