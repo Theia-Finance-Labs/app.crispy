@@ -67,7 +67,6 @@ server <- function(id, max_trisk_granularity) {
   observeEvent(input$granul_2, {
     update_class(session$ns("granul_1"), "ui primary button fluid")
     update_class(session$ns("granul_2"), "ui green button fluid")
-    browser()
     # update_class(session$ns("granul_3"), "ui primary button fluid")
     trisk_granularity_r(
       get_trisk_granularity(max_trisk_granularity, 2)
