@@ -12,6 +12,7 @@ box::use(
   app/view/params/params_scenarios,
   app/view/params/params_dimensions,
   app/view/params/params_trisk,
+  app / view / modules / trisk_button,
   app/logic/renamings[rename_string_vector]
 )
 
@@ -23,10 +24,12 @@ ui <- function(id, max_trisk_granularity, available_vars) {
 
   list(
     params_dimensions$ui(ns("params_dimensions"), max_trisk_granularity),
-    # Second segment in the left half // Scenario Choice
+    #  Scenario Choice
     params_scenarios$ui(ns("params_scenarios")),
-    # Third segment in the left half // TRISK params
-    params_trisk$ui(ns("params_trisk"), available_vars)
+    # TRISK params
+    params_trisk$ui(ns("params_trisk"), available_vars),
+    # Run TRISK button
+    trisk_button$ui(ns("trisk_button"))
   )
 }
 
@@ -35,7 +38,7 @@ ui <- function(id, max_trisk_granularity, available_vars) {
 
 
 
-server <- function(id, backend_trisk_run_folder,
+server <- function(id, backend_trisk_run_folder, trisk_input_path,
                    possible_trisk_combinations,
                    available_vars,
                    hide_vars,
@@ -77,9 +80,24 @@ server <- function(id, backend_trisk_run_folder,
       )
     })
 
+    results <- trisk_button$server(
+      "trisk_button",
+      trisk_run_params_r = trisk_run_params_r,
+      trisk_granularity_r = trisk_granularity_r,
+      backend_trisk_run_folder = backend_trisk_run_folder,
+      trisk_input_path = trisk_input_path,
+      max_trisk_granularity = max_trisk_granularity
+    )
+
+    crispy_data_r <- results$crispy_data_r
+    trajectories_data_r <- results$trajectories_data_r
+
+
     perimeter <- list(
       "trisk_granularity_r" = trisk_granularity_r,
-      "trisk_run_params_r" = trisk_run_params_r
+      "trisk_run_params_r" = trisk_run_params_r,
+      "crispy_data_r" = crispy_data_r,
+      "trajectories_data_r" = trajectories_data_r
     )
 
     return(

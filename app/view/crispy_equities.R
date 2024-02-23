@@ -8,7 +8,6 @@ box::use(
 )
 
 box::use(
-  app / view / modules / trisk_button,
   app / view / portfolio / portfolio_analysis,
   app / view / modules / plots_equity_change,
   app / view / modules / plots_trajectories,
@@ -26,7 +25,6 @@ ui <- function(id, max_trisk_granularity, available_vars) {
       class = "ui segment", style = "min-height: 100vh;",
       shiny::tags$div(
         class = "ui stackable grid",
-        trisk_button$ui(ns("trisk_button")),
         portfolio_analysis$ui(ns("portfolio_analysis"), title = "Equities portfolio"),
         plots_equity_change$ui(ns("plots_equity_change")),
         plots_trajectories$ui(ns("plots_trajectories"))
@@ -37,10 +35,12 @@ ui <- function(id, max_trisk_granularity, available_vars) {
 
 ####### Server
 
-server <- function(id, perimeter, backend_trisk_run_folder, trisk_input_path, max_trisk_granularity) {
+server <- function(id, perimeter, backend_trisk_run_folder, max_trisk_granularity) {
   moduleServer(id, function(input, output, session) {
     trisk_granularity_r <- perimeter$trisk_granularity_r
     trisk_run_params_r <- perimeter$trisk_run_params_r
+    crispy_data_r <- perimeter$crispy_data_r
+    trajectories_data_r <- perimeter$trajectories_data_r
 
     # GET RESULTS FROM CONFIG =========================
 
@@ -52,19 +52,6 @@ server <- function(id, perimeter, backend_trisk_run_folder, trisk_input_path, ma
     )
     editable_columns_names_equities <- c("exposure_value_usd")
     colored_columns_names_equities <- c("crispy_perc_value_change", "crispy_value_loss")
-
-    results <- trisk_button$server(
-      "trisk_button",
-      crispy_data_r = crispy_data_r,
-      trisk_granularity_r = trisk_granularity_r,
-      trisk_run_params_r = trisk_run_params_r,
-      backend_trisk_run_folder = backend_trisk_run_folder,
-      trisk_input_path = trisk_input_path,
-      max_trisk_granularity = max_trisk_granularity
-    )
-
-    crispy_data_r <- results$crispy_data_r
-    trajectories_data_r <- results$trajectories_data_r
 
     # MANAGE PORTFOLIO =========================
 

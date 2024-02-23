@@ -167,6 +167,7 @@ server <- function(id) {
       max_trisk_granularity = max_trisk_granularity, # constant
       possible_trisk_combinations = possible_trisk_combinations, # computed constant
       backend_trisk_run_folder = backend_trisk_run_folder, # constant
+      trisk_input_path=trisk_input_path, # constant
       available_vars = available_vars, # constant
       hide_vars = hide_vars, # constant
       use_ald_sector = use_ald_sector # constant
@@ -176,7 +177,6 @@ server <- function(id) {
 
     crispy_equities$server(
       "crispy_equities",
-      trisk_input_path = trisk_input_path, # constant
       backend_trisk_run_folder = backend_trisk_run_folder, # constant
       max_trisk_granularity = max_trisk_granularity, # constant
       perimeter = perimeter
@@ -185,7 +185,6 @@ server <- function(id) {
 
     crispy_loans$server(
       "crispy_loans",
-      trisk_input_path = trisk_input_path, # constant
       backend_trisk_run_folder = backend_trisk_run_folder, # constant
       possible_trisk_combinations = possible_trisk_combinations, # computed constant
       max_trisk_granularity = max_trisk_granularity, # constant

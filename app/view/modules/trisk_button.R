@@ -61,9 +61,8 @@ ui <- function(id) {
 
 server <- function(
     id,
-    crispy_data_r,
-    trisk_granularity_r,
     trisk_run_params_r,
+    trisk_granularity_r,
     backend_trisk_run_folder,
     trisk_input_path,
     max_trisk_granularity) {

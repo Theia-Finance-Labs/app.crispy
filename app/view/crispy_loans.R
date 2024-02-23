@@ -7,7 +7,6 @@ box::use(
 )
 
 box::use(
-  app / view / modules / trisk_button,
   app / view / portfolio / portfolio_analysis
 )
 
@@ -22,7 +21,6 @@ ui <- function(id, max_trisk_granularity, available_vars) {
     class = "pusher container", style = "min-height: 100vh;",
     shiny::div(
       class = "ui segment", style = "min-height: 100vh;",
-      trisk_button$ui(ns("trisk_button")),
       portfolio_analysis$ui(ns("portfolio_analysis"), "Loans Portfolio")
     )
   )
@@ -30,25 +28,13 @@ ui <- function(id, max_trisk_granularity, available_vars) {
 
 ####### Server
 
-server <- function(id, perimeter, backend_trisk_run_folder, trisk_input_path, possible_trisk_combinations, max_trisk_granularity) {
+server <- function(id, perimeter, backend_trisk_run_folder, possible_trisk_combinations, max_trisk_granularity) {
   moduleServer(id, function(input, output, session) {
     # SELECT PARAMETERS =========================
     trisk_granularity_r <- perimeter$trisk_granularity_r
     trisk_run_params_r <- perimeter$trisk_run_params_r
-
-    results <- trisk_button$server(
-      "trisk_button",
-      crispy_data_r = crispy_data_r,
-      trisk_granularity_r = trisk_granularity_r,
-      trisk_run_params_r = trisk_run_params_r,
-      backend_trisk_run_folder = backend_trisk_run_folder,
-      trisk_input_path = trisk_input_path,
-      max_trisk_granularity = max_trisk_granularity
-    )
-
-    crispy_data_r <- results$crispy_data_r
-    trajectories_data_r <- results$trajectories_data_r
-
+    crispy_data_r <- perimeter$crispy_data_r
+    trajectories_data_r <- perimeter$trajectories_data_r
 
     # INIT PORTFOLIO ===============
 
