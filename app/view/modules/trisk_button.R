@@ -39,10 +39,10 @@ ui <- function(id) {
     tags$div(
       id = ns("model_load_db"),
       class = "ui modal",
-      tags$div(class = "header", "Fetching run results"),
+      tags$div(class = "header", "Fetching precomputed results from database..."),
       tags$div(
         class = "content",
-        tags$p("Getting model results...")
+        tags$p("This dialog should close automatically when the data is loaded. Click outside of it to close manually.")
       )
     ),
     tags$div(
@@ -50,7 +50,7 @@ ui <- function(id) {
       # Fomantic UI styled action button with custom class
       tags$button(
         id = ns("run_trisk"),
-        class = "ui fluid button", # Add custom class here
+        class = "ui primary fluid button", # Add custom class here
         "Run Trisk"
       )
     )

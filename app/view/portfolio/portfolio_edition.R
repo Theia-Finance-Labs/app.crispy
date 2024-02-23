@@ -37,6 +37,7 @@ ui <- function(id) {
             default_text = "Business Unit",
             choices = NULL # Populate with your choices
           ),
+          # simple_search_dropdown$ui(ns("company_name_simple_search_dropdown")),
           shiny.semantic::dropdown_input(
             ns("maturity_year"), 
             default_text = "Year of maturity", 
@@ -115,9 +116,9 @@ server <- function(id, trisk_granularity_r, portfolio_data_r, crispy_data_r, pos
           expiration_date = paste0(as.character(selected_maturity_year()), "-01-01")
         ))
 
-        use_rows <- dplyr::intersect(names(user_defined_row), names(portfolio_data_r()))
+        use_columns <- dplyr::intersect(names(user_defined_row), names(portfolio_data_r()))
         user_defined_row <- user_defined_row |>
-          dplyr::select_at(use_rows)
+          dplyr::select_at(use_columns)
 
         updated_portfolio_data <- dplyr::bind_rows(
           portfolio_data_r(),

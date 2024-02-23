@@ -12,7 +12,7 @@ box::use(
 
 box::use(
   app/view/portfolio/portfolio_edition,
-  app/logic/constant[max_trisk_granularity],
+  app/logic/constant[max_trisk_granularity, equity_portfolio_expiration_date, filter_crispy_outliers],
   app/logic/renamings[rename_tibble_columns]
 )
 
@@ -164,7 +164,7 @@ generate_analysis_data <- function(portfolio_data_r, crispy_data_r, portfolio_as
               crispy_data_r() |> dplyr::distinct_at(granularity)
             ) |>
             dplyr::mutate(
-              expiration_date = "2024-01-01" # TODO HARDCODED DATE
+              expiration_date = equity_portfolio_expiration_date
             )
         }
       }
@@ -181,11 +181,11 @@ generate_analysis_data <- function(portfolio_data_r, crispy_data_r, portfolio_as
 
 
       if (nrow(portfolio_data_r() > 0)) {
-        # browser()
         analysis_data <- stress.test.plot.report:::load_input_plots_data_from_tibble(
           portfolio_data = portfolio_data_r(),
           multi_crispy_data = crispy_data_r(),
-          granularity = granularity
+          granularity = granularity,
+          filter_outliers = filter_crispy_outliers
         ) |>
           dplyr::mutate(
             crispy_perc_value_change = round(crispy_perc_value_change, digits = 4),

@@ -8,6 +8,14 @@ api_endpoint <- Sys.getenv("TRISK_API_ENDPOINT")
 
 # PROJECT CONSTANTS ====================================
 
+# Filter outliers in crispy when generating the analysis data
+# see stress.test.plot.report:::load_input_plots_data_from_tibble documentation for more details
+filter_crispy_outliers <- TRUE
+
+# 1st january of the next year is the default expiration date for the equity portfolio
+# in order to just pick 1 row out of the crispy data
+equity_portfolio_expiration_date <- paste0(as.character(as.numeric(format(Sys.Date(), "%Y"))+1), "-01-01")
+
 # Must be ordered from "less granular" to "more granular"
 max_trisk_granularity <- list(
   "ald_sector" = 1,
