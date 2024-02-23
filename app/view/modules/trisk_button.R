@@ -23,8 +23,7 @@ box::use(
 
 ui <- function(id) {
   ns <- NS(id)
-  semantic.dashboard::box(
-    width = 16,
+  tags$div(
     useShinyjs(), # Initialize shinyjs
     # Custom Semantic UI Modal
     tags$div(
@@ -45,15 +44,25 @@ ui <- function(id) {
         tags$p("This dialog should close automatically when the data is loaded. Click outside of it to close manually.")
       )
     ),
-    tags$div(
-      class = "ui fluid container",
-      # Fomantic UI styled action button with custom class
-      tags$button(
-        id = ns("run_trisk"),
-        class = "ui primary fluid button", # Add custom class here
-        "Run Trisk"
-      )
+ tags$head(
+    tags$style(shiny::HTML("
+      .ui.fluid.container {
+        padding-top: 20px; /* Adds padding at the top of the container */
+        padding-right: 20px; /* Adds padding at the top of the container */
+        padding-left: 20px; /* Adds padding at the bottom of the container */
+      }
+    "))
+  ),
+  
+  tags$div(
+    class = "ui fluid container",
+    # Fomantic UI styled action button with added custom class for styling
+    tags$button(
+      id = ns("run_trisk"),
+      class = "ui primary fluid button custom-relief-button", # Added custom class for styling
+      "Run Trisk (double-click to refresh tab values)"
     )
+  )
   )
 }
 
@@ -116,11 +125,17 @@ server <- function(
       run_id_r(run_id)
     })
 
+    # redudant reactive allowing to re-trigger trisk_outputs on run_id_r change
+    run_id_rr <- reactive({
+      input$run_trisk
+      run_id_r()
+      })
+
     # load trisk outputs either from local storage, or cloud backend
     trisk_outputs <- fetch_crispy_and_trajectories_data(
       session = session,
       backend_trisk_run_folder = backend_trisk_run_folder,
-      run_id_r = run_id_r,
+      run_id_r = run_id_rr,
       trisk_granularity_r = trisk_granularity_r
     )
 

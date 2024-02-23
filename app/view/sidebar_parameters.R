@@ -23,13 +23,14 @@ ui <- function(id, max_trisk_granularity, available_vars) {
   ns <- NS(id)
 
   list(
+    # Run TRISK button
+    trisk_button$ui(ns("trisk_button")),
+    # Dimensions
     params_dimensions$ui(ns("params_dimensions"), max_trisk_granularity),
     #  Scenario Choice
     params_scenarios$ui(ns("params_scenarios")),
     # TRISK params
-    params_trisk$ui(ns("params_trisk"), available_vars),
-    # Run TRISK button
-    trisk_button$ui(ns("trisk_button"))
+    params_trisk$ui(ns("params_trisk"), available_vars)
   )
 }
 
