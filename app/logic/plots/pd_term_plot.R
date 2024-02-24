@@ -26,6 +26,7 @@ data_pd_term <- crispy_data_agg |>
   dplyr::mutate(
     pd_type=factor(.data$pd_type, levels = c("baseline", "shock", "difference"))
   )|>
+  dplyr::filter(.data$pd_type != "difference")
   dplyr::select_at(c(facet_var, "term", "pd_type", "pd_value")) 
 
 return(data_pd_term)
@@ -57,6 +58,7 @@ draw_pd_term_plot <- function(data_pd_term, facet_var){
             limit = c(min(data_pd_term$pd_value), max(data_pd_term$pd_value)), 
             space = "Lab") +
         r2dii.plot::theme_2dii() +
+        ggplot2::scale_y_continuous(labels = scales::percent_format(scale=100)) +
         ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
         ggplot2::labs(x = "Term", y = "PD Value", fill = "PD Type", title = "PD Values by Term, Type, and Business Unit")
 
