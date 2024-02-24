@@ -60,7 +60,7 @@ trisk_line_plot <- ggplot(
             linetype = scenario)
     ) +
     ggplot2::geom_line() +
-    ggplot2::geom_point(size = 0.5) +
+    ggplot2::geom_point(size = 0.1) +
     ggplot2::scale_y_continuous(labels = scales::percent_format(scale=1)) +
     ggplot2::scale_linetype_manual(values = c(
         "production_baseline_scenario" = "dashed", 
