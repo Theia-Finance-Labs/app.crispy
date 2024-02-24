@@ -1,6 +1,5 @@
 box::use(
-  shiny[moduleServer, NS, plotOutput, renderPlot, observeEvent, fluidRow],
-  semantic.dashboard[column, box]
+  shiny[moduleServer, NS, plotOutput, renderPlot, observeEvent, fluidRow]
 )
 
 box::use(
@@ -14,8 +13,8 @@ box::use(
 ui <- function(id) {
   ns <- NS(id)
   fluidRow(
-    box(title = "NPV Change", width = 8, plotOutput(ns("crispy_npv_change_plot"))),
-    box(title = "Exposure Change", width = 8, plotOutput(ns("exposure_change_plot")))
+    semantic.dashboard::box(title = "NPV Change", width = 8, plotOutput(ns("crispy_npv_change_plot"))),
+    semantic.dashboard::box(title = "Exposure Change", width = 8, plotOutput(ns("exposure_change_plot")))
   )
 }
 

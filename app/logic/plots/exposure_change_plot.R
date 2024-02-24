@@ -10,9 +10,8 @@ pipeline_exposure_change_plot <- function(
     analysis_data,
     x_var = "ald_sector",
     y_exposure_var = "exposure_value_usd",
-    y_value_loss_var = "crispy_value_loss",
-    fill_var = "crispy_perc_value_change") {
-  data_exposure_change <- prepare_for_exposure_change_plot(analysis_data, x_var, y_exposure_var, y_value_loss_var, fill_var)
+    y_value_loss_var = "crispy_value_loss") {
+  data_exposure_change <- prepare_for_exposure_change_plot(analysis_data, x_var, y_exposure_var, y_value_loss_var)
 
   exposure_change_plot <- draw_exposure_change_plot(
     data_exposure_change,
@@ -23,10 +22,10 @@ pipeline_exposure_change_plot <- function(
   return(exposure_change_plot)
 }
 
-prepare_for_exposure_change_plot <- function(analysis_data, x_var, y_exposure_var, y_value_loss_var, fill_var) {
+prepare_for_exposure_change_plot <- function(analysis_data, x_var, y_exposure_var, y_value_loss_var) {
   data_exposure_change <- analysis_data |>
     dplyr::select_at(
-      c(x_var, y_exposure_var, y_value_loss_var, fill_var)
+      c(x_var, y_exposure_var, y_value_loss_var)
     )
   return(data_exposure_change)
 }

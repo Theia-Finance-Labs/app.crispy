@@ -32,11 +32,11 @@ ui <- function(id, max_trisk_granularity) {
     shiny.semantic::button(
       ns("granul_1"),
       rename_string_vector(names(which(max_trisk_granularity == 1)), words_class = "analysis_columns"),
-      class = "ui green button fluid"),
+      class = "ui secondary button fluid"),
     shiny.semantic::button(
       ns("granul_2"),
       rename_string_vector(names(which(max_trisk_granularity == 2)), words_class = "analysis_columns"),
-      class = "ui primary button fluid")
+      class = "ui button fluid")
     # ,shiny.semantic::button(
     #   ns("granul_3"), 
     #   rename_string_vector(names(which(max_trisk_granularity == 3)), words_class = "analysis_columns"),
@@ -56,8 +56,8 @@ server <- function(id, max_trisk_granularity) {
 
 
   observeEvent(input$granul_1, {
-    update_class(session$ns("granul_1"), "ui green button fluid")
-    update_class(session$ns("granul_2"), "ui primary button fluid")
+    update_class(session$ns("granul_1"), "ui secondary button fluid")
+    update_class(session$ns("granul_2"), "ui button fluid")
     # update_class(session$ns("granul_3"), "ui primary button fluid")
     trisk_granularity_r(
       get_trisk_granularity(max_trisk_granularity, 1)
@@ -65,8 +65,8 @@ server <- function(id, max_trisk_granularity) {
   })
 
   observeEvent(input$granul_2, {
-    update_class(session$ns("granul_1"), "ui primary button fluid")
-    update_class(session$ns("granul_2"), "ui green button fluid")
+    update_class(session$ns("granul_1"), "ui button fluid")
+    update_class(session$ns("granul_2"), "ui secondary button fluid")
     # update_class(session$ns("granul_3"), "ui primary button fluid")
     trisk_granularity_r(
       get_trisk_granularity(max_trisk_granularity, 2)

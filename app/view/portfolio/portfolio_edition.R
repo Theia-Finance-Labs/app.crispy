@@ -54,7 +54,7 @@ ui <- function(id) {
             ns("add_row_btn"), 
             "Add new row", 
             icon = icon("plus"), 
-            , class = "ui primary button fluid")
+            , class = "ui button fluid")
         ),
         div(
           class = "eight wide column",
@@ -62,7 +62,7 @@ ui <- function(id) {
             ns("delete_row_btn"), 
             "Delete Selected Rows", 
             icon = icon("delete"), 
-            class = "ui negative button fluid")
+            class = "ui button fluid")
         )
       )
     )

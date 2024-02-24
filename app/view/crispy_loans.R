@@ -7,7 +7,8 @@ box::use(
 )
 
 box::use(
-  app / view / portfolio / portfolio_analysis
+  app / view / portfolio / portfolio_analysis,
+  app / view / modules / plots_loans
 )
 
 
@@ -21,7 +22,11 @@ ui <- function(id, max_trisk_granularity, available_vars) {
     class = "pusher container", style = "min-height: 100vh;",
     shiny::div(
       class = "ui segment", style = "min-height: 100vh;",
-      portfolio_analysis$ui(ns("portfolio_analysis"), "Loans Portfolio")
+            shiny::tags$div(
+        class = "ui stackable grid",
+      portfolio_analysis$ui(ns("portfolio_analysis"), "Loans Portfolio"),
+      plots_loans$ui(ns("plots_loans"))
+            )
     )
   )
 }
@@ -49,7 +54,7 @@ server <- function(id, perimeter, backend_trisk_run_folder, possible_trisk_combi
     editable_columns_names_loans <- c("exposure_value_usd", "loss_given_default", "term")
     colored_columns_names_loans <- c("crispy_perc_value_change", "crispy_value_loss")
 
-    analysis_data_r <- portfolio_analysis$server(
+    out <- portfolio_analysis$server(
       "portfolio_analysis",
       crispy_data_r = crispy_data_r,
       trisk_granularity_r = trisk_granularity_r,
@@ -61,25 +66,14 @@ server <- function(id, perimeter, backend_trisk_run_folder, possible_trisk_combi
       editable_rows = TRUE, # Allow adding and deleting rows, and gives access to the company granularity
       possible_trisk_combinations = possible_trisk_combinations
     )
-  })
-}
 
+    analysis_data_r <- out$analysis_data_r
+    crispy_data_agg_r <- out$crispy_data_agg_r
 
-
-
-render_portfolio <- function(output, table_to_display) {
-  output$portfolio_table <- renderDT(
-    {
-      datatable(table_to_display,
-        editable = TRUE,
-        options = list(
-          lengthChange = FALSE, # Remove "Show XXX entries" option
-          paging = FALSE, # Remove pagination
-          searching = FALSE, # Remove search input
-          info = FALSE # Remove "Showing N of X entries"
-        )
+    plots_loans$server("plots_loans",
+      analysis_data_r = analysis_data_r,
+      crispy_data_agg_r = crispy_data_agg_r,
+      max_trisk_granularity = max_trisk_granularity
       )
-    },
-    server = FALSE
-  )
+  })
 }

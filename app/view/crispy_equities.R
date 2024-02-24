@@ -9,7 +9,7 @@ box::use(
 
 box::use(
   app / view / portfolio / portfolio_analysis,
-  app / view / modules / plots_equity_change,
+  app / view / modules / plots_equities,
   app / view / modules / plots_trajectories,
 )
 
@@ -26,7 +26,7 @@ ui <- function(id, max_trisk_granularity, available_vars) {
       shiny::tags$div(
         class = "ui stackable grid",
         portfolio_analysis$ui(ns("portfolio_analysis"), title = "Equities portfolio"),
-        plots_equity_change$ui(ns("plots_equity_change")),
+        plots_equities$ui(ns("plots_equities")),
         plots_trajectories$ui(ns("plots_trajectories"))
       )
     )
@@ -57,7 +57,7 @@ server <- function(id, perimeter, backend_trisk_run_folder, max_trisk_granularit
 
     # Manages the porfolio creator module
     # Create analysis data by merging crispy to portfolio, and aggrgating to the appropriate granularity
-    analysis_data_r <- portfolio_analysis$server(
+    out <- portfolio_analysis$server(
       "portfolio_analysis",
       crispy_data_r = crispy_data_r,
       trisk_granularity_r = trisk_granularity_r,
@@ -67,12 +67,15 @@ server <- function(id, perimeter, backend_trisk_run_folder, max_trisk_granularit
       editable_columns_names = editable_columns_names_equities,
       colored_columns_names = colored_columns_names_equities
     )
+    
+    analysis_data_r <- out$analysis_data_r
+    crispy_data_agg_r <- out$crispy_data_agg_r
 
     # CONSUME TRISK OUTPUTS =========================
 
     # Generate equity change plots
-    plots_equity_change$server(
-      "plots_equity_change",
+    plots_equities$server(
+      "plots_equities",
       analysis_data_r = analysis_data_r,
       max_trisk_granularity = max_trisk_granularity
     )

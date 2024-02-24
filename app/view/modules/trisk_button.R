@@ -59,8 +59,8 @@ ui <- function(id) {
     # Fomantic UI styled action button with added custom class for styling
     tags$button(
       id = ns("run_trisk"),
-      class = "ui primary fluid button custom-relief-button", # Added custom class for styling
-      "Run Trisk (double-click to refresh tab values)"
+      class = "ui fluid button ", # Added custom class for styling
+      "Run Trisk (click again when switching tabs to refresh data)"
     )
   )
   )

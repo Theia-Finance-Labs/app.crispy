@@ -66,11 +66,15 @@ server <- function(
 
     # ANALYSIS DATA ===================================
 
-    analysis_data_r <- generate_analysis_data(
+
+    out <- generate_analysis_data(
       portfolio_data_r = portfolio_data_r,
       crispy_data_r = crispy_data_r,
       portfolio_asset_type = portfolio_asset_type
     )
+
+    analysis_data_r <- out$analysis_data_r
+    crispy_data_agg_r <- out$crispy_data_agg_r
 
     # TABLE DISPLAY IN UI ===================================
 
@@ -87,7 +91,10 @@ server <- function(
 
     update_portfolio_with_user_input(input, portfolio_data_r, trisk_granularity_r, display_columns, portfolio_states, max_trisk_granularity)
 
-    return(analysis_data_r)
+    return(list(
+      "analysis_data_r"=analysis_data_r,
+      "crispy_data_agg_r"=crispy_data_agg_r
+      ))
   })
 }
 
@@ -144,6 +151,7 @@ initialize_portfolio <- function(trisk_granularity_r, portfolio_states) {
 
 generate_analysis_data <- function(portfolio_data_r, crispy_data_r, portfolio_asset_type) {
   analysis_data_r <- reactiveVal()
+  crispy_data_agg_r <- reactiveVal()
 
   observe({
     if (!is.null(portfolio_data_r()) & !is.null(crispy_data_r())) {
@@ -180,6 +188,7 @@ generate_analysis_data <- function(portfolio_data_r, crispy_data_r, portfolio_as
       portfolio_data_r(portfolio_data)
 
 
+      # Creates and aggregate Analysis data without portfolio with stress.test.plot.report fun
       if (nrow(portfolio_data_r() > 0)) {
         analysis_data <- stress.test.plot.report:::load_input_plots_data_from_tibble(
           portfolio_data = portfolio_data_r(),
@@ -190,7 +199,7 @@ generate_analysis_data <- function(portfolio_data_r, crispy_data_r, portfolio_as
           dplyr::mutate(
             crispy_perc_value_change = round(crispy_perc_value_change, digits = 4),
             crispy_value_loss = round(crispy_value_loss, digits = 2),
-            crispy_pd_diff = round(pd_difference, digits = 4)
+            pd_difference = round(pd_difference, digits = 4)
           )
       } else {
         analysis_data <- dplyr::inner_join(
@@ -201,14 +210,30 @@ generate_analysis_data <- function(portfolio_data_r, crispy_data_r, portfolio_as
           dplyr::mutate(
             crispy_perc_value_change = NA,
             crispy_value_loss = NA,
-            crispy_pd_diff = NA
+            pd_difference = NA
           )
       }
+
+      # Aggregate Crispy data without portfolio with stress.test.plot.report fun
+      crispy_data_agg <- stress.test.plot.report:::main_load_multi_crispy_data(
+        multi_crispy_data=crispy_data_r(),
+        granularity = granularity,
+        filter_outliers = filter_crispy_outliers
+      )|> dplyr::mutate(
+            pd_baseline = round(pd_baseline, digits = 4),
+            pd_shock = round(pd_shock, digits = 4),
+            pd_difference = pd_shock-pd_baseline
+          )
+
       analysis_data_r(analysis_data)
+      crispy_data_agg_r(crispy_data_agg)
     }
   })
 
-  return(analysis_data_r)
+  return(list(
+    "analysis_data_r" = analysis_data_r,
+    "crispy_data_agg_r" = crispy_data_agg_r
+  ))
 }
 
 display_analysis_data <- function(output, analysis_data_r, display_columns, editable_columns_names, colored_columns_names, trisk_granularity_r) {
