@@ -639,7 +639,7 @@
     },
     "ggplot2": {
       "Package": "ggplot2",
-      "Version": "3.4.4",
+      "Version": "3.5.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -660,7 +660,7 @@
         "vctrs",
         "withr"
       ],
-      "Hash": "313d31eff2274ecf4c1d3581db7241f9"
+      "Hash": "52ef83f93f74833007f193b2d4c159a2"
     },
     "ggrepel": {
       "Package": "ggrepel",
@@ -1354,13 +1354,13 @@
     },
     "renv": {
       "Package": "renv",
-      "Version": "1.0.3",
+      "Version": "1.0.4",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "utils"
       ],
-      "Hash": "41b847654f567341725473431dd0d5ab"
+      "Hash": "11abaf7c540ff33f94514d50f929bfd1"
     },
     "rex": {
       "Package": "rex",
@@ -1374,7 +1374,7 @@
     },
     "rhino": {
       "Package": "rhino",
-      "Version": "1.6.0",
+      "Version": "1.7.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1395,9 +1395,10 @@
         "testthat",
         "utils",
         "withr",
+        "xml2",
         "yaml"
       ],
-      "Hash": "ff605bc0e89a93b4ccf76f565bc1cdfc"
+      "Hash": "59ee79b26dd590b08dd1a3111d093832"
     },
     "rlang": {
       "Package": "rlang",
@@ -1591,13 +1592,13 @@
       "Package": "stress.test.plot.report",
       "Version": "0.0.0.9000",
       "Source": "GitHub",
+      "Remotes": "2DegreesInvesting/r2dii.climate.stress.test, 2DegreesInvesting/STDataMGMT, RMI-PACTA/r2dii.colours",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteUsername": "2DegreesInvesting",
       "RemoteRepo": "stress.test.plot.report",
-      "RemoteRef": "master",
-      "RemoteSha": "e6745213250f5805c869dc7ae772db28d5d82ee7",
-      "Remotes": "2DegreesInvesting/r2dii.climate.stress.test, 2DegreesInvesting/STDataMGMT, RMI-PACTA/r2dii.colours",
+      "RemoteUsername": "2DegreesInvesting",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "402ee5d62b8fa7d8dfdab4867a73beecec5e5280",
       "Requirements": [
         "box",
         "dplyr",
@@ -1612,7 +1613,7 @@
         "tidytext",
         "withr"
       ],
-      "Hash": "62184091f35034d10fbb36353de0cf96"
+      "Hash": "fb48010abcd470294f9b762f9e782cda"
     },
     "stringi": {
       "Package": "stringi",
