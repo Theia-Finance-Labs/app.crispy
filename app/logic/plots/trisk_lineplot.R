@@ -72,10 +72,21 @@ trisk_line_plot <- ggplot(
         linetype = "Scenario"
     ) +
     ggplot2::scale_color_manual(values = facets_colors) +
-    r2dii.plot::theme_2dii() +
-    ggplot2::theme(panel.grid.major.y = ggplot2::element_line(size = .1, color = "black")) +
     ggplot2::facet_wrap(stats::as.formula(paste("~", paste(facet_var, collapse = "+"))), scales = "fixed", ncol = 2) +
-    ggplot2::expand_limits(y = 0) 
+    r2dii.plot::theme_2dii() +
+    ggplot2::theme(
+        panel.background = ggplot2::element_blank(),
+        panel.grid.major = ggplot2::element_blank(),
+        panel.grid.minor = ggplot2::element_blank(),
+        panel.grid.major.y = ggplot2::element_blank(),
+        strip.background = ggplot2::element_blank()
+    ) +
+    ggplot2::facet_wrap(
+        stats::as.formula(paste("~", paste(facet_var, collapse = "+"))), 
+        scales = "free_y", 
+        ncol = 2
+    )
+
 
   return(trisk_line_plot)
 }
