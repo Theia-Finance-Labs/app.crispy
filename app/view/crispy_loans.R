@@ -45,14 +45,16 @@ server <- function(id, perimeter, backend_trisk_run_folder, possible_trisk_combi
 
     display_columns_loans <- c(
       names(max_trisk_granularity),
+      "term",
       "exposure_value_usd",
-      "crispy_perc_value_change",
-      "crispy_value_loss",
       "loss_given_default",
-      "term"
+      "pd_baseline",
+      "expected_loss_baseline",
+      "pd_shock",
+      "expected_loss_shock"
     )
-    editable_columns_names_loans <- c("exposure_value_usd", "loss_given_default", "term")
-    colored_columns_names_loans <- c("crispy_perc_value_change", "crispy_value_loss")
+    editable_columns_names_loans <- c("exposure_value_usd", "loss_given_default")
+    colored_columns_names_loans <- c("pd_baseline", "pd_shock")
 
     out <- portfolio_analysis$server(
       "portfolio_analysis",

@@ -26,7 +26,7 @@ data_pd_term <- crispy_data_agg |>
   dplyr::mutate(
     pd_type=factor(.data$pd_type, levels = c("baseline", "shock", "difference"))
   )|>
-  dplyr::filter(.data$pd_type != "difference")
+  dplyr::filter(.data$pd_type != "difference") |>
   dplyr::select_at(c(facet_var, "term", "pd_type", "pd_value")) 
 
 return(data_pd_term)

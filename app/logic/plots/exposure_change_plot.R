@@ -10,13 +10,20 @@ pipeline_exposure_change_plot <- function(
     analysis_data,
     x_var = "ald_sector",
     y_exposure_var = "exposure_value_usd",
-    y_value_loss_var = "crispy_value_loss") {
-  data_exposure_change <- prepare_for_exposure_change_plot(analysis_data, x_var, y_exposure_var, y_value_loss_var)
+    y_value_loss_var = "crispy_value_loss",
+    facet_var=NULL) {
+  data_exposure_change <- prepare_for_exposure_change_plot(
+    analysis_data=analysis_data, 
+    x_var=x_var, 
+    y_exposure_var=y_exposure_var, 
+    y_value_loss_var=y_value_loss_var)
 
   exposure_change_plot <- draw_exposure_change_plot(
-    data_exposure_change,
-    x_var, y_exposure_var,
-    y_value_loss_var
+    data_exposure_change=data_exposure_change,
+    x_var=x_var, 
+    y_exposure_var=y_exposure_var,
+    y_value_loss_var=y_value_loss_var,
+    facet_var=facet_var
   )
 
   return(exposure_change_plot)
@@ -35,7 +42,8 @@ draw_exposure_change_plot <- function(
     data_exposure_change,
     x_var,
     y_exposure_var,
-    y_value_loss_var) {
+    y_value_loss_var,
+    facet_var=NULL) {
   plot_bar_color <-
     r2dii.colours::palette_1in1000_plot |>
     dplyr::filter(.data$label == "grey") |>
@@ -69,10 +77,16 @@ draw_exposure_change_plot <- function(
     r2dii.plot::theme_2dii() +
     scale_y_continuous(labels = scales::unit_format(unit = "M", scale = 1e-6)) +
     theme(
-      legend.position = "none",
+      # legend.position = "none",
       axis.text.x = element_text(angle = 45, hjust = 1)
     ) +
     labs(title = "Estimated impact of the Shock on Exposure")
+
+    if (!is.null(facet_var)){
+      exposure_change_plot <- exposure_change_plot+
+        ggplot2::facet_grid(stats::as.formula(paste("~", paste(facet_var, collapse = "+"))), scales = "free_y") 
+
+    }
 
   return(exposure_change_plot)
 }

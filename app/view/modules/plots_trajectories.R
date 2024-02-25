@@ -12,8 +12,13 @@ box::use(
 ui <- function(id) {
   ns <- NS(id)
   tagList(
-    semantic.dashboard::box(title = "Production Trajectories", width = 16, plotOutput(ns("trisk_line_plot_output"), height = "900px")),
-
+    semantic.dashboard::box(
+      title = "Production Trajectories", 
+      width = 16, 
+      collapsible = FALSE,
+      # height = "900px",
+      plotOutput(ns("trisk_line_plot_output"))
+      )
   )
 }
 

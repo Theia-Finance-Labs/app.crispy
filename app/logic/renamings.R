@@ -1,4 +1,7 @@
 RENAMING_SCENARIOS <- c(
+  "GECO2021_CurPol" = "GECO CurPol",
+  "IPR2023Automotive_baseline" = "IPR Automotive baseline",
+  "IPR2023Automotive_FPS"="IPR2023 Automotive FPS",
   "NGFS2023REMIND_NDC" = "REMIND NDC",
   "NGFS2023MESSAGE_NDC" = "MESSAGE NDC",
   "NGFS2023GCAM_NDC" = "GCAM NDC",
@@ -83,7 +86,6 @@ rename_string_vector <- function(string_vector, words_class, dev_to_ux = TRUE) {
     return("")
   }
 
-
   renaming_classes <- list(
     "scenarios" = RENAMING_SCENARIOS,
     "analysis_columns" = RENAMING_ANALYSIS_COLUMNS
@@ -91,7 +93,16 @@ rename_string_vector <- function(string_vector, words_class, dev_to_ux = TRUE) {
 
   if (words_class %in% names(renaming_classes)) {
     RENAMING <- renaming_classes[[words_class]]
+
+
     if (dev_to_ux) {
+      if (!all(string_vector %in% names(RENAMING))) {
+        print(paste(collapse="/n",
+        "WARNING: ",
+          string_vector[!string_vector %in% names(RENAMING)],
+           "are not renamed in app/logic/renamings.R"))
+      }
+
       string_vector <- unname(RENAMING[string_vector])
     } else {
       REV_RENAMING <- stats::setNames(names(RENAMING), unname(RENAMING))
