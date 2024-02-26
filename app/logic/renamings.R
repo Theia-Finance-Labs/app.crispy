@@ -68,7 +68,8 @@ RENAMING_ANALYSIS_COLUMNS <- c(
   "expected_loss_portfolio" = "Expected Loss",
   "expected_loss_baseline" = "Expected Loss (Baseline)",
   "expected_loss_shock" = "Expected Loss (Shock)",
-  "pd_difference" = "Difference in PD"
+  "pd_difference" = "PDs Difference (shock-baseline)",
+  "expected_loss_difference" = "Expected losses difference (shock-baseline)"
 )
 
 

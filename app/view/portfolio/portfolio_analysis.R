@@ -206,12 +206,13 @@ generate_analysis_data <- function(portfolio_data_r, crispy_data_r, portfolio_as
           portfolio_data_r(),
           crispy_data_r(),
           by = granularity
-        ) |>
-          dplyr::mutate(
-            crispy_perc_value_change = NA,
-            crispy_value_loss = NA,
-            pd_difference = NA
-          )
+        )
+        #  |>
+        #   dplyr::mutate(
+        #     crispy_perc_value_change = NA,
+        #     crispy_value_loss = NA,
+        #     pd_difference = NA
+        #   )
       }
 
       # Aggregate Crispy data without portfolio with stress.test.plot.report fun

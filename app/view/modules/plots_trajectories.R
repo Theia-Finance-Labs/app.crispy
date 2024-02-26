@@ -16,8 +16,7 @@ ui <- function(id) {
       title = "Production Trajectories",
       width = 16,
       collapsible = FALSE,
-      # height = "900px",
-      plotOutput(ns("trisk_line_plot_output"))
+      plotOutput(ns("trisk_line_plot_output"), height = "100%")
     )
   )
 }

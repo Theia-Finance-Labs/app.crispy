@@ -65,9 +65,9 @@ draw_trisk_line_plot <- function(
     # ggplot2::geom_point(size = 0.1) +
     ggplot2::scale_y_continuous(labels = scales::percent_format(scale = 1)) +
     ggplot2::scale_linetype_manual(values = c(
-      "production_baseline_scenario" = "dashed",
-      "production_target_scenario" = "solid",
-      "production_shock_scenario" = "dotted"
+      "production_baseline_scenario" = "dotted",
+      "production_target_scenario" = "dashed",
+      "production_shock_scenario" = "solid"
     )) +
     ggplot2::labs(
       x = "Year",
