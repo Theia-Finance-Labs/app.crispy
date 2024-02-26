@@ -1,32 +1,84 @@
-# Contains the portfolio display functions
-# Is extended by portfolio_edition module
-# merge the portfolio with crispy data, and aggregate to the
-# granularity defined in the sidebar_parameter module, creating the analysis_data to feed plots
 
 box::use(
-  shiny[moduleServer, NS, reactiveVal, reactive, observeEvent, observe, selectizeInput, eventReactive, div, tags, reactiveValues],
-  semantic.dashboard[box],
-  DT[DTOutput, renderDT, datatable, JS],
-  shiny.semantic[semanticPage, button, segment]
+  shiny[
+    moduleServer, NS, reactiveVal, reactive, observeEvent, observe,
+    selectizeInput, updateSelectizeInput, eventReactive,
+    div, tags, reactiveValues, HTML
+  ],
+  semantic.dashboard[box, icon],
+  DT[dataTableProxy, DTOutput, renderDT, datatable, JS],
+  shiny.semantic[semanticPage, segment, button],
+  shinyjs[runjs, useShinyjs]
 )
 
+
+
 box::use(
-  app/view/portfolio/portfolio_edition,
   app/logic/constant[max_trisk_granularity, equity_portfolio_expiration_date, filter_crispy_outliers],
-  app/logic/renamings[rename_tibble_columns]
+  app/logic/renamings[rename_tibble_columns],
+  app/view/portfolio/simple_search_dropdown
 )
+
+
 
 
 ##################### UI
 
-ui <- function(id, title = "") {
+ui <- function(id, portfolio_class = "") {
   ns <- NS(id)
   box(
-    title = title, width = 16, collapsible = FALSE,
+    title = portfolio_class, width = 16, collapsible = FALSE,
     DTOutput(outputId = ns("portfolio_table")),
-    if (title == "Loans Portfolio") {
-      # show the row editing only on the Loans tab
-      portfolio_edition$ui(ns("portfolio_table"))
+    if (portfolio_class == "Loans Portfolio") {
+      # show the Row Edition only on the Loans tab
+      tags$div(
+        class = "ui grid container", # Main grid container for layout
+        style = "padding: 20px;", # Add some padding around the container
+        div(
+          class = "row",
+          div(
+            class = "sixteen wide column",
+            shiny.semantic::dropdown_input(
+              ns("ald_sector_dropdown"),
+              default_text = "Sector",
+              choices = NULL # Populate with your choices
+            ),
+            shiny.semantic::dropdown_input(
+              ns("ald_business_unit_dropdown"),
+              default_text = "Business Unit",
+              choices = NULL # Populate with your choices
+            ),
+            # simple_search_dropdown$ui(ns("company_name_simple_search_dropdown")),
+            shiny.semantic::dropdown_input(
+              ns("maturity_year"),
+              default_text = "Year of maturity",
+              choices = 2024:2040,
+              value = 2024
+            )
+          )
+        ),
+        div(
+          class = "row",
+          div(
+            class = "eight wide column",
+            shiny.semantic::button(
+              ns("add_row_btn"),
+              "Add new row",
+              icon = icon("plus"), ,
+              class = "ui button fluid"
+            )
+          ),
+          div(
+            class = "eight wide column",
+            shiny.semantic::button(
+              ns("delete_row_btn"),
+              "Delete Selected Rows",
+              icon = icon("delete"),
+              class = "ui button fluid"
+            )
+          )
+        )
+      )
     }
   )
 }
@@ -37,6 +89,7 @@ ui <- function(id, title = "") {
 
 server <- function(
     id,
+    portfolio_class,
     crispy_data_r,
     trisk_granularity_r,
     max_trisk_granularity,
@@ -56,12 +109,80 @@ server <- function(
 
     # possible_trisk_combinations is not null for the Loans tab
     if (!is.null(possible_trisk_combinations)) {
-      portfolio_data_r <- portfolio_edition$server(
-        "portfolio_table",
-        portfolio_data_r = portfolio_data_r,
-        crispy_data_r = crispy_data_r,
-        possible_trisk_combinations = possible_trisk_combinations
-      )
+      
+  if (portfolio_class == "Loans Portfolio") {
+      # Row Edition server logic only on the Loans tab
+              
+        # ADD ROW =================
+
+        selected_maturity_year <- reactive({
+          input$maturity_year
+        })
+
+        selected_ald_sector <- reactive({
+          choice <- input$ald_sector_dropdown
+          # renamed_choice <- rename_string_vector(choice, words_class = "scenarios", dev_to_ux = FALSE)
+          # return(renamed_choice)
+          return(choice)
+        })
+        selected_ald_business_unit_r <- reactive({
+          choice <- input$ald_business_unit_dropdown
+          # renamed_choice <- rename_string_vector(choice, words_class = "scenarios", dev_to_ux = FALSE)
+          # return(renamed_choice)
+          return(choice)
+        })
+
+
+        # synchronise dropdown choices  with the possible combinations
+        # at the same time get the company query return value to update selected_company_name_r
+        # TODO selected_company_name_r kept as legacy for later reactivation of the company
+        selected_company_name_r <- update_ald_dropdowns(
+          input = input,
+          session = session,
+          use_ald_sector = use_ald_sector, # TODO INTEGRATE USE_ALD_SECTOR INTO HIDE_VARS
+          crispy_data_r = crispy_data_r
+        )
+
+        # EDIT ROWS =================
+
+        # BUTTONS ADD ROWS
+        # add a new row by creating it in the portfolio
+        observeEvent(input$add_row_btn, {
+          user_defined_row <- tibble::as_tibble(list(
+            # company_id = ifelse(is.null(selected_company_name_r()), NA, selected_company_name_r()),
+            ald_business_unit = ifelse(is.null(selected_ald_business_unit_r()), NA, selected_ald_business_unit_r()),
+            ald_sector = ifelse(is.null(selected_ald_sector()), NA, selected_ald_sector()),
+            expiration_date = paste0(as.character(selected_maturity_year()), "-01-01")
+          ))
+
+          use_columns <- dplyr::intersect(names(user_defined_row), names(portfolio_data_r()))
+          user_defined_row <- user_defined_row |>
+            dplyr::select_at(use_columns)
+
+          updated_portfolio_data <- dplyr::bind_rows(
+            portfolio_data_r(),
+            user_defined_row
+          )
+          portfolio_data_r(updated_portfolio_data)
+        })
+
+
+
+        proxy <- DT::dataTableProxy(id)
+
+        # Delete row
+        observeEvent(input$delete_row_btn, {
+          selected_row <- input$portfolio_table_rows_selected
+          if (length(selected_row)) {
+            my_data_data <- portfolio_data_r()
+            my_data_data <- my_data_data[-selected_row, , drop = FALSE]
+            portfolio_data_r(my_data_data)
+            DT::replaceData(proxy, my_data_data, resetPaging = FALSE)
+          }
+        })
+
+        }
+
     }
 
     # ANALYSIS DATA ===================================
@@ -90,6 +211,8 @@ server <- function(
     # TABLE INPUTS MGMT ===================================
 
     update_portfolio_with_user_input(input, portfolio_data_r, trisk_granularity_r, display_columns, portfolio_states, max_trisk_granularity)
+
+
 
     return(list(
       "analysis_data_r" = analysis_data_r,
@@ -300,3 +423,34 @@ update_portfolio_with_user_input <- function(input, portfolio_data_r, trisk_gran
     portfolio_states[[trisk_granularity_names]] <- portfolio_data_r()
   })
 }
+
+
+
+
+
+# Synchronise the scenarios available depending on user scenario choice
+update_ald_dropdowns <- function(input, session,
+                                 crispy_data_r,
+                                 use_ald_sector) {
+  # Observe changes in possible_trisk_combinations and update baseline_scenario dropdown
+  observeEvent(crispy_data_r(), ignoreInit = TRUE, {
+    possible_sectors <- unique(crispy_data_r()$ald_sector)
+
+    # rename the scenarios to front end appropriate name
+    # new_choices <- rename_string_vector(possible_shocks, words_class = "scenarios")
+    new_choices <- possible_sectors
+    # Update shock_scenario dropdown with unique values from the filtered data
+    shiny.semantic::update_dropdown_input(session, "ald_sector_dropdown", choices = new_choices)
+  })
+
+  # Observe changes in baseline_scenario dropdown and update shock_scenario dropdown
+  observeEvent(input$ald_sector_dropdown, ignoreInit = TRUE, {
+    possible_ald_business_units <- crispy_data_r() |> dplyr::filter(ald_sector == input$ald_sector_dropdown)
+    possible_ald_business_units <- unique(possible_ald_business_units$ald_business_unit)
+    shiny.semantic::update_dropdown_input(
+      session,
+      "ald_business_unit_dropdown",
+      choices = possible_ald_business_units
+    )
+  })
+                                 }
