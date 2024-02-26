@@ -2,7 +2,6 @@ run_trisk_and_upload_results_to_db_conn <- function(
     trisk_run_params,
     trisk_input_path,
     postgres_conn) {
-
   st_results_wrangled_and_checked <- run_trisk_with_params(
     trisk_run_params = trisk_run_params,
     trisk_input_path = trisk_input_path
@@ -10,7 +9,7 @@ run_trisk_and_upload_results_to_db_conn <- function(
   if (!is.null(st_results_wrangled_and_checked)) {
     run_id <- upload_to_postgres(
       st_results_wrangled_and_checked = st_results_wrangled_and_checked,
-      postgres_conn=postgres_conn
+      postgres_conn = postgres_conn
     )
     run_id <- unique(st_results_wrangled_and_checked$run_metadata$run_id)
   } else {
@@ -85,4 +84,3 @@ upload_to_postgres <- function(postgres_conn, st_results_wrangled_and_checked) {
   }
   DBI::dbDisconnect(postgres_conn)
 }
-

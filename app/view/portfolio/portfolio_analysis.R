@@ -1,4 +1,3 @@
-
 box::use(
   shiny[
     moduleServer, NS, reactiveVal, reactive, observeEvent, observe,
@@ -109,10 +108,9 @@ server <- function(
 
     # possible_trisk_combinations is not null for the Loans tab
     if (!is.null(possible_trisk_combinations)) {
-      
-  if (portfolio_class == "Loans Portfolio") {
-      # Row Edition server logic only on the Loans tab
-              
+      if (portfolio_class == "Loans Portfolio") {
+        # Row Edition server logic only on the Loans tab
+
         # ADD ROW =================
 
         selected_maturity_year <- reactive({
@@ -180,9 +178,7 @@ server <- function(
             DT::replaceData(proxy, my_data_data, resetPaging = FALSE)
           }
         })
-
-        }
-
+      }
     }
 
     # ANALYSIS DATA ===================================
@@ -453,4 +449,4 @@ update_ald_dropdowns <- function(input, session,
       choices = possible_ald_business_units
     )
   })
-                                 }
+}

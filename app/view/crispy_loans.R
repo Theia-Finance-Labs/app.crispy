@@ -24,7 +24,7 @@ ui <- function(id, max_trisk_granularity, available_vars) {
       class = "ui segment", style = "min-height: 100vh;",
       shiny::tags$div(
         class = "ui stackable grid",
-        portfolio_analysis$ui(ns("portfolio_analysis"), portfolio_class="Loans Portfolio"),
+        portfolio_analysis$ui(ns("portfolio_analysis"), portfolio_class = "Loans Portfolio"),
         plots_loans$ui(ns("plots_loans"))
       )
     )
@@ -56,7 +56,7 @@ server <- function(id, perimeter, backend_trisk_run_folder, possible_trisk_combi
 
     out <- portfolio_analysis$server(
       "portfolio_analysis",
-      portfolio_class="Loans Portfolio",
+      portfolio_class = "Loans Portfolio",
       crispy_data_r = crispy_data_r,
       trisk_granularity_r = trisk_granularity_r,
       max_trisk_granularity = max_trisk_granularity,
@@ -78,4 +78,3 @@ server <- function(id, perimeter, backend_trisk_run_folder, possible_trisk_combi
     )
   })
 }
-
