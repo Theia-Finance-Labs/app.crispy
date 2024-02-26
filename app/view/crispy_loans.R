@@ -7,8 +7,8 @@ box::use(
 )
 
 box::use(
-  app / view / portfolio / portfolio_analysis,
-  app / view / modules / plots_loans
+  app/view/portfolio/portfolio_analysis,
+  app/view/modules/plots_loans
 )
 
 
@@ -22,11 +22,11 @@ ui <- function(id, max_trisk_granularity, available_vars) {
     class = "pusher container", style = "min-height: 100vh;",
     shiny::div(
       class = "ui segment", style = "min-height: 100vh;",
-            shiny::tags$div(
+      shiny::tags$div(
         class = "ui stackable grid",
-      portfolio_analysis$ui(ns("portfolio_analysis"), "Loans Portfolio"),
-      plots_loans$ui(ns("plots_loans"))
-            )
+        portfolio_analysis$ui(ns("portfolio_analysis"), "Loans Portfolio"),
+        plots_loans$ui(ns("plots_loans"))
+      )
     )
   )
 }
@@ -76,6 +76,6 @@ server <- function(id, perimeter, backend_trisk_run_folder, possible_trisk_combi
       analysis_data_r = analysis_data_r,
       crispy_data_agg_r = crispy_data_agg_r,
       max_trisk_granularity = max_trisk_granularity
-      )
+    )
   })
 }

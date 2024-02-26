@@ -92,9 +92,9 @@ server <- function(
     update_portfolio_with_user_input(input, portfolio_data_r, trisk_granularity_r, display_columns, portfolio_states, max_trisk_granularity)
 
     return(list(
-      "analysis_data_r"=analysis_data_r,
-      "crispy_data_agg_r"=crispy_data_agg_r
-      ))
+      "analysis_data_r" = analysis_data_r,
+      "crispy_data_agg_r" = crispy_data_agg_r
+    ))
   })
 }
 
@@ -216,14 +216,14 @@ generate_analysis_data <- function(portfolio_data_r, crispy_data_r, portfolio_as
 
       # Aggregate Crispy data without portfolio with stress.test.plot.report fun
       crispy_data_agg <- stress.test.plot.report:::main_load_multi_crispy_data(
-        multi_crispy_data=crispy_data_r(),
+        multi_crispy_data = crispy_data_r(),
         granularity = granularity,
         filter_outliers = filter_crispy_outliers
-      )|> dplyr::mutate(
-            pd_baseline = round(pd_baseline, digits = 4),
-            pd_shock = round(pd_shock, digits = 4),
-            pd_difference = pd_shock-pd_baseline
-          )
+      ) |> dplyr::mutate(
+        pd_baseline = round(pd_baseline, digits = 4),
+        pd_shock = round(pd_shock, digits = 4),
+        pd_difference = pd_shock - pd_baseline
+      )
 
       analysis_data_r(analysis_data)
       crispy_data_agg_r(crispy_data_agg)

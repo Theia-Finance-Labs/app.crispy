@@ -20,52 +20,54 @@ box::use(
 ui <- function(id) {
   ns <- NS(id)
 
-   tags$div(
-      class = "ui grid container", # Main grid container for layout
-      style = "padding: 20px;", # Add some padding around the container
+  tags$div(
+    class = "ui grid container", # Main grid container for layout
+    style = "padding: 20px;", # Add some padding around the container
+    div(
+      class = "row",
       div(
-        class = "row",
-        div(
-          class = "sixteen wide column",
-          shiny.semantic::dropdown_input(
-            ns("ald_sector_dropdown"),
-            default_text = "Sector",
-            choices = NULL # Populate with your choices
-          ),
-          shiny.semantic::dropdown_input(
-            ns("ald_business_unit_dropdown"),
-            default_text = "Business Unit",
-            choices = NULL # Populate with your choices
-          ),
-          # simple_search_dropdown$ui(ns("company_name_simple_search_dropdown")),
-          shiny.semantic::dropdown_input(
-            ns("maturity_year"), 
-            default_text = "Year of maturity", 
-            choices = 2024:2040,
-            value = 2024
-          )
+        class = "sixteen wide column",
+        shiny.semantic::dropdown_input(
+          ns("ald_sector_dropdown"),
+          default_text = "Sector",
+          choices = NULL # Populate with your choices
+        ),
+        shiny.semantic::dropdown_input(
+          ns("ald_business_unit_dropdown"),
+          default_text = "Business Unit",
+          choices = NULL # Populate with your choices
+        ),
+        # simple_search_dropdown$ui(ns("company_name_simple_search_dropdown")),
+        shiny.semantic::dropdown_input(
+          ns("maturity_year"),
+          default_text = "Year of maturity",
+          choices = 2024:2040,
+          value = 2024
+        )
+      )
+    ),
+    div(
+      class = "row",
+      div(
+        class = "eight wide column",
+        shiny.semantic::button(
+          ns("add_row_btn"),
+          "Add new row",
+          icon = icon("plus"), ,
+          class = "ui button fluid"
         )
       ),
       div(
-        class = "row",
-        div(
-          class = "eight wide column",
-          shiny.semantic::button(
-            ns("add_row_btn"), 
-            "Add new row", 
-            icon = icon("plus"), 
-            , class = "ui button fluid")
-        ),
-        div(
-          class = "eight wide column",
-          shiny.semantic::button(
-            ns("delete_row_btn"), 
-            "Delete Selected Rows", 
-            icon = icon("delete"), 
-            class = "ui button fluid")
+        class = "eight wide column",
+        shiny.semantic::button(
+          ns("delete_row_btn"),
+          "Delete Selected Rows",
+          icon = icon("delete"),
+          class = "ui button fluid"
         )
       )
     )
+  )
 }
 
 ####### Server
@@ -108,24 +110,22 @@ server <- function(id, trisk_granularity_r, portfolio_data_r, crispy_data_r, pos
     # BUTTONS ADD ROWS
     # add a new row by creating it in the portfolio
     observeEvent(input$add_row_btn, {
+      user_defined_row <- tibble::as_tibble(list(
+        # company_id = ifelse(is.null(selected_company_name_r()), NA, selected_company_name_r()),
+        ald_business_unit = ifelse(is.null(selected_ald_business_unit_r()), NA, selected_ald_business_unit_r()),
+        ald_sector = ifelse(is.null(selected_ald_sector()), NA, selected_ald_sector()),
+        expiration_date = paste0(as.character(selected_maturity_year()), "-01-01")
+      ))
 
-        user_defined_row <- tibble::as_tibble(list(
-          # company_id = ifelse(is.null(selected_company_name_r()), NA, selected_company_name_r()),
-          ald_business_unit = ifelse(is.null(selected_ald_business_unit_r()), NA, selected_ald_business_unit_r()),
-          ald_sector = ifelse(is.null(selected_ald_sector()), NA, selected_ald_sector()),
-          expiration_date = paste0(as.character(selected_maturity_year()), "-01-01")
-        ))
+      use_columns <- dplyr::intersect(names(user_defined_row), names(portfolio_data_r()))
+      user_defined_row <- user_defined_row |>
+        dplyr::select_at(use_columns)
 
-        use_columns <- dplyr::intersect(names(user_defined_row), names(portfolio_data_r()))
-        user_defined_row <- user_defined_row |>
-          dplyr::select_at(use_columns)
-
-        updated_portfolio_data <- dplyr::bind_rows(
-          portfolio_data_r(),
-          user_defined_row
-        )
-        portfolio_data_r(updated_portfolio_data)
-      
+      updated_portfolio_data <- dplyr::bind_rows(
+        portfolio_data_r(),
+        user_defined_row
+      )
+      portfolio_data_r(updated_portfolio_data)
     })
 
 

@@ -158,7 +158,6 @@ ui <- function(id) {
 #' @export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
-
     possible_trisk_combinations <- r2dii.climate.stress.test::get_scenario_geography_x_ald_sector(trisk_input_path)
 
     # the TRISK runs are generated In the sidebar module
@@ -167,7 +166,7 @@ server <- function(id) {
       max_trisk_granularity = max_trisk_granularity, # constant
       possible_trisk_combinations = possible_trisk_combinations, # computed constant
       backend_trisk_run_folder = backend_trisk_run_folder, # constant
-      trisk_input_path=trisk_input_path, # constant
+      trisk_input_path = trisk_input_path, # constant
       available_vars = available_vars, # constant
       hide_vars = hide_vars, # constant
       use_ald_sector = use_ald_sector # constant

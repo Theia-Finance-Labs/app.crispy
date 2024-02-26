@@ -14,17 +14,17 @@ ui <- function(id) {
   ns <- NS(id)
   fluidRow(
     semantic.dashboard::box(
-      title = "NPV Change", 
-      width = 8, 
+      title = "NPV Change",
+      width = 8,
       collapsible = FALSE,
       plotOutput(ns("crispy_npv_change_plot"))
-      ),
+    ),
     semantic.dashboard::box(
-      title = "Exposure Change", 
-      width = 8, 
+      title = "Exposure Change",
+      width = 8,
       collapsible = FALSE,
       plotOutput(ns("exposure_change_plot"))
-      )
+    )
   )
 }
 

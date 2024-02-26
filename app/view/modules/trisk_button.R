@@ -7,11 +7,11 @@ box::use(
 )
 
 box::use(
-  app / logic / trisk_button_logic[
+  app/logic/trisk_button_logic[
     trisk_generator,
     check_if_run_exists
   ],
-  app / logic / data_load[
+  app/logic/data_load[
     load_backend_crispy_data,
     load_backend_trajectories_data
   ]
@@ -44,25 +44,24 @@ ui <- function(id) {
         tags$p("This dialog should close automatically when the data is loaded. Click outside of it to close manually.")
       )
     ),
- tags$head(
-    tags$style(shiny::HTML("
+    tags$head(
+      tags$style(shiny::HTML("
       .ui.fluid.container {
         padding-top: 20px; /* Adds padding at the top of the container */
         padding-right: 20px; /* Adds padding at the top of the container */
         padding-left: 20px; /* Adds padding at the bottom of the container */
       }
     "))
-  ),
-  
-  tags$div(
-    class = "ui fluid container",
-    # Fomantic UI styled action button with added custom class for styling
-    tags$button(
-      id = ns("run_trisk"),
-      class = "ui fluid button ", # Added custom class for styling
-      "Run Trisk (click again when switching tabs to refresh data)"
+    ),
+    tags$div(
+      class = "ui fluid container",
+      # Fomantic UI styled action button with added custom class for styling
+      tags$button(
+        id = ns("run_trisk"),
+        class = "ui fluid button ", # Added custom class for styling
+        "Run Trisk (click again when switching tabs to refresh data)"
+      )
     )
-  )
   )
 }
 
@@ -129,7 +128,7 @@ server <- function(
     run_id_rr <- reactive({
       input$run_trisk
       run_id_r()
-      })
+    })
 
     # load trisk outputs either from local storage, or cloud backend
     trisk_outputs <- fetch_crispy_and_trajectories_data(
@@ -191,7 +190,6 @@ fetch_crispy_and_trajectories_data <- function(session, backend_trisk_run_folder
 
   observe({
     if (!is.null(trisk_granularity_r()) & !is.null(raw_crispy_data_r()) & !is.null(raw_trajectories_data_r())) {
-
       crispy_data_r(
         raw_crispy_data_r() |>
           stress.test.plot.report::main_load_multi_crispy_data(granularity = trisk_granularity_r())

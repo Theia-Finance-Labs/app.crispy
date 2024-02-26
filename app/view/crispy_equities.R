@@ -8,9 +8,9 @@ box::use(
 )
 
 box::use(
-  app / view / portfolio / portfolio_analysis,
-  app / view / modules / plots_equities,
-  app / view / modules / plots_trajectories,
+  app/view/portfolio/portfolio_analysis,
+  app/view/modules/plots_equities,
+  app/view/modules/plots_trajectories,
 )
 
 ####### UI
@@ -67,7 +67,7 @@ server <- function(id, perimeter, backend_trisk_run_folder, max_trisk_granularit
       editable_columns_names = editable_columns_names_equities,
       colored_columns_names = colored_columns_names_equities
     )
-    
+
     analysis_data_r <- out$analysis_data_r
     crispy_data_agg_r <- out$crispy_data_agg_r
 

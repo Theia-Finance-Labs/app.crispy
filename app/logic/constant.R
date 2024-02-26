@@ -14,7 +14,7 @@ filter_crispy_outliers <- TRUE
 
 # 1st january of the next year is the default expiration date for the equity portfolio
 # in order to just pick 1 row out of the crispy data
-equity_portfolio_expiration_date <- paste0(as.character(as.numeric(format(Sys.Date(), "%Y"))+1), "-01-01")
+equity_portfolio_expiration_date <- paste0(as.character(as.numeric(format(Sys.Date(), "%Y")) + 1), "-01-01")
 
 # Must be ordered from "less granular" to "more granular"
 max_trisk_granularity <- list(

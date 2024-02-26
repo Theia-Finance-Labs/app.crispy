@@ -12,7 +12,7 @@ box::use(
   app/view/params/params_scenarios,
   app/view/params/params_dimensions,
   app/view/params/params_trisk,
-  app / view / modules / trisk_button,
+  app/view/modules/trisk_button,
   app/logic/renamings[rename_string_vector]
 )
 
