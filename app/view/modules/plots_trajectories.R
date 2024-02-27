@@ -3,7 +3,7 @@ box::use(
 )
 
 box::use(
-  app/logic/plots/trisk_lineplot[pipeline_trisk_line_plot]
+  app / logic / plots / trisk_lineplot[pipeline_trisk_line_plot]
 )
 
 

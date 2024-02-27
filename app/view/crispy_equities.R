@@ -8,9 +8,9 @@ box::use(
 )
 
 box::use(
-  app/view/portfolio/portfolio_analysis,
-  app/view/modules/plots_equities,
-  app/view/modules/plots_trajectories,
+  app / view / portfolio / portfolio_analysis,
+  app / view / modules / plots_equities,
+  app / view / modules / plots_trajectories,
 )
 
 ####### UI

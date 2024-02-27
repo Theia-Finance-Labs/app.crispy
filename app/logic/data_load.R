@@ -1,5 +1,5 @@
 box::use(
-  app/logic/cloud_logic[
+  app / logic / cloud_logic[
     get_data_from_postgres
   ]
 )

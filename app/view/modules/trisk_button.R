@@ -7,11 +7,11 @@ box::use(
 )
 
 box::use(
-  app/logic/trisk_button_logic[
+  app / logic / trisk_button_logic[
     trisk_generator,
     check_if_run_exists
   ],
-  app/logic/data_load[
+  app / logic / data_load[
     load_backend_crispy_data,
     load_backend_trajectories_data
   ]

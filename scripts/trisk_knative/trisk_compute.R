@@ -7,10 +7,9 @@ run_trisk_and_upload_results_to_db_conn <- function(
     trisk_input_path = trisk_input_path
   )
   if (!is.null(st_results_wrangled_and_checked)) {
-    
     run_id <- check_if_results_exist(trisk_run_params, postgres_conn)
-    
-    if (is.null(run_id)){
+
+    if (is.null(run_id)) {
       run_id <- upload_to_postgres(
         st_results_wrangled_and_checked = st_results_wrangled_and_checked,
         postgres_conn = postgres_conn
@@ -24,22 +23,21 @@ run_trisk_and_upload_results_to_db_conn <- function(
   return(run_id)
 }
 
-# Before uploading results check if results exists, in case another parallel container 
+# Before uploading results check if results exists, in case another parallel container
 # has done the same result in the meantime
-check_if_results_exist <- function(trisk_run_params, postgres_conn){
-    # Filter the metadata based on the provided trisk run parameters
+check_if_results_exist <- function(trisk_run_params, postgres_conn) {
+  # Filter the metadata based on the provided trisk run parameters
   query <- "SELECT * FROM run_metadata"
   df <- DBI::dbGetQuery(postgres_conn, query)
   for (trisk_param in names(trisk_run_params)) {
     df <- df |> dplyr::filter(!!rlang::sym(trisk_param) == trisk_run_params[[trisk_param]])
   }
-  if(nrow(df) > 0){
+  if (nrow(df) > 0) {
     existing_run_id <- df |> dplyr::pull(.data$run_id)
     return(existing_run_id)
-  } else{
+  } else {
     return(NULL)
   }
-
 }
 
 # Function to run the trisk model with given parameters and input path

@@ -63,7 +63,7 @@ draw_exposure_change_plot <- function(
     geom_col(aes(y = !!rlang::sym(y_exposure_var)), width = bar_width, fill = plot_bar_color) +
     geom_tile(
       aes(
-        y = !!rlang::sym(y_exposure_var) + (!!rlang::sym(y_value_loss_var)/2),
+        y = !!rlang::sym(y_exposure_var) + (!!rlang::sym(y_value_loss_var) / 2),
         height = abs(!!rlang::sym(y_value_loss_var)),
         fill = dplyr::if_else(!!rlang::sym(y_value_loss_var) < 0, "Loss", "Gain")
       ),
@@ -85,7 +85,7 @@ draw_exposure_change_plot <- function(
 
   if (!is.null(facet_var)) {
     exposure_change_plot <- exposure_change_plot +
-      ggplot2::facet_wrap(stats::as.formula(paste("~", facet_var)), scales = "free_y", ncol=1)
+      ggplot2::facet_wrap(stats::as.formula(paste("~", facet_var)), scales = "free_y", ncol = 1)
   }
 
   return(exposure_change_plot)

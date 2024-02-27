@@ -10,12 +10,12 @@ box::use(
 # Load required modules and logic files
 box::use(
   # modules
-  app/view/sidebar_parameters,
-  app/view/homepage,
-  app/view/crispy_equities,
-  app/view/crispy_loans,
+  app / view / sidebar_parameters,
+  app / view / homepage,
+  app / view / crispy_equities,
+  app / view / crispy_loans,
   # logic
-  app/logic/constant[
+  app / logic / constant[
     trisk_input_path,
     backend_trisk_run_folder,
     max_trisk_granularity,
@@ -33,25 +33,42 @@ ui <- function(id) {
 
 
   shiny.semantic::semanticPage(
+    shinyjs::useShinyjs(), # Initialize shinyjs
+    tags$div( id = ns("login"), style="z-index: 10000;",
+          tags$div(
+            class = "ui middle aligned center aligned grid",
+            tags$div(
+              class = "column", style = "max-width: 450px;",
+              shiny::textInput(ns("username"), "Username", placeholder = "Username"),
+              shiny::passwordInput(ns("password"), "Password", placeholder = "Password"),
+              shiny::actionButton(ns("loginBtn"), "Log in", class = "ui large primary submit button"),
+            )
+          ),
+          tags$style(HTML("
+            .ui.grid > .column {
+              padding-top: 5em;
+              padding-bottom: 5em;
+            }
+          "))
+        ),
     tags$div(
       class = "header", # Add a loading overlay
-      shinyjs::useShinyjs(), # Initialize shinyjs
       tags$head(
         tags$style(HTML("
-          #loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.8);
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2em;
-          }
-        "))
+            #loading-overlay {
+              position: fixed;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background: rgba(255, 255, 255, 0.8);
+              z-index: 9999;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 2em;
+            }
+          "))
       ),
       div(id = "loading-overlay", "Initializing...")
     ),
@@ -71,11 +88,11 @@ ui <- function(id) {
             src = "static/logo_1in1000.png",
             height = "20%", width = "auto",
             style = "
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            margin-top: 10px;
-            margin-bottom: 10px;"
+              display: block;
+              margin-left: auto;
+              margin-right: auto;
+              margin-top: 10px;
+              margin-bottom: 10px;"
           )
         ),
         size = "very wide",
@@ -84,113 +101,166 @@ ui <- function(id) {
 
       # dashboardBody
       dashboardBody(
-        shinyjs::useShinyjs(),
-
-        # Include custom CSS to display tabs as full width
-        tags$head(
-          tags$style(HTML("
-          .full-width-tabs {
-            width: 100% !important;
-            display: flex !important;
-          }
-          .full-width-tabs .item {
-            flex: 1 !important;
-            text-align: center !important;
-          }
-        "))
-        ),
-        # Fomantic UI tabs with custom CSS to display as full width
-        tags$div(
-          class = "ui top attached tabular menu full-width-tabs",
-          tags$a(class = "item active", `data-tab` = "first", "Home"),
-          tags$a(class = "item", `data-tab` = "second", "Equities"),
-          tags$a(class = "item", `data-tab` = "third", "Loans")
-        ),
-        # dynamic tabs content, the `data-tab` attribute must match the `data-tab` attribute
-        # of the corresponding tab in the tabular menu
-        tags$div(
-          class = "ui bottom attached active tab segment", `data-tab` = "first",
-          div(
-            class = "ui container",
-            # homepage tab
-            homepage$ui(
-              ns("homepage")
+            # Include custom CSS to display tabs as full width
+            tags$head(
+              tags$style(HTML("
+            .full-width-tabs {
+              width: 100% !important;
+              display: flex !important;
+            }
+            .full-width-tabs .item {
+              flex: 1 !important;
+              text-align: center !important;
+            }
+          "))
+            ),
+            # Fomantic UI tabs with custom CSS to display as full width
+            tags$div(
+              class = "ui top attached tabular menu full-width-tabs",
+              tags$a(class = "item active", `data-tab` = "first", "Home"),
+              tags$a(class = "item", `data-tab` = "second", "Equities"),
+              tags$a(class = "item", `data-tab` = "third", "Loans")
+            ),
+            # dynamic tabs content, the `data-tab` attribute must match the `data-tab` attribute
+            # of the corresponding tab in the tabular menu
+            tags$div(
+              class = "ui bottom attached active tab segment", `data-tab` = "first",
+              div(
+                class = "ui container",
+                # homepage tab
+                homepage$ui(
+                  ns("homepage")
+                )
+              )
+            ),
+            tags$div(
+              class = "ui bottom attached tab segment", `data-tab` = "second",
+              div(
+                class = "ui container",
+                # equities tab
+                crispy_equities$ui(
+                  ns("crispy_equities"),
+                  max_trisk_granularity = max_trisk_granularity, # constant
+                  available_vars = available_vars # constant
+                )
+              )
+            ),
+            tags$div(
+              class = "ui bottom attached tab segment", `data-tab` = "third",
+              div(
+                class = "ui container",
+                # equities tab
+                crispy_loans$ui(
+                  ns("crispy_loans"),
+                  max_trisk_granularity = max_trisk_granularity, # constant
+                  available_vars = available_vars # constant
+                )
+              )
+            ),
+            # this javascript snippet initializes the tabs menu and makes the tabs clickable
+            tags$script(
+              "$(document).ready(function() {
+                  // Initialize tabs (if not already initialized)
+                  $('.menu .item').tab();
+              });"
             )
           )
-        ),
-        tags$div(
-          class = "ui bottom attached tab segment", `data-tab` = "second",
-          div(
-            class = "ui container",
-            # equities tab
-            crispy_equities$ui(
-              ns("crispy_equities"),
-              max_trisk_granularity = max_trisk_granularity, # constant
-              available_vars = available_vars # constant
-            )
-          )
-        ),
-        tags$div(
-          class = "ui bottom attached tab segment", `data-tab` = "third",
-          div(
-            class = "ui container",
-            # equities tab
-            crispy_loans$ui(
-              ns("crispy_loans"),
-              max_trisk_granularity = max_trisk_granularity, # constant
-              available_vars = available_vars # constant
-            )
-          )
-        ),
-        # this javascript snippet initializes the tabs menu and makes the tabs clickable
-        tags$script(
-          "$(document).ready(function() {
-                // Initialize tabs (if not already initialized)
-                $('.menu .item').tab();
-            });"
         )
       )
-    )
-  )
+  
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Define the server function
 #' @export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
-    possible_trisk_combinations <- r2dii.climate.stress.test::get_scenario_geography_x_ald_sector(trisk_input_path)
+    authorized_access_r <- shiny::reactiveVal(FALSE)
+    if (Sys.getenv("CRISPY_APP_ENV") == "prod") {
+      conn <- DBI::dbConnect(RPostgres::Postgres(),
+        dbname = Sys.getenv("ST_POSTGRES_DB"),
+        host = Sys.getenv("ST_POSTGRES_HOST"),
+        port = Sys.getenv("ST_POSTGRES_PORT"),
+        user = Sys.getenv("ST_POSTGRES_USERNAME"),
+        password = Sys.getenv("ST_POSTGRES_PASSWORD")
+      )
 
-    # the TRISK runs are generated In the sidebar module
-    perimeter <- sidebar_parameters$server(
-      "sidebar_parameters",
-      max_trisk_granularity = max_trisk_granularity, # constant
-      possible_trisk_combinations = possible_trisk_combinations, # computed constant
-      backend_trisk_run_folder = backend_trisk_run_folder, # constant
-      trisk_input_path = trisk_input_path, # constant
-      available_vars = available_vars, # constant
-      hide_vars = hide_vars, # constant
-      use_ald_sector = use_ald_sector # constant
-    )
+      observeEvent(input$loginBtn, {
+        authorized_access <- check_credentials(input = input, conn = conn)
+        if (authorized_access) {
+          shinyjs::hide("login")
+        } else {
+          shinyjs::alert("Incorrect username or password!")
+        }
+        authorized_access_r(authorized_access)
+      })
+    } else {
+      shinyjs::hide("login")
+      observe({
+        authorized_access_r(TRUE)
+      })
+    }
 
-    homepage$server("homepage")
+    shiny::observeEvent(c(authorized_access_r()), ignoreInit = TRUE, {
+      possible_trisk_combinations <- r2dii.climate.stress.test::get_scenario_geography_x_ald_sector(trisk_input_path)
 
-    crispy_equities$server(
-      "crispy_equities",
-      backend_trisk_run_folder = backend_trisk_run_folder, # constant
-      max_trisk_granularity = max_trisk_granularity, # constant
-      perimeter = perimeter
-    )
+      # the TRISK runs are generated In the sidebar module
+      perimeter <- sidebar_parameters$server(
+        "sidebar_parameters",
+        max_trisk_granularity = max_trisk_granularity, # constant
+        possible_trisk_combinations = possible_trisk_combinations, # computed constant
+        backend_trisk_run_folder = backend_trisk_run_folder, # constant
+        trisk_input_path = trisk_input_path, # constant
+        available_vars = available_vars, # constant
+        hide_vars = hide_vars, # constant
+        use_ald_sector = use_ald_sector # constant
+      )
 
+      homepage$server("homepage")
 
-    crispy_loans$server(
-      "crispy_loans",
-      backend_trisk_run_folder = backend_trisk_run_folder, # constant
-      possible_trisk_combinations = possible_trisk_combinations, # computed constant
-      max_trisk_granularity = max_trisk_granularity, # constant
-      perimeter = perimeter
-    )
+      crispy_equities$server(
+        "crispy_equities",
+        backend_trisk_run_folder = backend_trisk_run_folder, # constant
+        max_trisk_granularity = max_trisk_granularity, # constant
+        perimeter = perimeter
+      )
+
+      crispy_loans$server(
+        "crispy_loans",
+        backend_trisk_run_folder = backend_trisk_run_folder, # constant
+        possible_trisk_combinations = possible_trisk_combinations, # computed constant
+        max_trisk_granularity = max_trisk_granularity, # constant
+        perimeter = perimeter
+      )
+      shinyjs::runjs('$("#loading-overlay").hide();')
+    })
   })
+}
 
 
-  shinyjs::runjs('$("#loading-overlay").hide();')
+
+check_credentials <- function(input, conn) {
+  # placeholders prevent SQL injection
+  query <- "SELECT * FROM users WHERE username = $1 AND password = $2"
+
+  # Execute the query with parameters
+  password_encr <- digest::digest(input$password, algo = "sha256", serialize = FALSE)
+  user <- input$username
+  result <- DBI::dbGetQuery(conn, query, params = list(user, password_encr))
+
+  # Check if any row matches the credentials
+  return(nrow(result) == 1)
 }
