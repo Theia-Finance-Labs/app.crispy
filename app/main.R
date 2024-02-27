@@ -86,7 +86,7 @@ ui <- function(id) {
           ),
           shiny::img(
             src = "static/logo_1in1000.png",
-            height = "20%", width = "auto",
+            height = "10%", width = "auto",
             style = "
               display: block;
               margin-left: auto;
