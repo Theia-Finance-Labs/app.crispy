@@ -27,7 +27,8 @@ COPY --chown=shiny:shiny config.yml ./
 COPY --chown=shiny:shiny rhino.yml ./
 COPY --chown=shiny:shiny app app/
 
-# Expose the port your app runs on
-EXPOSE 3838
+COPY --chown=shiny:shiny docker/shiny-server.conf /etc/shiny-server/
 
-CMD ["R", "-e", "shiny::runApp('app.R', host = '127.0.0.1', port = 3838)"]
+# TODO HOW TO USE SHINY USER AND STILL SEE ENV VARIABLE
+# RUN mkdir -p /var/run/s6 && chown -R shiny:shiny /var/run/s6 
+# USER shiny 
