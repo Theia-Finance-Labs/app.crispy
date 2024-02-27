@@ -85,7 +85,7 @@ draw_exposure_change_plot <- function(
 
   if (!is.null(facet_var)) {
     exposure_change_plot <- exposure_change_plot +
-      ggplot2::facet_grid(stats::as.formula(paste("~", paste(facet_var, collapse = "+"))), scales = "free_y")
+      ggplot2::facet_wrap(stats::as.formula(paste("~", facet_var)), scales = "free_y", ncol=1)
   }
 
   return(exposure_change_plot)

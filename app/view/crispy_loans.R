@@ -48,11 +48,11 @@ server <- function(id, perimeter, backend_trisk_run_folder, possible_trisk_combi
       "term",
       "exposure_value_usd",
       "loss_given_default",
-      "pd_difference",
-      "expected_loss_difference"
+      "pd_shock",
+      "expected_loss_shock"
     )
     editable_columns_names_loans <- c("exposure_value_usd", "loss_given_default")
-    colored_columns_names_loans <- c("pd_difference")
+    colored_columns_names_loans <- c()
 
     out <- portfolio_analysis$server(
       "portfolio_analysis",

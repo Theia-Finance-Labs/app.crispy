@@ -51,7 +51,7 @@ ui <- function(id, portfolio_class = "") {
             shiny.semantic::dropdown_input(
               ns("maturity_year"),
               default_text = "Year of maturity",
-              choices = 2024:2040,
+              choices = 2024:2034,
               value = 2024
             )
           )
@@ -138,6 +138,7 @@ server <- function(
           input = input,
           session = session,
           use_ald_sector = use_ald_sector, # TODO INTEGRATE USE_ALD_SECTOR INTO HIDE_VARS
+          trisk_granularity_r=trisk_granularity_r,
           crispy_data_r = crispy_data_r
         )
 
@@ -156,18 +157,26 @@ server <- function(
           use_columns <- dplyr::intersect(names(user_defined_row), names(portfolio_data_r()))
           user_defined_row <- user_defined_row |>
             dplyr::select_at(use_columns)
-
+          browser()
           updated_portfolio_data <- dplyr::bind_rows(
             portfolio_data_r(),
             user_defined_row
           )
           portfolio_data_r(updated_portfolio_data)
+
+
+        # TODO EXTRACT THIS BLOCK AS METHOD
+        # build name of portfolio in the reactiveValues object portfolio_states
+        trisk_granularity_names <- dplyr::intersect(names(max_trisk_granularity), colnames(portfolio_data_r()))
+        trisk_granularity_names <- paste0(trisk_granularity_names, collapse = "-") # Convert to character vector
+        # Save the new portfolio state in portfolio_states
+        # Update the portfolio data to the state corresponding to the current granularity
+        portfolio_states[[trisk_granularity_names]] <- portfolio_data_r()
+
         })
 
-
-
-        proxy <- DT::dataTableProxy(id)
-
+        # proxy <- DT::dataTableProxy(id)
+        
         # Delete row
         observeEvent(input$delete_row_btn, {
           selected_row <- input$portfolio_table_rows_selected
@@ -175,8 +184,16 @@ server <- function(
             my_data_data <- portfolio_data_r()
             my_data_data <- my_data_data[-selected_row, , drop = FALSE]
             portfolio_data_r(my_data_data)
-            DT::replaceData(proxy, my_data_data, resetPaging = FALSE)
+            # DT::replaceData(proxy, my_data_data, resetPaging = FALSE)
           }
+
+          # TODO EXTRACT THIS BLOCK AS METHOD
+          # build name of portfolio in the reactiveValues object portfolio_states
+          trisk_granularity_names <- dplyr::intersect(names(max_trisk_granularity), colnames(portfolio_data_r()))
+          trisk_granularity_names <- paste0(trisk_granularity_names, collapse = "-") # Convert to character vector
+          # Save the new portfolio state in portfolio_states
+          # Update the portfolio data to the state corresponding to the current granularity
+          portfolio_states[[trisk_granularity_names]] <- portfolio_data_r()
         })
       }
     }
@@ -206,7 +223,16 @@ server <- function(
 
     # TABLE INPUTS MGMT ===================================
 
-    update_portfolio_with_user_input(input, portfolio_data_r, trisk_granularity_r, display_columns, portfolio_states, max_trisk_granularity)
+    update_portfolio_with_user_input(
+      input=input, 
+      analysis_data_r=analysis_data_r,
+      portfolio_data_r=portfolio_data_r, 
+      trisk_granularity_r=trisk_granularity_r, 
+      display_columns=display_columns, 
+      editable_columns_names=editable_columns_names,
+      portfolio_states=portfolio_states, 
+      max_trisk_granularity=max_trisk_granularity
+      )
 
 
 
@@ -306,7 +332,6 @@ generate_analysis_data <- function(portfolio_data_r, crispy_data_r, portfolio_as
 
       portfolio_data_r(portfolio_data)
 
-
       # Creates and aggregate Analysis data without portfolio with stress.test.plot.report fun
       if (nrow(portfolio_data_r() > 0)) {
         analysis_data <- stress.test.plot.report:::load_input_plots_data_from_tibble(
@@ -316,22 +341,23 @@ generate_analysis_data <- function(portfolio_data_r, crispy_data_r, portfolio_as
           filter_outliers = filter_crispy_outliers
         ) |>
           dplyr::mutate(
-            crispy_perc_value_change = round(crispy_perc_value_change, digits = 4),
-            crispy_value_loss = round(crispy_value_loss, digits = 2),
-            pd_difference = round(pd_difference, digits = 4)
+            crispy_perc_value_change = round(.data$crispy_perc_value_change, digits = 4),
+            crispy_value_loss = round(.data$crispy_value_loss, digits = 2),
+            pd_shock = round(.data$pd_shock, digits = 4),
+            expected_loss_shock = -round(.data$expected_loss_shock, digits = 2)
           )
       } else {
         analysis_data <- dplyr::inner_join(
           portfolio_data_r(),
           crispy_data_r(),
           by = granularity
-        )
-        #  |>
-        #   dplyr::mutate(
-        #     crispy_perc_value_change = NA,
-        #     crispy_value_loss = NA,
-        #     pd_difference = NA
-        #   )
+        ) |>
+          dplyr::mutate(
+            crispy_perc_value_change = NA,
+            crispy_value_loss = NA,
+            pd_shock = NA,
+            expected_loss_shock=NA
+          )
       }
 
       # Aggregate Crispy data without portfolio with stress.test.plot.report fun
@@ -395,22 +421,31 @@ display_analysis_data <- function(output, analysis_data_r, display_columns, edit
   })
 }
 
-update_portfolio_with_user_input <- function(input, portfolio_data_r, trisk_granularity_r, display_columns, portfolio_states, max_trisk_granularity) {
+update_portfolio_with_user_input <- function(
+  input, 
+  analysis_data_r,
+  portfolio_data_r, 
+  trisk_granularity_r, 
+  display_columns, 
+  editable_columns_names, 
+  portfolio_states, 
+  max_trisk_granularity) {
+
   # Update data structure on cell edit
   observeEvent(input$portfolio_table_cell_edit, {
+    
     n_granul_cols <- length(trisk_granularity_r())
     info <- input$portfolio_table_cell_edit
     portfolio_data <- portfolio_data_r()
-    # data can be edited only in the second column
-    if (info$col == (n_granul_cols + 1)) {
-      # update the portfolio data with UI cell change
-      displayed_display_columns <- display_columns[display_columns %in% colnames(portfolio_data)]
-      if (is.numeric(info$value)) {
-        portfolio_data[info$row, displayed_display_columns[info$col]] <- info$value
-        portfolio_data_r(portfolio_data)
-      }
-    }
+    # update the portfolio data with UI cell change
+    displayed_display_columns <- display_columns[display_columns %in% colnames(analysis_data_r())]
 
+    if (is.numeric(info$value)) {
+      portfolio_data[info$row, displayed_display_columns[info$col]] <- info$value
+      portfolio_data_r(portfolio_data)
+    }
+    
+    # TODO EXTRACT THIS BLOCK AS METHOD
     # build name of portfolio in the reactiveValues object portfolio_states
     trisk_granularity_names <- dplyr::intersect(names(max_trisk_granularity), colnames(portfolio_data_r()))
     trisk_granularity_names <- paste0(trisk_granularity_names, collapse = "-") # Convert to character vector
@@ -427,6 +462,7 @@ update_portfolio_with_user_input <- function(input, portfolio_data_r, trisk_gran
 # Synchronise the scenarios available depending on user scenario choice
 update_ald_dropdowns <- function(input, session,
                                  crispy_data_r,
+                                 trisk_granularity_r,
                                  use_ald_sector) {
   # Observe changes in possible_trisk_combinations and update baseline_scenario dropdown
   observeEvent(crispy_data_r(), ignoreInit = TRUE, {
@@ -440,9 +476,14 @@ update_ald_dropdowns <- function(input, session,
   })
 
   # Observe changes in baseline_scenario dropdown and update shock_scenario dropdown
-  observeEvent(input$ald_sector_dropdown, ignoreInit = TRUE, {
-    possible_ald_business_units <- crispy_data_r() |> dplyr::filter(ald_sector == input$ald_sector_dropdown)
-    possible_ald_business_units <- unique(possible_ald_business_units$ald_business_unit)
+  observeEvent(c(input$ald_sector_dropdown, crispy_data_r()), ignoreInit = TRUE, {
+    
+    if ("ald_business_unit" %in% trisk_granularity_r()){
+      possible_ald_business_units <- crispy_data_r() |> dplyr::filter(ald_sector == input$ald_sector_dropdown)
+      possible_ald_business_units <- unique(possible_ald_business_units$ald_business_unit)
+    } else{
+      possible_ald_business_units = c("")
+    }
     shiny.semantic::update_dropdown_input(
       session,
       "ald_business_unit_dropdown",
