@@ -1598,7 +1598,7 @@
       "RemoteRepo": "stress.test.plot.report",
       "RemoteUsername": "2DegreesInvesting",
       "RemoteRef": "HEAD",
-      "RemoteSha": "402ee5d62b8fa7d8dfdab4867a73beecec5e5280",
+      "RemoteSha": "78f9244868092f2cad260a699875cf17a05a0096",
       "Requirements": [
         "box",
         "dplyr",
@@ -1613,7 +1613,7 @@
         "tidytext",
         "withr"
       ],
-      "Hash": "fb48010abcd470294f9b762f9e782cda"
+      "Hash": "49344fc25e9f754f46f9451f8de4501d"
     },
     "stringi": {
       "Package": "stringi",
