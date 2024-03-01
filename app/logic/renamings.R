@@ -1,4 +1,6 @@
 RENAMING_SCENARIOS <- c(
+  "GECO2023_1.5C"="GECO2023_1.5C",
+  "GECO2023_NDC-LTS"="GECO2023_NDC-LTS",
   "GECO2021_CurPol" = "GECO CurPol",
   "IPR2023Automotive_baseline" = "IPR Automotive baseline",
   "IPR2023Automotive_FPS" = "IPR2023 Automotive FPS",

@@ -29,7 +29,8 @@ max_trisk_granularity <- list(
 use_ald_sector <- c(
   "Oil&Gas",
   "Power",
-  "Coal"
+  "Coal",
+  "Automotive"
 )
 
 available_vars <- list(
@@ -62,7 +63,7 @@ available_vars <- list(
     2030,
     2032,
     # 2034,
-    2035
+    # 2035
     # 2040
   ),
   available_carbon_price_model = c("no_carbon_tax", "NZ2050", "NDC", "DN0", "B2DS"),
@@ -113,7 +114,7 @@ hide_vars <- list(
     # "EmergingMarketAndDevelopingEconomies",
     # "OecdAndEu",
     # "UnitedStates",
-    # "SoutheastAsia",
+    "SoutheastAsia",
     # "China",
     # "India",
     # "MiddleEast",
