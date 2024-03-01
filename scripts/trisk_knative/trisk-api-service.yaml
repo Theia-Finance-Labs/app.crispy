@@ -11,6 +11,7 @@ spec:
     spec:
       containers:
         - image: registry.digitalocean.com/theia-1in1000-shinyapps/trisk_api:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           env:
