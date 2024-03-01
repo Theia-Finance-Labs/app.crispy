@@ -26,13 +26,6 @@ max_trisk_granularity <- list(
 
 # # TRISK CONFIG
 
-use_ald_sector <- c(
-  "Oil&Gas",
-  "Power",
-  "Coal",
-  "Automotive"
-)
-
 available_vars <- list(
   available_risk_free_rate = c(
     0,

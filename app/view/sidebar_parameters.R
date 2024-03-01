@@ -43,8 +43,7 @@ server <- function(id, backend_trisk_run_folder, trisk_input_path,
                    possible_trisk_combinations,
                    available_vars,
                    hide_vars,
-                   max_trisk_granularity,
-                   use_ald_sector) {
+                   max_trisk_granularity) {
   moduleServer(id, function(input, output, session) {
     # Update UI elements =========================
 
@@ -58,7 +57,6 @@ server <- function(id, backend_trisk_run_folder, trisk_input_path,
     scenario_config_r <- params_scenarios$server(
       "params_scenarios",
       hide_vars = hide_vars,
-      use_ald_sector = use_ald_sector,
       possible_trisk_combinations = possible_trisk_combinations
     )
 

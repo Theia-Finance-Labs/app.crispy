@@ -20,8 +20,7 @@ box::use(
     backend_trisk_run_folder,
     max_trisk_granularity,
     available_vars,
-    hide_vars,
-    use_ald_sector
+    hide_vars
   ]
 )
 
@@ -34,23 +33,25 @@ ui <- function(id) {
 
   shiny.semantic::semanticPage(
     shinyjs::useShinyjs(), # Initialize shinyjs
-    tags$div( id = ns("login"), style="z-index: 10000;",
-          tags$div(
-            class = "ui middle aligned center aligned grid",
-            tags$div(
-              class = "column", style = "max-width: 450px;",
-              shiny::textInput(ns("username"), "Username", placeholder = "Username"),
-              shiny::passwordInput(ns("password"), "Password", placeholder = "Password"),
-              shiny::actionButton(ns("loginBtn"), "Log in", class = "ui large primary submit button"),
-            )
-          ),
-          tags$style(HTML("
-            .ui.grid > .column {
-              padding-top: 5em;
-              padding-bottom: 5em;
-            }
-          "))
-        ),
+    # LOGIN PAGE
+    # tags$div( id = ns("login"), style="z-index: 10000;",
+    #       tags$div(
+    #         class = "ui middle aligned center aligned grid",
+    #         tags$div(
+    #           class = "column", style = "max-width: 450px;",
+    #           shiny::textInput(ns("username"), "Username", placeholder = "Username"),
+    #           shiny::passwordInput(ns("password"), "Password", placeholder = "Password"),
+    #           shiny::actionButton(ns("loginBtn"), "Log in", class = "ui large primary submit button"),
+    #         )
+    #       ),
+    #       tags$style(HTML("
+    #         .ui.grid > .column {
+    #           padding-top: 5em;
+    #           padding-bottom: 5em;
+    #         }
+    #       "))
+    #     ),
+    # CONTENT PAGE
     tags$div(
       class = "header", # Add a loading overlay
       tags$head(
@@ -188,33 +189,33 @@ ui <- function(id) {
 #' @export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
-    authorized_access_r <- shiny::reactiveVal(FALSE)
-    if (Sys.getenv("CRISPY_APP_ENV") == "prod") {
-      conn <- DBI::dbConnect(RPostgres::Postgres(),
-        dbname = Sys.getenv("ST_POSTGRES_DB"),
-        host = Sys.getenv("ST_POSTGRES_HOST"),
-        port = Sys.getenv("ST_POSTGRES_PORT"),
-        user = Sys.getenv("ST_POSTGRES_USERNAME"),
-        password = Sys.getenv("ST_POSTGRES_PASSWORD")
-      )
+    # authorized_access_r <- shiny::reactiveVal(FALSE)
+    # if (Sys.getenv("CRISPY_APP_ENV") == "prod") {
+    #   conn <- DBI::dbConnect(RPostgres::Postgres(),
+    #     dbname = Sys.getenv("ST_POSTGRES_DB"),
+    #     host = Sys.getenv("ST_POSTGRES_HOST"),
+    #     port = Sys.getenv("ST_POSTGRES_PORT"),
+    #     user = Sys.getenv("ST_POSTGRES_USERNAME"),
+    #     password = Sys.getenv("ST_POSTGRES_PASSWORD")
+    #   )
 
-      observeEvent(input$loginBtn, {
-        authorized_access <- check_credentials(input = input, conn = conn)
-        if (authorized_access) {
-          shinyjs::hide("login")
-        } else {
-          shinyjs::alert("Incorrect username or password!")
-        }
-        authorized_access_r(authorized_access)
-      })
-    } else {
-      shinyjs::hide("login")
-      observe({
-        authorized_access_r(TRUE)
-      })
-    }
+    #   observeEvent(input$loginBtn, {
+    #     authorized_access <- check_credentials(input = input, conn = conn)
+    #     if (authorized_access) {
+    #       shinyjs::hide("login")
+    #     } else {
+    #       shinyjs::alert("Incorrect username or password!")
+    #     }
+    #     authorized_access_r(authorized_access)
+    #   })
+    # } else {
+    #   shinyjs::hide("login")
+    #   observe({
+    #     authorized_access_r(TRUE)
+    #   })
+    # }
 
-    shiny::observeEvent(c(authorized_access_r()), ignoreInit = TRUE, {
+    # shiny::observeEvent(c(authorized_access_r()), ignoreInit = TRUE, {
       possible_trisk_combinations <- r2dii.climate.stress.test::get_scenario_geography_x_ald_sector(trisk_input_path)
 
       # the TRISK runs are generated In the sidebar module
@@ -225,8 +226,7 @@ server <- function(id) {
         backend_trisk_run_folder = backend_trisk_run_folder, # constant
         trisk_input_path = trisk_input_path, # constant
         available_vars = available_vars, # constant
-        hide_vars = hide_vars, # constant
-        use_ald_sector = use_ald_sector # constant
+        hide_vars = hide_vars # constant
       )
 
       homepage$server("homepage")
@@ -246,7 +246,7 @@ server <- function(id) {
         perimeter = perimeter
       )
       shinyjs::runjs('$("#loading-overlay").hide();')
-    })
+    # })
   })
 }
 

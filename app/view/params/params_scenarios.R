@@ -59,7 +59,6 @@ ui <- function(id) {
 
 server <- function(id,
                    hide_vars,
-                   use_ald_sector,
                    possible_trisk_combinations) {
   moduleServer(id, function(input, output, session) {
     # Synchronise the scenarios available depending on user scenario choice
@@ -83,7 +82,6 @@ server <- function(id,
       input = input,
       session = session,
       hide_vars = hide_vars,
-      use_ald_sector = use_ald_sector,
       possible_trisk_combinations = possible_trisk_combinations
     )
 
@@ -107,7 +105,6 @@ server <- function(id,
 # Synchronise the scenarios available depending on user scenario choice
 update_scenarios_dropdowns <- function(input, session,
                                        hide_vars,
-                                       use_ald_sector,
                                        possible_trisk_combinations) {
   # Observe changes in possible_trisk_combinations and update baseline_scenario dropdown
   observe({
@@ -155,7 +152,6 @@ update_scenarios_dropdowns <- function(input, session,
         .data$shock_scenario == selected_shock
       ) |>
       dplyr::group_by(.data$shock_scenario, .data$baseline_scenario, .data$scenario_geography) |>
-      dplyr::filter(all(use_ald_sector %in% .data$ald_sector)) |> # Only use geographies present in all use_ald_sector
       dplyr::ungroup() |>
       dplyr::distinct(.data$scenario_geography) |>
       dplyr::filter(!is.na(.data$scenario_geography)) |>

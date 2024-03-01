@@ -137,7 +137,6 @@ server <- function(
         selected_company_name_r <- update_ald_dropdowns(
           input = input,
           session = session,
-          use_ald_sector = use_ald_sector, # TODO INTEGRATE USE_ALD_SECTOR INTO HIDE_VARS
           trisk_granularity_r = trisk_granularity_r,
           crispy_data_r = crispy_data_r
         )
@@ -459,8 +458,7 @@ update_portfolio_with_user_input <- function(
 # Synchronise the scenarios available depending on user scenario choice
 update_ald_dropdowns <- function(input, session,
                                  crispy_data_r,
-                                 trisk_granularity_r,
-                                 use_ald_sector) {
+                                 trisk_granularity_r) {
   # Observe changes in possible_trisk_combinations and update baseline_scenario dropdown
   observeEvent(crispy_data_r(), ignoreInit = TRUE, {
     possible_sectors <- unique(crispy_data_r()$ald_sector)
