@@ -19,6 +19,16 @@ pr$handle("POST", "/compute_trisk", function(req, res) {
   trisk_run_params <- jsonlite::fromJSON(req$postBody)$trisk_run_params
   validate_trisk_run_params(trisk_run_params)
 
+  download_files_from_s3(
+    s3_url=Sys.getenv("CRISPY_S3_URL"), 
+    s3_folder_path=s3_folder_path, 
+    local_folder_path=trisk_input_path,
+    s3_access_key=Sys.getenv("CRISPY_S3_ACCESS_KEY"), 
+    s3_secret_key=Sys.getenv("CRISPY_S3_SECRET_KEY"), 
+    s3_bucket=Sys.getenv("CRISPY_S3_BUCKET"), 
+    s3_region=Sys.getenv("CRISPY_S3_REGION"))
+
+
   # hardcoded input fp while the data is still part of the docker image
   trisk_input_path <- file.path(".", "st_inputs")
 

@@ -1,10 +1,10 @@
 # export constant values from here
 
-# ENV CONSTANTS ====================================
+# INFRASTRUCTURE CONSTANTS ====================================
 
-trisk_input_path <- Sys.getenv("TRISK_INPUT_PATH")
-backend_trisk_run_folder <- Sys.getenv("TRISK_OUTPUT_PATH")
 api_endpoint <- Sys.getenv("TRISK_API_ENDPOINT")
+trisk_input_path <- file.path("app", "data", "st_inputs")
+backend_trisk_run_folder <- file.path("app", "data", "backend_db")
 
 
 # PROJECT CONSTANTS ====================================
@@ -55,9 +55,9 @@ available_vars <- list(
     2027,
     # 2029,
     2030,
-    2032
+    2032,
     # 2034,
-    # 2035
+    2035
     # 2040
   ),
   available_carbon_price_model = c("no_carbon_tax", "NZ2050", "NDC", "DN0", "B2DS"),

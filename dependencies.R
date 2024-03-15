@@ -27,6 +27,7 @@ library(zip)
 library(jsonlite)
 library(httr)
 library(RPostgres)
+library(aws.s3)
 
 
 library(r2dii.climate.stress.test)
