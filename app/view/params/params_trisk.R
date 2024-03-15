@@ -24,31 +24,31 @@ ui <- function(id, available_vars) {
       slider_input(
         ns("shock_year"),
         custom_ticks = available_vars$available_shock_year,
-        value = NULL
+        value = available_vars$available_shock_year[3]
       ),
       p("Risk-Free Rate"),
       slider_input(
         ns("risk_free_rate"),
         custom_ticks = available_vars$available_risk_free_rate,
-        value = NULL
+        value = available_vars$available_risk_free_rate[3]
       ),
       p("Discount Rate"),
       slider_input(
         ns("discount_rate"),
         custom_ticks = available_vars$available_discount_rate,
-        value = NULL
+        value = available_vars$available_discount_rate[4]
       ),
       p("Growth Rate"),
       slider_input(
         ns("growth_rate"),
         custom_ticks = available_vars$available_growth_rate,
-        value = NULL
+        value = available_vars$available_growth_rate[2]
       ),
       p("Dividend Rate"),
       slider_input(
         ns("div_netprofit_prop_coef"),
         custom_ticks = available_vars$available_dividend_rate,
-        value = NULL
+        value = available_vars$available_dividend_rate[3]
       ),
       p("Carbon Price Model"),
       dropdown_input(ns("carbon_price_model"),

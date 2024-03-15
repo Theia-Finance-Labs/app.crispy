@@ -6,6 +6,7 @@ trisk_input_path <- Sys.getenv("TRISK_INPUT_PATH")
 backend_trisk_run_folder <- Sys.getenv("TRISK_OUTPUT_PATH")
 api_endpoint <- Sys.getenv("TRISK_API_ENDPOINT")
 
+
 # PROJECT CONSTANTS ====================================
 
 # Filter outliers in crispy when generating the analysis data
