@@ -28,6 +28,7 @@ RUN Rscript -e 'renv::restore(clean = TRUE)'
 # Copy the R project files
 COPY ./api.R /app/api.R
 COPY ./trisk_compute.R /app/trisk_compute.R
+COPY ./utils.R /app/utils.R
 # COPY ./st_inputs/* /app/st_inputs/
 
 # Define env variables

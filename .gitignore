@@ -17,3 +17,4 @@ package.json
 cypress.config.js
 package-lock.json
 scripts/trisk_knative/st_inputs/*
+private_test.sh
