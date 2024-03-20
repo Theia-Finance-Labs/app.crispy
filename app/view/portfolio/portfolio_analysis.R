@@ -156,7 +156,7 @@ server <- function(
           use_columns <- dplyr::intersect(names(user_defined_row), names(portfolio_data_r()))
           user_defined_row <- user_defined_row |>
             dplyr::select_at(use_columns)
-          
+
           updated_portfolio_data <- dplyr::bind_rows(
             portfolio_data_r(),
             user_defined_row

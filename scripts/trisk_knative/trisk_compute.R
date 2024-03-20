@@ -74,7 +74,7 @@ run_trisk_with_params <- function(trisk_run_params, trisk_input_path) {
       # Print the error message
       print(e$message)
       print(e$parent[1]$message)
-      
+
       # Print the last error and trace using rlang
       print(rlang::last_error())
       print(rlang::last_trace())

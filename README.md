@@ -7,6 +7,37 @@ Documentation about the folders structure : https://appsilon.github.io/rhino/art
 This is an application built in [Shiny](https://shiny.rstudio.com/).
 To run it, make sure you have R (>= 4.0.0) installed.
 
+The following env variables must be set, for example in an .Renviron file at the root of this project : 
+
+```sh
+# ./.Renviron
+
+# 'prod' or 'dev'
+CRISPY_APP_ENV="dev" 
+
+# IP to the kubernetes endpoint running trisk api
+TRISK_API_SERVICE="0.0.0.0" 
+
+# backend DB creds
+ST_POSTGRES_DB=""
+ST_POSTGRES_HOST=""
+ST_POSTGRES_PORT=""
+ST_POSTGRES_USERNAME=""
+ST_POSTGRES_PASSWORD=""
+
+
+# backend S3 bucket creds
+S3_ACCESS_KEY=""
+S3_SECRET_KEY=""
+
+S3_URL_CRISPY=""
+S3_BUCKET_CRISPY="trisk-input-files"
+ST_FOLDER_CRISPY="st_inputs_app/"
+S3_REGION_CRISPY=""
+
+
+```
+
 ## Dependencies
 Run `renv::restore(clean = TRUE)` to synchronize the project library with the lockfile
 when you initially clone the repo or switch branches.

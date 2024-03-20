@@ -40,4 +40,29 @@ spec:
                 secretKeyRef:
                   name: db-credentials
                   key: postgres_db
+            - name: CRISPY_S3_URL
+              valueFrom:
+                secretKeyRef:
+                  name: s3-credentials
+                  key: crispy_s3_url
+            - name: CRISPY_S3_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: s3-credentials
+                  key: crispy_s3_access_key
+            - name: CRISPY_S3_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: s3-credentials
+                  key: crispy_s3_secret_key
+            - name: CRISPY_S3_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: s3-credentials
+                  key: crispy_s3_bucket
+            - name: CRISPY_S3_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: s3-credentials
+                  key: crispy_s3_region
 

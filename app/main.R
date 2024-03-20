@@ -23,7 +23,7 @@ box::use(
     available_vars,
     hide_vars
   ],
-  app/logic/data_load[download_files_from_s3]
+  app/logic/cloud_logic[download_files_from_s3, get_possible_trisk_combinations_from_api]
 )
 
 
@@ -36,17 +36,18 @@ ui <- function(id) {
   shiny.semantic::semanticPage(
     shinyjs::useShinyjs(), # Initialize shinyjs
     # LOGIN PAGE
-    tags$div( id = ns("login"), style="z-index: 10000;",
     tags$div(
-      class = "ui middle aligned center aligned grid",
+      id = ns("login"), style = "z-index: 10000;",
       tags$div(
-        class = "column", style = "max-width: 450px;",
-        shiny::textInput(ns("username"), "Username", placeholder = "Username"),
-        shiny::passwordInput(ns("password"), "Password", placeholder = "Password"),
-        shiny::actionButton(ns("loginBtn"), "Log in", class = "ui large primary submit button"),
-      )
-    ),
-    tags$style(HTML("
+        class = "ui middle aligned center aligned grid",
+        tags$div(
+          class = "column", style = "max-width: 450px;",
+          shiny::textInput(ns("username"), "Username", placeholder = "Username"),
+          shiny::passwordInput(ns("password"), "Password", placeholder = "Password"),
+          shiny::actionButton(ns("loginBtn"), "Log in", class = "ui large primary submit button"),
+        )
+      ),
+      tags$style(HTML("
       .ui.grid > .column {
         padding-top: 5em;
         padding-bottom: 5em;
@@ -104,9 +105,9 @@ ui <- function(id) {
 
       # dashboardBody
       dashboardBody(
-            # Include custom CSS to display tabs as full width
-            tags$head(
-              tags$style(HTML("
+        # Include custom CSS to display tabs as full width
+        tags$head(
+          tags$style(HTML("
             .full-width-tabs {
               width: 100% !important;
               display: flex !important;
@@ -116,60 +117,60 @@ ui <- function(id) {
               text-align: center !important;
             }
           "))
-            ),
-            # Fomantic UI tabs with custom CSS to display as full width
-            tags$div(
-              class = "ui top attached tabular menu full-width-tabs",
-              tags$a(class = "item active", `data-tab` = "first", "Home"),
-              tags$a(class = "item", `data-tab` = "second", "Equities"),
-              tags$a(class = "item", `data-tab` = "third", "Loans")
-            ),
-            # dynamic tabs content, the `data-tab` attribute must match the `data-tab` attribute
-            # of the corresponding tab in the tabular menu
-            tags$div(
-              class = "ui bottom attached active tab segment", `data-tab` = "first",
-              div(
-                class = "ui container",
-                # homepage tab
-                homepage$ui(
-                  ns("homepage")
-                )
-              )
-            ),
-            tags$div(
-              class = "ui bottom attached tab segment", `data-tab` = "second",
-              div(
-                class = "ui container",
-                # equities tab
-                crispy_equities$ui(
-                  ns("crispy_equities"),
-                  max_trisk_granularity = max_trisk_granularity, # constant
-                  available_vars = available_vars # constant
-                )
-              )
-            ),
-            tags$div(
-              class = "ui bottom attached tab segment", `data-tab` = "third",
-              div(
-                class = "ui container",
-                # equities tab
-                crispy_loans$ui(
-                  ns("crispy_loans"),
-                  max_trisk_granularity = max_trisk_granularity, # constant
-                  available_vars = available_vars # constant
-                )
-              )
-            ),
-            # this javascript snippet initializes the tabs menu and makes the tabs clickable
-            tags$script(
-              "$(document).ready(function() {
+        ),
+        # Fomantic UI tabs with custom CSS to display as full width
+        tags$div(
+          class = "ui top attached tabular menu full-width-tabs",
+          tags$a(class = "item active", `data-tab` = "first", "Home"),
+          tags$a(class = "item", `data-tab` = "second", "Equities"),
+          tags$a(class = "item", `data-tab` = "third", "Loans")
+        ),
+        # dynamic tabs content, the `data-tab` attribute must match the `data-tab` attribute
+        # of the corresponding tab in the tabular menu
+        tags$div(
+          class = "ui bottom attached active tab segment", `data-tab` = "first",
+          div(
+            class = "ui container",
+            # homepage tab
+            homepage$ui(
+              ns("homepage")
+            )
+          )
+        ),
+        tags$div(
+          class = "ui bottom attached tab segment", `data-tab` = "second",
+          div(
+            class = "ui container",
+            # equities tab
+            crispy_equities$ui(
+              ns("crispy_equities"),
+              max_trisk_granularity = max_trisk_granularity, # constant
+              available_vars = available_vars # constant
+            )
+          )
+        ),
+        tags$div(
+          class = "ui bottom attached tab segment", `data-tab` = "third",
+          div(
+            class = "ui container",
+            # equities tab
+            crispy_loans$ui(
+              ns("crispy_loans"),
+              max_trisk_granularity = max_trisk_granularity, # constant
+              available_vars = available_vars # constant
+            )
+          )
+        ),
+        # this javascript snippet initializes the tabs menu and makes the tabs clickable
+        tags$script(
+          "$(document).ready(function() {
                   // Initialize tabs (if not already initialized)
                   $('.menu .item').tab();
               });"
-            )
-          )
         )
       )
+    )
+  )
 }
 
 
@@ -190,26 +191,32 @@ ui <- function(id) {
 #' @export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
-
     authorized_access_r <- shiny::reactiveVal(FALSE)
 
     # Actual server
     shiny::observeEvent(c(authorized_access_r()), ignoreInit = TRUE, {
-    # Download data if not already available
+
+if (Sys.getenv("CRISPY_APP_ENV") == "dev") {
+      # Download data if not already available
       if (!dir.exists(trisk_input_path)) {
-          download_files_from_s3(
-            local_folder_path=trisk_input_path,
-            s3_url=Sys.getenv("S3_URL_CRISPY"), 
-            s3_folder_path=Sys.getenv("ST_FOLDER_CRISPY"), 
-            s3_access_key=Sys.getenv("S3_ACCESS_KEY"), 
-            s3_secret_key=Sys.getenv("S3_SECRET_KEY"), 
-            s3_bucket=Sys.getenv("S3_BUCKET_CRISPY"), 
-            s3_region=Sys.getenv("S3_REGION_CRISPY"))
+        download_files_from_s3(
+          local_folder_path = trisk_input_path,
+          s3_url = Sys.getenv("S3_URL_CRISPY"),
+          s3_folder_path = Sys.getenv("ST_FOLDER_CRISPY"),
+          s3_access_key = Sys.getenv("S3_ACCESS_KEY"),
+          s3_secret_key = Sys.getenv("S3_SECRET_KEY"),
+          s3_bucket = Sys.getenv("S3_BUCKET_CRISPY"),
+          s3_region = Sys.getenv("S3_REGION_CRISPY")
+        )
       } else {
         message(sprintf("Folder '%s' already exists at '%s'. No download needed.", s3_folder_path, trisk_input_path))
       }
       possible_trisk_combinations <- r2dii.climate.stress.test::get_scenario_geography_x_ald_sector(trisk_input_path)
-
+    } else if (Sys.getenv("CRISPY_APP_ENV") == "prod") {
+      possible_trisk_combinations <- get_possible_trisk_combinations_from_api()
+    } else {
+      stop("must set environment variable CRISPY_APP_ENV to 'dev' or 'prod'")
+    }
       # the TRISK runs are generated In the sidebar module
       perimeter <- sidebar_parameters$server(
         "sidebar_parameters",
@@ -240,7 +247,7 @@ server <- function(id) {
       shinyjs::runjs('$("#loading-overlay").hide();')
     })
 
-    # more login logic 
+    # more login logic
     if (Sys.getenv("CRISPY_APP_ENV") == "prod") {
       conn <- DBI::dbConnect(RPostgres::Postgres(),
         dbname = Sys.getenv("ST_POSTGRES_DB"),
@@ -265,8 +272,6 @@ server <- function(id) {
         authorized_access_r(TRUE)
       })
     }
-
-
   })
 }
 

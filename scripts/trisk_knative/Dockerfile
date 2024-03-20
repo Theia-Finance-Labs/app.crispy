@@ -28,7 +28,7 @@ RUN Rscript -e 'renv::restore(clean = TRUE)'
 # Copy the R project files
 COPY ./api.R /app/api.R
 COPY ./trisk_compute.R /app/trisk_compute.R
-COPY ./st_inputs/* /app/st_inputs/
+# COPY ./st_inputs/* /app/st_inputs/
 
 # Define env variables
 ENV ST_POSTGRES_DB=NULL
@@ -37,6 +37,11 @@ ENV ST_POSTGRES_PASSWORD=NULL
 ENV ST_POSTGRES_HOST=NULL
 ENV ST_POSTGRES_PORT=NULL
 
+ENV CRISPY_S3_URL=NULL
+ENV CRISPY_S3_ACCESS_KEY=NULL
+ENV CRISPY_S3_SECRET_KEY=NULL
+ENV CRISPY_S3_BUCKET=NULL
+ENV CRISPY_S3_REGION=NULL
 
 # Command to run the app
 # Expose the port your app will run on
