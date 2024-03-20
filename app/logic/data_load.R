@@ -26,11 +26,11 @@ base_data_load <- function(table_name, run_id = NULL, backend_trisk_run_folder =
 
     table_data <- get_data_from_postgres(
       table_name = table_name,
-      dbname = Sys.getenv("ST_POSTGRES_DB"),
-      host_db = Sys.getenv("ST_POSTGRES_HOST"),
-      db_port = Sys.getenv("ST_POSTGRES_PORT"),
+      dbname = Sys.getenv("POSTGRES_DB"),
+      host_db = Sys.getenv("POSTGRES_HOST"),
+      db_port = Sys.getenv("POSTGRES_PORT"),
       db_user = Sys.getenv("ST_POSTGRES_USERNAME"),
-      db_password = Sys.getenv("ST_POSTGRES_PASSWORD"),
+      db_password = Sys.getenv("POSTGRES_PASSWORD"),
       query_filter = query_filter,
       default_tibble = default_tibble
     )

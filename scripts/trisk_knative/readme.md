@@ -1,3 +1,9 @@
+# To deploy :
+
+```bash
+./deploy.sh your_s3_url your_access_key your_secret_key your_bucket_name your_region your_username your_password your_host your_port your_db_name
+```
+
 # to test api : 
 
 in rconsole:
@@ -28,13 +34,19 @@ in shell:
 # with docker
 
 start local server :
-
+``` bash
 docker run \
   -e ST_POSTGRES_USERNAME=$ST_POSTGRES_USERNAME \
-  -e ST_POSTGRES_PASSWORD=$ST_POSTGRES_PASSWORD \
-  -e ST_POSTGRES_HOST=$ST_POSTGRES_HOST \
-  -e ST_POSTGRES_PORT=$ST_POSTGRES_PORT \
-  -e ST_POSTGRES_DB=$ST_POSTGRES_DB \
+  -e POSTGRES_DB='your_db' \
+  -e POSTGRES_USERNAME='your_username' \
+  -e POSTGRES_PASSWORD='your_password' \
+  -e POSTGRES_HOST='your_host' \
+  -e POSTGRES_PORT='your_port' \
+  -e S3_URL='your_s3_url' \
+  -e S3_ACCESS_KEY='your_access_key' \
+  -e S3_SECRET_KEY='your_secret_key' \
+  -e S3_BUCKET='your_bucket_name' \
+  -e S3_REGION='your_region' \
   -p 8080:8080 registry.digitalocean.com/theia-1in1000-shinyapps/trisk_api:latest
 
 
@@ -55,30 +67,30 @@ curl -X 'POST' \
       "market_passthrough": 0
     }
   }'
-
+```
 
 # Deploy and test deployment
 
 deploy:
-    kubectl apply -f trisk-api-service.yaml
+    `kubectl apply -f trisk-api-service.yaml`
 
 get service hostname:
-    kubectl get ksvc trisk-api -o=jsonpath='{.status.url}'
+    `kubectl get ksvc trisk-api -o=jsonpath='{.status.url}'`
 
 
 test api in vpc:
-    curl -X POST http://SERVICE-HOSTNAME -H "Host: SERVICE-HOSTNAME" -H "Content-Type: application/json" -d '{"key":"value"}'
+    `curl -X POST http://SERVICE-HOSTNAME -H "Host: SERVICE-HOSTNAME" -H "Content-Type: application/json" -d '{"key":"value"}'`
 
 get external ip:
-    kubectl get svc -n kourier-system
+    `kubectl get svc -n kourier-system`
 
 test api from the web : 
-    curl -X POST http://EXTERNAL-IP -H "Host: SERVICE-HOSTNAME" -H "Content-Type: application/json" -d '{"key":"value"}'
+    `curl -X POST http://EXTERNAL-IP -H "Host: SERVICE-HOSTNAME" -H "Content-Type: application/json" -d '{"key":"value"}'`
 
 
 
 debug: 
-    kubectl logs -l serving.knative.dev/service=trisk-api-service -c user-container -n default
+    `kubectl logs -l serving.knative.dev/service=trisk-api-service -c user-container -n default`
 
 
 
@@ -93,7 +105,7 @@ docker push registry.digitalocean.com/theia-1in1000-shinyapps/trisk_api:latest
 
 kubectl get pods
 
-<!-- Viewing Logs of a Pod -->
+#### Viewing Logs of a Pod
 kubectl logs <pod-name>
 
 
@@ -104,11 +116,11 @@ kubectl autoscale deployment trisk-api --cpu-percent=50 --min=2 --max=10
 kubectl get hpa
 
 
-<!-- Listing Resources -->
+#### Listing Resources
 kubectl get svc
 kubectl get deployment
 
-<!-- restart deployment -->
+#### restart deployment
 kubectl rollout restart deployment <deployment-name>
 
 kubectl delete deployment <deployment-name>
@@ -116,11 +128,11 @@ kubectl delete deployment <deployment-name>
 
 # To create db-credentials.yaml
 
-
+```
 echo -n DB_PASSWORD | base64
 
 kubectl apply -f db-credentials.yaml
-
+```
 
 
 

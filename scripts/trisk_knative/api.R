@@ -26,22 +26,22 @@ pr$handle("POST", "/compute_trisk", function(req, res) {
   validate_trisk_run_params(trisk_run_params)
 
   download_files_from_s3(
-    s3_url = Sys.getenv("CRISPY_S3_URL"),
+    s3_url = Sys.getenv("S3_URL"),
     s3_folder_path = s3_folder_path,
     local_folder_path = trisk_input_path,
-    s3_access_key = Sys.getenv("CRISPY_S3_ACCESS_KEY"),
-    s3_secret_key = Sys.getenv("CRISPY_S3_SECRET_KEY"),
-    s3_bucket = Sys.getenv("CRISPY_S3_BUCKET"),
-    s3_region = Sys.getenv("CRISPY_S3_REGION")
+    s3_access_key = Sys.getenv("S3_ACCESS_KEY"),
+    s3_secret_key = Sys.getenv("S3_SECRET_KEY"),
+    s3_bucket = Sys.getenv("S3_BUCKET"),
+    s3_region = Sys.getenv("S3_REGION")
   )
 
   postgres_conn <- DBI::dbConnect(
     RPostgres::Postgres(),
-    dbname = Sys.getenv("ST_POSTGRES_DB"),
-    host = Sys.getenv("ST_POSTGRES_HOST"),
-    port = Sys.getenv("ST_POSTGRES_PORT"),
+    dbname = Sys.getenv("POSTGRES_DB"),
+    host = Sys.getenv("POSTGRES_HOST"),
+    port = Sys.getenv("POSTGRES_PORT"),
     user = Sys.getenv("ST_POSTGRES_USERNAME"),
-    password = Sys.getenv("ST_POSTGRES_PASSWORD")
+    password = Sys.getenv("POSTGRES_PASSWORD")
   )
 
   run_id <- run_trisk_and_upload_results_to_db_conn(
@@ -61,13 +61,13 @@ pr$handle("GET", "/get_possible_trisk_combinations", function(req, res) {
 
   if (!dir.exists(trisk_input_path)) {
     download_files_from_s3(
-      s3_url = Sys.getenv("CRISPY_S3_URL"),
+      s3_url = Sys.getenv("S3_URL"),
       s3_folder_path = s3_folder_path,
       local_folder_path = trisk_input_path,
-      s3_access_key = Sys.getenv("CRISPY_S3_ACCESS_KEY"),
-      s3_secret_key = Sys.getenv("CRISPY_S3_SECRET_KEY"),
-      s3_bucket = Sys.getenv("CRISPY_S3_BUCKET"),
-      s3_region = Sys.getenv("CRISPY_S3_REGION")
+      s3_access_key = Sys.getenv("S3_ACCESS_KEY"),
+      s3_secret_key = Sys.getenv("S3_SECRET_KEY"),
+      s3_bucket = Sys.getenv("S3_BUCKET"),
+      s3_region = Sys.getenv("S3_REGION")
     )
   }
 

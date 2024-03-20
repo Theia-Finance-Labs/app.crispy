@@ -19,3 +19,16 @@ spec:
         image: registry.digitalocean.com/theia-1in1000-shinyapps/crispy_app:latest
         ports:
         - containerPort: 3838  # Default Shiny Server port
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: crispy-app-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: crispy-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3838

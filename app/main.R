@@ -250,11 +250,11 @@ if (Sys.getenv("CRISPY_APP_ENV") == "dev") {
     # more login logic
     if (Sys.getenv("CRISPY_APP_ENV") == "prod") {
       conn <- DBI::dbConnect(RPostgres::Postgres(),
-        dbname = Sys.getenv("ST_POSTGRES_DB"),
-        host = Sys.getenv("ST_POSTGRES_HOST"),
-        port = Sys.getenv("ST_POSTGRES_PORT"),
+        dbname = Sys.getenv("POSTGRES_DB"),
+        host = Sys.getenv("POSTGRES_HOST"),
+        port = Sys.getenv("POSTGRES_PORT"),
         user = Sys.getenv("ST_POSTGRES_USERNAME"),
-        password = Sys.getenv("ST_POSTGRES_PASSWORD")
+        password = Sys.getenv("POSTGRES_PASSWORD")
       )
 
       observeEvent(input$loginBtn, {
