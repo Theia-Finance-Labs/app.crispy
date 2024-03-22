@@ -40,3 +40,33 @@ spec:
     targetPort: 8080
   selector:
     app: shinyproxy
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: shinyproxy-user
+  namespace: shinyapps
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: shinyapps
+  name: shinyproxy-role
+rules:
+- apiGroups: [""]
+  resources: ["pods", "pods/log", "pods/exec", "pods/portforward"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: shinyproxy-rolebinding
+  namespace: shinyapps
+subjects:
+- kind: ServiceAccount
+  name: shinyproxy-user
+  namespace: shinyapps
+roleRef:
+  kind: Role
+  name: shinyproxy-role
+  apiGroup: rbac.authorization.k8s.io

@@ -15,7 +15,8 @@ proxy:
   container-backend: kubernetes
   kubernetes:
     url: https://kubernetes.default.svc
-    namespace: default
+    namespace: shinyapps # Specify the namespace here
+    service-account-name: shinyproxy-user # Specify the service account here
     internal-networking: true
     pod-wait-time: 60000
     image-pull-policy: Always
