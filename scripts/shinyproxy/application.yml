@@ -29,7 +29,7 @@ proxy:
       description: "An example Shiny app"
       container-cmd: ["R", "-e", "rhino::app()"]
       container-image: registry.digitalocean.com/theia-1in1000-shinyapps/trisk_api:latest
-      access-groups: ["users"]
+      access-groups: ["admins", "users"]
 
 logging:
   file:
