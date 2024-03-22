@@ -12,6 +12,7 @@ proxy:
     password: password
     groups: users
   # Kubernetes specific configuration
+  container-backend: kubernetes
   kubernetes:
     url: https://kubernetes.default.svc
     namespace: default

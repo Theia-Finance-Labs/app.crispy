@@ -36,25 +36,6 @@ ui <- function(id) {
 
   shiny.semantic::semanticPage(
     shinyjs::useShinyjs(), # Initialize shinyjs
-    # LOGIN PAGE
-    tags$div(
-      id = ns("login"), style = "z-index: 10000;",
-      tags$div(
-        class = "ui middle aligned center aligned grid",
-        tags$div(
-          class = "column", style = "max-width: 450px;",
-          shiny::textInput(ns("username"), "Username", placeholder = "Username"),
-          shiny::passwordInput(ns("password"), "Password", placeholder = "Password"),
-          shiny::actionButton(ns("loginBtn"), "Log in", class = "ui large primary submit button"),
-        )
-      ),
-      tags$style(HTML("
-      .ui.grid > .column {
-        padding-top: 5em;
-        padding-bottom: 5em;
-      }
-    "))
-    ),
     # CONTENT PAGE
     tags$div(
       class = "header", # Add a loading overlay
@@ -192,12 +173,8 @@ ui <- function(id) {
 #' @export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
-    authorized_access_r <- shiny::reactiveVal(FALSE)
 
-    # Actual server
-    shiny::observeEvent(c(authorized_access_r()), ignoreInit = TRUE, {
-
-if (Sys.getenv("CRISPY_APP_ENV") == "dev") {
+  if (Sys.getenv("CRISPY_APP_ENV") == "dev") {
       possible_trisk_combinations <- r2dii.climate.stress.test::get_scenario_geography_x_ald_sector(trisk_input_path)
     } else if (Sys.getenv("CRISPY_APP_ENV") == "prod") {
       possible_trisk_combinations <- get_possible_trisk_combinations_from_api(trisk_api_service=TRISK_API_SERVICE)
@@ -232,47 +209,5 @@ if (Sys.getenv("CRISPY_APP_ENV") == "dev") {
         perimeter = perimeter
       )
       shinyjs::runjs('$("#loading-overlay").hide();')
-    })
-
-    # more login logic
-    if (Sys.getenv("CRISPY_APP_ENV") == "prod") {
-      conn <- DBI::dbConnect(RPostgres::Postgres(),
-        dbname = Sys.getenv("POSTGRES_DB"),
-        host = Sys.getenv("POSTGRES_HOST"),
-        port = Sys.getenv("POSTGRES_PORT"),
-        user = Sys.getenv("ST_POSTGRES_USERNAME"),
-        password = Sys.getenv("POSTGRES_PASSWORD")
-      )
-
-      observeEvent(input$loginBtn, {
-        authorized_access <- check_credentials(input = input, conn = conn)
-        if (authorized_access) {
-          shinyjs::hide("login")
-        } else {
-          shinyjs::alert("Incorrect username or password!")
-        }
-        authorized_access_r(authorized_access)
-      })
-    } else {
-      shinyjs::hide("login")
-      observe({
-        authorized_access_r(TRUE)
-      })
-    }
   })
-}
-
-
-
-check_credentials <- function(input, conn) {
-  # placeholders prevent SQL injection
-  query <- "SELECT * FROM users WHERE username = $1 AND password = $2"
-
-  # Execute the query with parameters
-  password_encr <- digest::digest(input$password, algo = "sha256", serialize = FALSE)
-  user <- input$username
-  result <- DBI::dbGetQuery(conn, query, params = list(user, password_encr))
-
-  # Check if any row matches the credentials
-  return(nrow(result) == 1)
 }

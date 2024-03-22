@@ -1,3 +1,13 @@
+first clone and build the shinyproxy-operator
+
+mvn -U clean install
+mvn package install -DskipTests
+
+
+
+
+
+
 `docker build -t registry.digitalocean.com/theia-1in1000-shinyapps/shinyproxy .`
 `docker push registry.digitalocean.com/theia-1in1000-shinyapps/shinyproxy`
 `kubectl apply -f k8s.yaml`

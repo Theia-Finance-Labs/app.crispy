@@ -8,4 +8,4 @@ COPY application.yml /opt/shinyproxy/application.yml
 EXPOSE 8080
 
 # Run ShinyProxy when the container launches
-CMD ["java", "-jar", "/app/shinyproxy.jar"]
+CMD ["java", "-jar", "./shinyproxy.jar"]
