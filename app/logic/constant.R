@@ -1,13 +1,8 @@
-# export constant values from here
+# PROJECT CONSTANTS ====================================
 
-# INFRASTRUCTURE CONSTANTS ====================================
-
-api_endpoint <- Sys.getenv("TRISK_API_ENDPOINT")
+TRISK_API_SERVICE <- Sys.getenv("TRISK_API_SERVICE")
 trisk_input_path <- file.path("app", "data", "st_inputs")
 backend_trisk_run_folder <- file.path("app", "data", "backend_db")
-
-
-# PROJECT CONSTANTS ====================================
 
 # Filter outliers in crispy when generating the analysis data
 # see stress.test.plot.report:::load_input_plots_data_from_tibble documentation for more details

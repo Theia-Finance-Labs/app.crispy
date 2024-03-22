@@ -1,29 +1,24 @@
 # Define an endpoint that accepts POST requests
 # Assume the JSON payload is directly analogous to the R list structure for trisk_run_param
 
-source("./trisk_compute.R")
-source("./utils.R")
+source(file.path(".","trisk_compute.R"))
+source(file.path(".","utils.R"))
 
 # Create a plumber router
 pr <- plumber::Plumber$new()
 
 # hardcoded input fp while the data is still part of the docker image
-trisk_input_path <- file.path(".", "st_inputs")
-s3_folder_path <- "st_inputs/"
+TRISK_INPUT_PATH <- file.path(".", "st_inputs")
+tables <- c(
+  "Scenarios_AnalysisInput",
+   "abcd_stress_test_input", 
+   "ngfs_carbon_price",
+   "prewrangled_capacity_factors",
+    "prewrangled_financial_data_stress_test", 
+    "price_data_long"
+    )
 
-
-
-if (!dir.exists(trisk_input_path)) {
-  download_files_from_s3(
-    s3_url = Sys.getenv("S3_URL"),
-    s3_folder_path = s3_folder_path,
-    local_folder_path = trisk_input_path,
-    s3_access_key = Sys.getenv("S3_ACCESS_KEY"),
-    s3_secret_key = Sys.getenv("S3_SECRET_KEY"),
-    s3_bucket = Sys.getenv("S3_BUCKET"),
-    s3_region = Sys.getenv("S3_REGION")
-  )
-}
+download_db_tables_postgres(tables=tables, folder_path=TRISK_INPUT_PATH)
 
 
 validate_trisk_run_params <- function(trisk_run_params) {
@@ -50,7 +45,7 @@ pr$handle("POST", "/compute_trisk", function(req, res) {
 
   run_id <- run_trisk_and_upload_results_to_db_conn(
     trisk_run_params = trisk_run_params,
-    trisk_input_path = trisk_input_path,
+    trisk_input_path = TRISK_INPUT_PATH,
     postgres_conn = postgres_conn
   )
 
@@ -62,7 +57,7 @@ pr$handle("POST", "/compute_trisk", function(req, res) {
 })
 
 pr$handle("GET", "/get_possible_trisk_combinations", function(req, res) {
-  possible_trisk_combinations <- r2dii.climate.stress.test::get_scenario_geography_x_ald_sector(trisk_input_path)
+  possible_trisk_combinations <- r2dii.climate.stress.test::get_scenario_geography_x_ald_sector(TRISK_INPUT_PATH)
   response <- list(possible_trisk_combinations = possible_trisk_combinations)
   response <- jsonlite::toJSON(response, auto_unbox = TRUE)
   return(response)
