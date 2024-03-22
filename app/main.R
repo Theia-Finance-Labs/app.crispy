@@ -16,6 +16,7 @@ box::use(
   app / view / crispy_loans,
   # logic
   app / logic / constant[
+    TRISK_API_SERVICE,
     trisk_input_path,
     s3_folder_path,
     backend_trisk_run_folder,
@@ -197,23 +198,9 @@ server <- function(id) {
     shiny::observeEvent(c(authorized_access_r()), ignoreInit = TRUE, {
 
 if (Sys.getenv("CRISPY_APP_ENV") == "dev") {
-      # Download data if not already available
-      if (!dir.exists(trisk_input_path)) {
-        download_files_from_s3(
-          local_folder_path = trisk_input_path,
-          s3_url = Sys.getenv("S3_URL_CRISPY"),
-          s3_folder_path = Sys.getenv("ST_FOLDER_CRISPY"),
-          s3_access_key = Sys.getenv("S3_ACCESS_KEY"),
-          s3_secret_key = Sys.getenv("S3_SECRET_KEY"),
-          s3_bucket = Sys.getenv("S3_BUCKET_CRISPY"),
-          s3_region = Sys.getenv("S3_REGION_CRISPY")
-        )
-      } else {
-        message(sprintf("Folder '%s' already exists at '%s'. No download needed.", s3_folder_path, trisk_input_path))
-      }
       possible_trisk_combinations <- r2dii.climate.stress.test::get_scenario_geography_x_ald_sector(trisk_input_path)
     } else if (Sys.getenv("CRISPY_APP_ENV") == "prod") {
-      possible_trisk_combinations <- get_possible_trisk_combinations_from_api()
+      possible_trisk_combinations <- get_possible_trisk_combinations_from_api(trisk_api_service=TRISK_API_SERVICE)
     } else {
       stop("must set environment variable CRISPY_APP_ENV to 'dev' or 'prod'")
     }

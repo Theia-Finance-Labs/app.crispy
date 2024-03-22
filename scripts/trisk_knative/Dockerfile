@@ -5,9 +5,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libcurl4-gnutls-dev \
     libpq-dev \
      zlib1g-dev \
-    libsodium-dev
+    libsodium-dev \
 #     libssl-dev \
-#     libxml2-dev \
+    libxml2-dev 
 #     liblzma-dev \
 #     libbz2-dev \ 
 #     libpcre2-dev \
