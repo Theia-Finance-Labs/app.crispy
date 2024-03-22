@@ -1,11 +1,11 @@
 # Use an official Java runtime as a parent image
-FROM openjdk:8-jre
+FROM openanalytics/shinyproxy:3.0.1
 
 # Set the working directory in the container
 WORKDIR /app
 
 # Copy the ShinyProxy jar file into the container
-ADD https://www.shinyproxy.io/downloads/shinyproxy-2.6.0.jar /app/shinyproxy.jar
+ADD https://www.shinyproxy.io/downloads/shinyproxy-3.0.0.jar /app/shinyproxy.jar
 
 # Copy the application.yml file into the container
 COPY application.yml /app/application.yml

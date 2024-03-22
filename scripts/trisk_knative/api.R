@@ -39,8 +39,9 @@ pr$handle("POST", "/compute_trisk", function(req, res) {
     dbname = Sys.getenv("POSTGRES_DB"),
     host = Sys.getenv("POSTGRES_HOST"),
     port = Sys.getenv("POSTGRES_PORT"),
-    user = Sys.getenv("ST_POSTGRES_USERNAME"),
-    password = Sys.getenv("POSTGRES_PASSWORD")
+    user = Sys.getenv("POSTGRES_USERNAME"),
+    password = Sys.getenv("POSTGRES_PASSWORD"),
+    sslmode="require"
   )
 
   run_id <- run_trisk_and_upload_results_to_db_conn(
