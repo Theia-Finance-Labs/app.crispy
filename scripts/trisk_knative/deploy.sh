@@ -1,22 +1,20 @@
 #!/bin/bash
 
 # Check for correct number of arguments
-if [ "$#" -ne 10 ]; then
+if [ "$#" -ne 5 ]; then
     echo "Usage: $0 POSTGRES_USERNAME POSTGRES_PASSWORD POSTGRES_HOST POSTGRES_PORT POSTGRES_DB"
     exit 1
 fi
 
-POSTGRES_USERNAME=$(echo -n "$6" | base64)
-POSTGRES_PASSWORD=$(echo -n "$7" | base64)
-POSTGRES_HOST=$(echo -n "$8" | base64)
-POSTGRES_PORT=$(echo -n "$9" | base64)
-POSTGRES_DB=$(echo -n "${10}" | base64)
+POSTGRES_USERNAME=$(echo -n "${1}" | base64)
+POSTGRES_PASSWORD=$(echo -n "${2}" | base64)
+POSTGRES_HOST=$(echo -n "${3}" | base64)
+POSTGRES_PORT=$(echo -n "${4}" | base64)
+POSTGRES_DB=$(echo -n "${5}" | base64)
 
-# Substitute variables in the k8s-trisk-api and apply
-sed -e "s|\${POSTGRES_USERNAME}|${POSTGRES_USERNAME}|g" \
+# Substitute variables in k8s.yaml and apply
+kubectl apply -f <( sed -e "s|\${POSTGRES_USERNAME}|${POSTGRES_USERNAME}|g" \
     -e "s|\${POSTGRES_PASSWORD}|${POSTGRES_PASSWORD}|g" \
     -e "s|\${POSTGRES_HOST}|${POSTGRES_HOST}|g" \
     -e "s|\${POSTGRES_PORT}|${POSTGRES_PORT}|g" \
-    -e "s|\${POSTGRES_DB}|${POSTGRES_DB}|g" k8s-trisk-api.yaml > k8s-trisk-api.yaml
-
-kubectl apply -f k8s-trisk-api.yaml
+    -e "s|\${POSTGRES_DB}|${POSTGRES_DB}|g" k8s.yaml )

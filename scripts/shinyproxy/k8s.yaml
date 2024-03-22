@@ -1,3 +1,13 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: digitalocean-registry-secret
+type: Opaque
+data:
+  postgres_username: ${MY_REGISTRY_URL}
+  postgres_password: ${MY_REGISTRY_USERNAME}
+  postgres_password: ${MY_REGISTRY_PASSWORD}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,6 +25,7 @@ spec:
       containers:
       - name: shinyproxy
         image: registry.digitalocean.com/theia-1in1000-shinyapps/shinyproxy:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
 ---

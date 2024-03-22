@@ -18,6 +18,8 @@ proxy:
     namespace: default
     internal-networking: true
     pod-wait-time: 60000
+    image-pull-policy: Always
+    image-pull-secret: digitalocean-registry-secret
   heartbeat-rate: 10000
   heartbeat-timeout: 60000
   # Load balancing configuration
