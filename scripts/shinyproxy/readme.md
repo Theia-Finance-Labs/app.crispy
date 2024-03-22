@@ -1,8 +1,18 @@
 first clone and build the shinyproxy-operator
 
+
+```
+sudo apt install openjdk-11-jdk
+sudo update-alternatives --config java
+```
+
+```
+git clone https://github.com/openanalytics/shinyproxy-operator.git
+cd shinyproxy-operator
 mvn -U clean install
 mvn package install -DskipTests
-
+cp target/target/shinyproxy-operator-jar-with-dependencies.jar ../shinyproxy-operator-jar-with-dependencies.jar
+```
 
 
 
