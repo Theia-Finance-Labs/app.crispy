@@ -4,9 +4,9 @@ metadata:
   name: digitalocean-registry-secret
 type: Opaque
 data:
-  postgres_username: ${MY_REGISTRY_URL}
-  postgres_password: ${MY_REGISTRY_USERNAME}
-  postgres_password: ${MY_REGISTRY_PASSWORD}
+  docker-server: ${MY_REGISTRY_URL}
+  docker-username: ${MY_REGISTRY_USERNAME}
+  docker-password: ${MY_REGISTRY_PASSWORD}
 ---
 apiVersion: apps/v1
 kind: Deployment
