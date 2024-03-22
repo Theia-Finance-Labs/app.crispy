@@ -1,6 +1,5 @@
 proxy:
   title: Shiny Proxy
-  logo-url: file:///etc/shinyproxy/logo.png
   landing-page: /
   port: 8080
   authentication: simple
