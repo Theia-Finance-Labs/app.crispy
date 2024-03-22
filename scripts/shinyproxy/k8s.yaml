@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: shinyproxy
-        image: myregistry.com/shinyproxy:latest
+        image: registry.digitalocean.com/theia-1in1000-shinyapps/shinyproxy:latest
         ports:
         - containerPort: 8080
 ---
