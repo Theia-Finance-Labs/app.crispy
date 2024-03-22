@@ -1,0 +1,39 @@
+proxy:
+  title: Shiny Proxy
+  logo-url: file:///etc/shinyproxy/logo.png
+  landing-page: /
+  port: 8080
+  authentication: simple
+  users:
+    - name: user1
+      password: password1
+    - name: user2
+      password: password2
+  # Kubernetes specific configuration
+  kubernetes:
+    url: https://kubernetes.default.svc
+    namespace: default
+    internal-networking: true
+    pod-wait-time: 60000
+  heartbeat-rate: 10000
+  heartbeat-timeout: 60000
+  # Load balancing configuration
+  container-wait-time: 30000
+  usage-stats-url: /path/to/usage/stats
+  specs:
+    - id: app1
+      display-name: App 1
+      description: "An example Shiny app"
+      container-cmd: ["R", "-e", "shiny::runApp('/root/app1')"]
+      container-image: myregistry.com/myshinyapp:latest
+      access-groups: ["users"]
+    - id: app2
+      display-name: App 2
+      description: "Another example Shiny app"
+      container-cmd: ["R", "-e", "shiny::runApp('/root/app2')"]
+      container-image: myregistry.com/myshinyapp2:latest
+      access-groups: ["users"]
+
+logging:
+  file:
+    name: shinyproxy.log
