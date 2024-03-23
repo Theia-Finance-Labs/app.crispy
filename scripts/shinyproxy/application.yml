@@ -33,7 +33,7 @@ proxy:
       display-name: App 1
       description: "An example Shiny app"
       container-cmd: ["R", "-e", "shiny::runApp(host = "0.0.0.0", port = 5000)"]
-      container-image: registry.digitalocean.com/theia-1in1000-shinyapps/trisk_api:latest
+      container-image: registry.digitalocean.com/theia-1in1000-shinyapps/crispy_app:latest
       access-groups: ["admins", "users"]
       # container-memory-request: 500Mi
       # container-memory-limit: 1Gi
