@@ -23,13 +23,24 @@ cp target/target/shinyproxy-operator-jar-with-dependencies.jar ../shinyproxy-ope
 `kubectl apply -f k8s.yaml`
 
 
+
+
 ```bash
 
 export MY_REGISTRY_URL="registry.digitalocean.com"
 export MY_REGISTRY_USERNAME="1in1000@theiafinance.org"
-export MY_REGISTRY_PASSWORD="DIGITALOCEAN_ACCESS_TOKEN"
+export MY_REGISTRY_PASSWORD="DIGITALOCEAN_ACCESS_TOKEN" # EDIT VALUE
+export MY_REGISTRY_EMAIL="1in1000@theiafinance.org"
 
-chmod +x deploy.sh
-./deploy.sh "$MY_REGISTRY_URL" "$MY_REGISTRY_USERNAME" "$MY_REGISTRY_PASSWORD"
+kubectl create namespace shinyproxy
+
+kubectl create secret docker-registry digitalocean-registry-secret \
+  --docker-server="$MY_REGISTRY_URL" \
+  --docker-username="$MY_REGISTRY_USERNAME" \
+  --docker-password="$MY_REGISTRY_PASSWORD" \
+  --docker-email="$MY_REGISTRY_EMAIL" \
+  --namespace=shinyproxy
+
+kubectl apply -f k8s.yaml
 
 ```
