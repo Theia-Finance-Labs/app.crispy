@@ -14,7 +14,7 @@ proxy:
   # Kubernetes specific configuration
   container-backend: kubernetes
   kubernetes:
-    url: https://kubernetes.shinyproxy.svc
+    url: https://kubernetes.default.svc
     namespace: shinyproxy # Specify the namespace here
     internal-networking: true
     # pod-wait-time: 60000

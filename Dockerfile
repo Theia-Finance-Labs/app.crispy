@@ -1,4 +1,4 @@
-FROM rocker/shiny:4.1.0
+FROM rocker/r-base:4.3.0
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV CRISPY_APP_ENV="prod" 
@@ -11,29 +11,30 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxt-dev \
     libssl-dev \
     libssh2-1-dev \
-  && rm -rf /var/lib/apt/lists/*
+    libpq-dev \
+   && rm -rf /var/lib/apt/lists/*
 
 
 RUN echo "local(options(shiny.port = 3838, shiny.host = '0.0.0.0'))" > /usr/lib/R/etc/Rprofile.site
 
-RUN addgroup --system app \
-    && adduser --system --ingroup app app
+RUN addgroup --system shiny \
+    && adduser --system --home /home/app --ingroup shiny shiny
 
 
 # Install R dependencies
-COPY --chown=app:app .Rprofile renv.lock ./
-COPY --chown=app:app renv/activate.R renv/
-RUN sudo -u shiny Rscript -e 'renv::restore()'
+COPY --chown=shiny:shiny .Rprofile renv.lock ./
+COPY --chown=shiny:shiny renv/activate.R renv/
+RUN sudo -u shiny Rscript -e 'renv::restore(clean=T)'
 
 
 # Copy app
-COPY --chown=app:app app.R ./
-COPY --chown=app:app config.yml ./
-COPY --chown=app:app rhino.yml ./
-COPY --chown=app:app app app/
+COPY --chown=shiny:shiny app.R ./
+COPY --chown=shiny:shiny config.yml ./
+COPY --chown=shiny:shiny rhino.yml ./
+COPY --chown=shiny:shiny app app/
 
-USER app 
+USER shiny 
 
 EXPOSE 3838
 
-CMD ["R", "-e", "rhino::app()"]
+CMD ["R", "-e", "shiny::runApp()"]
