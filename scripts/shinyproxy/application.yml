@@ -14,19 +14,19 @@ proxy:
   # Kubernetes specific configuration
   container-backend: kubernetes
   kubernetes:
-    url: https://kubernetes.default.svc
+    url: https://kubernetes.shinyproxy.svc
     namespace: shinyproxy # Specify the namespace here
     internal-networking: true
-    pod-wait-time: 60000
+    # pod-wait-time: 60000
     image-pull-policy: Always
     image-pull-secret: theia-1in1000-shinyapps # CREATE MANUALLY IF USING KUBERNETES NOT ON DIGITALOCEAN
     # privileged: false # Keep containers unprivileged unless necessary
     # container-protocol: http # Default is suitable for most, switch to https if your app requires secure communication
     # port: 3838 # Default Shiny port, adjust if your app uses a different port
-  heartbeat-rate: 10000
-  heartbeat-timeout: 60000
-  # Load balancing configuration
-  container-wait-time: 30000
+  # heartbeat-rate: 10000
+  # heartbeat-timeout: 60000
+  # # Load balancing configuration
+  # container-wait-time: 30000
   specs:
     - id: app1
       port: 5000 
