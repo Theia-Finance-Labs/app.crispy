@@ -19,7 +19,7 @@ proxy:
     internal-networking: true
     # pod-wait-time: 60000
     image-pull-policy: Always
-    image-pull-secret: theia-1in1000-shinyapps # CREATE MANUALLY IF USING KUBERNETES NOT ON DIGITALOCEAN
+    image-pull-secret: theia-1in1000-shinyapps # CREATE MANUALLY IF NOT USING KUBERNETES ON DIGITALOCEAN
     # privileged: false # Keep containers unprivileged unless necessary
     # container-protocol: http # Default is suitable for most, switch to https if your app requires secure communication
     # port: 3838 # Default Shiny port, adjust if your app uses a different port
