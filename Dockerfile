@@ -13,10 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libssl-dev \
     libssh2-1-dev \
     libpq-dev \
-  && rm -rf /var/lib/apt/lists/*
-
-
-# RUN echo "local(options(shiny.port = 3838, shiny.host = '0.0.0.0'))" > /usr/lib/R/etc/Rprofile.site
+    && rm -rf /var/lib/apt/lists/*
 
 RUN addgroup --system shiny \
     && adduser --system --home /home/app --ingroup shiny shiny
@@ -25,7 +22,6 @@ RUN addgroup --system shiny \
 # Install R dependencies
 COPY --chown=shiny:shiny .Rprofile renv.lock ./
 COPY --chown=shiny:shiny renv/activate.R renv/
-RUN sudo -u shiny Rscript -e 'install.packages("arrow", repos = "https://packagemanager.rstudio.com/all/__linux__/focal/latest")'
 RUN sudo -u shiny Rscript -e 'renv::restore(clean=T)'
 
 

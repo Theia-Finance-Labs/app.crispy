@@ -1,9 +1,3 @@
-# To deploy :
-
-```bash
-./deploy.sh your_s3_url your_access_key your_secret_key your_bucket_name your_region your_username your_password your_host your_port your_db_name
-```
-
 # to test api : 
 
 in rconsole:

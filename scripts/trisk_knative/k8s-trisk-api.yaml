@@ -1,27 +1,8 @@
-apiVersion: v1
-kind: Secret
-metadata:
-  name: db-credentials
-type: Opaque
-data:
-  postgres_username: ${POSTGRES_USERNAME}
-  postgres_password: ${POSTGRES_PASSWORD}
-  postgres_host: ${POSTGRES_HOST}
-  postgres_port: ${POSTGRES_PORT}
-  postgres_db: ${POSTGRES_DB}
----  
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: config-domain
-  namespace: knative-serving
-data:
-  143.244.207.98: ""
----
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  name: trisk-api
+  namespace: trisk-api
+  name: trisk-api-endpoint
 spec:
   template:
     metadata:

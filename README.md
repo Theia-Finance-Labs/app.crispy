@@ -22,18 +22,8 @@ TRISK_API_SERVICE="0.0.0.0"
 POSTGRES_DB=""
 POSTGRES_HOST=""
 POSTGRES_PORT=""
-ST_POSTGRES_USERNAME=""
+POSTGRES_USERNAME=""
 POSTGRES_PASSWORD=""
-
-
-# backend S3 bucket creds
-S3_ACCESS_KEY=""
-S3_SECRET_KEY=""
-
-S3_URL_CRISPY=""
-S3_BUCKET_CRISPY="trisk-input-files"
-ST_FOLDER_CRISPY="st_inputs_app/"
-S3_REGION_CRISPY=""
 
 
 ```
@@ -91,3 +81,18 @@ The app can be deployed on kubernetes by following those instructions :
 
 kubectl apply -f crispy-app-deployment.yaml
 kubectl apply -f crispy-app-service.yaml
+
+### set the secrets:
+
+```bash
+export POSTGRES_DB=""
+export POSTGRES_HOST=""
+export POSTGRES_PORT=""
+export POSTGRES_USERNAME=""
+export POSTGRES_PASSWORD=""
+
+
+
+./deploy.sh "$POSTGRES_USERNAME" "$POSTGRES_PASSWORD" "$POSTGRES_HOST" "$POSTGRES_PORT" "$POSTGRES_DB"
+
+```

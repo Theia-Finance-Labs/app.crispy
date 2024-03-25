@@ -28,13 +28,39 @@ proxy:
   # # Load balancing configuration
   # container-wait-time: 30000
   specs:
-    - id: app1
+    - id: crispy_app
       port: 5000 
-      display-name: App 1
-      description: "An example Shiny app"
+      display-name: Crispy App
+      description: "Climate stress test for Equities, Bonds&Loans"
       container-cmd: ["R", "-e", "shiny::runApp(host = \"0.0.0.0\", port = 5000)"]
       container-image: registry.digitalocean.com/theia-1in1000-shinyapps/crispy_app:latest
       access-groups: ["admins", "users"]
+      env:
+        - name: POSTGRES_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: postgres_username
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: postgres_password
+        - name: POSTGRES_HOST
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: postgres_host
+        - name: POSTGRES_PORT
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: postgres_port
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: postgres_db      
       # container-memory-request: 500Mi
       # container-memory-limit: 1Gi
       # container-cpu-request: 500m

@@ -329,7 +329,7 @@
     },
     "bslib": {
       "Package": "bslib",
-      "Version": "0.6.1",
+      "Version": "0.6.2",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -346,7 +346,7 @@
         "rlang",
         "sass"
       ],
-      "Hash": "c0d8599494bc7fb408cd206bbdd9cab0"
+      "Hash": "7fb73102553e0c8e478bfaa0ccebe479"
     },
     "cachem": {
       "Package": "cachem",
@@ -938,7 +938,7 @@
     },
     "lintr": {
       "Package": "lintr",
-      "Version": "3.1.1",
+      "Version": "3.1.2",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -955,7 +955,7 @@
         "xml2",
         "xmlparsedata"
       ],
-      "Hash": "93e9379f4be8c0bf1862dfc7f720193e"
+      "Hash": "08cff46381a242d44c0d8dd0aabd9f71"
     },
     "logger": {
       "Package": "logger",
@@ -1242,11 +1242,11 @@
       "Version": "0.0.0.9005",
       "Source": "GitHub",
       "RemoteType": "github",
-      "RemoteUsername": "2DegreesInvesting",
-      "RemoteRepo": "r2dii.climate.stress.test",
-      "RemoteRef": "master",
-      "RemoteSha": "6a4cda0461e6a121970921053f58a1a05794b6f3",
       "RemoteHost": "api.github.com",
+      "RemoteRepo": "r2dii.climate.stress.test",
+      "RemoteUsername": "2DegreesInvesting",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "6a4cda0461e6a121970921053f58a1a05794b6f3",
       "Requirements": [
         "R",
         "dplyr",
@@ -1263,7 +1263,7 @@
         "withr",
         "zoo"
       ],
-      "Hash": "8c9cbb569d5ae1b38d5919aa534af2ea"
+      "Hash": "9d0a04508ab2ccf45c98c5613bfb99c3"
     },
     "r2dii.colours": {
       "Package": "r2dii.colours",
@@ -1272,7 +1272,7 @@
       "RemoteType": "github",
       "RemoteUsername": "RMI-PACTA",
       "RemoteRepo": "r2dii.colours",
-      "RemoteRef": "master",
+      "RemoteRef": "HEAD",
       "RemoteSha": "748394821220f708b15d007da829ae826e7015d2",
       "RemoteHost": "api.github.com",
       "Requirements": [
@@ -1287,7 +1287,7 @@
         "stringr",
         "tibble"
       ],
-      "Hash": "4e8ef50159ce03fcc199fcdc4ab6c68c"
+      "Hash": "6911dc4c785ed7c3119dc81a708f7cb4"
     },
     "r2dii.data": {
       "Package": "r2dii.data",
@@ -1472,10 +1472,10 @@
     },
     "rstudioapi": {
       "Package": "rstudioapi",
-      "Version": "0.15.0",
+      "Version": "0.16.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "5564500e25cffad9e22244ced1379887"
+      "Hash": "96710351d642b70e8f02ddeb237c46a7"
     },
     "sass": {
       "Package": "sass",
@@ -1617,13 +1617,13 @@
       "Package": "stress.test.plot.report",
       "Version": "0.0.0.9000",
       "Source": "GitHub",
-      "Remotes": "2DegreesInvesting/r2dii.climate.stress.test, 2DegreesInvesting/STDataMGMT, RMI-PACTA/r2dii.colours",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteRepo": "stress.test.plot.report",
       "RemoteUsername": "2DegreesInvesting",
-      "RemoteRef": "HEAD",
+      "RemoteRepo": "stress.test.plot.report",
+      "RemoteRef": "master",
       "RemoteSha": "78f9244868092f2cad260a699875cf17a05a0096",
+      "Remotes": "2DegreesInvesting/r2dii.climate.stress.test, 2DegreesInvesting/STDataMGMT, RMI-PACTA/r2dii.colours",
       "Requirements": [
         "box",
         "dplyr",
@@ -1638,7 +1638,7 @@
         "tidytext",
         "withr"
       ],
-      "Hash": "49344fc25e9f754f46f9451f8de4501d"
+      "Hash": "b68a77e22229b6c97e8f3a5367792340"
     },
     "stringi": {
       "Package": "stringi",

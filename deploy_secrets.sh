@@ -17,4 +17,4 @@ kubectl apply -f <( sed -e "s|\${POSTGRES_USERNAME}|${POSTGRES_USERNAME}|g" \
     -e "s|\${POSTGRES_PASSWORD}|${POSTGRES_PASSWORD}|g" \
     -e "s|\${POSTGRES_HOST}|${POSTGRES_HOST}|g" \
     -e "s|\${POSTGRES_PORT}|${POSTGRES_PORT}|g" \
-    -e "s|\${POSTGRES_DB}|${POSTGRES_DB}|g" k8s.yaml )
+    -e "s|\${POSTGRES_DB}|${POSTGRES_DB}|g" k8s-secrets.yaml )
