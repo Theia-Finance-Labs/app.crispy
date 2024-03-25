@@ -44,3 +44,17 @@ kubectl create secret docker-registry digitalocean-registry-secret \
 kubectl apply -f k8s.yaml
 
 ```
+
+
+# Network config
+
+1. Install Nginx Ingress Controller:
+Depending on your Kubernetes environment, the installation steps might vary. For a standard Kubernetes cluster, you can use Helm to install Nginx Ingress:
+
+```sh
+Copy code
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+helm install my-nginx ingress-nginx/ingress-nginx
+```
+
