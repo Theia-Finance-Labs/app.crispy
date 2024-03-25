@@ -18,13 +18,12 @@ box::use(
   app / logic / constant[
     TRISK_API_SERVICE,
     trisk_input_path,
-    s3_folder_path,
     backend_trisk_run_folder,
     max_trisk_granularity,
     available_vars,
     hide_vars
   ],
-  app/logic/cloud_logic[download_files_from_s3, get_possible_trisk_combinations_from_api]
+  app/logic/cloud_logic[get_possible_trisk_combinations_from_api]
 )
 
 

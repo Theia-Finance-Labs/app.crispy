@@ -13,7 +13,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libssl-dev \
     libssh2-1-dev \
     libpq-dev \
+    libxml2-dev \
     && rm -rf /var/lib/apt/lists/*
+
 
 RUN addgroup --system shiny \
     && adduser --system --home /home/app --ingroup shiny shiny
@@ -35,4 +37,4 @@ USER shiny
 
 EXPOSE 3838
 
-CMD ["R", "-e", "shiny::runApp()"]
+CMD ["R", "-e", "shiny::runApp(host='0.0.0.0', port=3838)"]
