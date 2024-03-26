@@ -19,6 +19,15 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8080   
+      affinity: 
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: doks.digitalocean.com/node-pool
+                operator: In
+                values:
+                - shinyproxy-pool
 ---
 apiVersion: v1
 kind: Service

@@ -4,7 +4,7 @@ trisk_input_path <- file.path("app", "data", "st_inputs")
 backend_trisk_run_folder <- file.path("app", "data", "backend_db")
 
 # trisk kubernetes api endpoint url
-trisk_api_service <- "trisk-api-service"
+trisk_api_service <- "trisk-api.default.svc.cluster.local"
 TRISK_API_SERVICE <- paste0("http://", trisk_api_service, ":80/compute_trisk")
 
 
