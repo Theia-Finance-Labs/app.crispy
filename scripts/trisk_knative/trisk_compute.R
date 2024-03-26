@@ -99,7 +99,7 @@ upload_to_postgres <- function(postgres_conn, st_results_wrangled_and_checked) {
     if (DBI::dbExistsTable(postgres_conn, st_output_name)) {
       DBI::dbAppendTable(postgres_conn, st_output_name, st_output_df)
     } else {
-      DBI::dbCreateTable(postgres_conn, st_output_name, st_output_df)
+      DBI::dbWriteTable(postgres_conn, st_output_name, st_output_df, create = TRUE)
     }
   }
   DBI::dbDisconnect(postgres_conn)
