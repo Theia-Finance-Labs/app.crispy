@@ -1,7 +1,7 @@
 trigger_trisk_api_computation <- function(trisk_run_params, trisk_api_service) {
   # Define the URL
   # by defaylt trisk_api_service should be equalt to "trisk-api-service"
-  url <- paste0("http://", trisk_api_service, ":80/compute_trisk")
+  url <- trisk_api_service
 
   # Define the body of the request
   body <- list(

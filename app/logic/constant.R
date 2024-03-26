@@ -1,8 +1,12 @@
 # PROJECT CONSTANTS ====================================
 
-TRISK_API_SERVICE <- Sys.getenv("TRISK_API_SERVICE")
 trisk_input_path <- file.path("app", "data", "st_inputs")
 backend_trisk_run_folder <- file.path("app", "data", "backend_db")
+
+# trisk kubernetes api endpoint url
+trisk_api_service <- "trisk-api-service"
+TRISK_API_SERVICE <- paste0("http://", trisk_api_service, ":80/compute_trisk")
+
 
 # Filter outliers in crispy when generating the analysis data
 # see stress.test.plot.report:::load_input_plots_data_from_tibble documentation for more details

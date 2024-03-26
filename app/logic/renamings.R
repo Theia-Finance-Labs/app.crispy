@@ -102,19 +102,14 @@ rename_string_vector <- function(string_vector, words_class, dev_to_ux = TRUE) {
 
 
     if (dev_to_ux) {
-      if (!all(string_vector %in% names(RENAMING))) {
-        print(paste(
-          collapse = "/n",
-          "WARNING: ",
-          string_vector[!string_vector %in% names(RENAMING)],
-          "are not renamed in app/logic/renamings.R"
-        ))
+      if (all(string_vector %in% names(RENAMING))) {
+        string_vector <- unname(RENAMING[string_vector])
       }
-
-      string_vector <- unname(RENAMING[string_vector])
     } else {
-      REV_RENAMING <- stats::setNames(names(RENAMING), unname(RENAMING))
-      string_vector <- unname(REV_RENAMING[string_vector])
+      if (all(string_vector %in% unname(RENAMING))){
+        REV_RENAMING <- stats::setNames(names(RENAMING), unname(RENAMING))
+        string_vector <- unname(REV_RENAMING[string_vector])
+      }
     }
   } else {
     stop("Class not handled for renaming")
