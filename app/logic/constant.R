@@ -1,12 +1,26 @@
+# CLOUD SERVICES CONSTANT
+
+
+# TRISK API SERVICE ONLY USED IN "PROD" MODE
+# trisk kubernetes api endpoint url
+# trisk_api_service <- "http://trisk-api-service.default.svc.cluster.local:8080"
+# trisk docker compose endpoint url
+# trisk_api_service <- "http://trisk-api-service:8080"
+# trisk local api endpoint url
+# trisk_api_service <- "http://0.0.0.0:8080"
+trisk_api_service <- Sys.getenv("TRISK_API_SERVICE")
+
+DBNAME  <-  Sys.getenv("POSTGRES_DB"),
+HOST_DB  <-  Sys.getenv("POSTGRES_HOST"),
+DB_PORT  <-  Sys.getenv("POSTGRES_PORT"),
+DB_USER  <- Sys.getenv("POSTGRES_USERNAME"),
+DB_PASSWORD <-  Sys.getenv("POSTGRES_PASSWORD")
+
+
 # PROJECT CONSTANTS ====================================
 
 trisk_input_path <- file.path("app", "data", "st_inputs")
 backend_trisk_run_folder <- file.path("app", "data", "backend_db")
-
-# trisk kubernetes api endpoint url
-trisk_api_service <- "trisk-api.default.svc.cluster.local"
-TRISK_API_SERVICE <- paste0("http://", trisk_api_service, ":80/compute_trisk")
-
 
 # Filter outliers in crispy when generating the analysis data
 # see stress.test.plot.report:::load_input_plots_data_from_tibble documentation for more details

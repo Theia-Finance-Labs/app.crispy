@@ -7,7 +7,13 @@ source(file.path(".","utils.R"))
 # Create a plumber router
 pr <- plumber::Plumber$new()
 
-# hardcoded input fp while the data is still part of the docker image
+POSTGRES_DB <- Sys.getenv("POSTGRES_DB")
+POSTGRES_HOST <- Sys.getenv("POSTGRES_HOST")
+POSTGRES_PORT <- Sys.getenv("POSTGRES_PORT")
+POSTGRES_USERNAME<- Sys.getenv("POSTGRES_USERNAME")
+POSTGRES_PASSWORD <- Sys.getenv("POSTGRES_PASSWORD")
+
+# hardcoded input fp inside the container
 TRISK_INPUT_PATH <- file.path(".", "st_inputs")
 tables <- c(
   "Scenarios_AnalysisInput",
@@ -18,7 +24,14 @@ tables <- c(
     "price_data_long"
     )
 
-download_db_tables_postgres(tables=tables, folder_path=TRISK_INPUT_PATH)
+download_db_tables_postgres(
+  tables=tables,
+ folder_path=TRISK_INPUT_PATH,
+      dbname = POSTGRES_DB,
+      host = POSTGRES_HOST,
+      port = POSTGRES_PORT,
+      user = POSTGRES_USERNAME,
+      password = POSTGRES_PASSWORD)
 
 
 validate_trisk_run_params <- function(trisk_run_params) {
@@ -30,17 +43,18 @@ validate_trisk_run_params <- function(trisk_run_params) {
   }
 }
 
+
 pr$handle("POST", "/compute_trisk", function(req, res) {
   trisk_run_params <- jsonlite::fromJSON(req$postBody)$trisk_run_params
   validate_trisk_run_params(trisk_run_params)
 
   postgres_conn <- DBI::dbConnect(
     RPostgres::Postgres(),
-    dbname = Sys.getenv("POSTGRES_DB"),
-    host = Sys.getenv("POSTGRES_HOST"),
-    port = Sys.getenv("POSTGRES_PORT"),
-    user = Sys.getenv("POSTGRES_USERNAME"),
-    password = Sys.getenv("POSTGRES_PASSWORD"),
+    dbname = POSTGRES_DB,
+    host = POSTGRES_HOST,
+    port = POSTGRES_PORT,
+    user = POSTGRES_USERNAME,
+    password = POSTGRES_PASSWORD,
     sslmode="require"
   )
 
@@ -64,5 +78,5 @@ pr$handle("GET", "/get_possible_trisk_combinations", function(req, res) {
   return(response)
 })
 
-# Run the plumber API on port 8080
-pr$run(port = 8080, host = "0.0.0.0")
+# Run the plumber API on port 8000
+pr$run(port = 8000, host = "0.0.0.0")

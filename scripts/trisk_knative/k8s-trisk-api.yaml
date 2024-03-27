@@ -8,12 +8,13 @@ spec:
       name: trisk-api-service
       annotations:
         autoscaling.knative.dev/target: "1" # R is single threaded so 1 pod per API connection
+        autoscaling.knative.dev/minScale: "2" # Ensure at least two pods are always running        
     spec:
       containers:
         - image: registry.digitalocean.com/theia-1in1000-shinyapps/trisk_api:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 8080
+            - containerPort: 8000
           env:
             - name: POSTGRES_USERNAME
               valueFrom:

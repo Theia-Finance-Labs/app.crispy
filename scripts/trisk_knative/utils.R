@@ -1,12 +1,12 @@
-download_db_tables_postgres <- function(tables, folder_path) {  
+download_db_tables_postgres <- function(tables, folder_path, dbname, host, port, user, password) {  
     # Example function call
     conn <- DBI::dbConnect(
       RPostgres::Postgres(),
-      dbname = Sys.getenv("POSTGRES_DB"),
-      host = Sys.getenv("POSTGRES_HOST"),
-      port = Sys.getenv("POSTGRES_PORT"),
-      user = Sys.getenv("POSTGRES_USERNAME"),
-      password = Sys.getenv("POSTGRES_PASSWORD"),
+      dbname = dbname,
+      host = host,
+      port = port,
+      user = user,
+      password = password,
       sslmode="require"
       
     )

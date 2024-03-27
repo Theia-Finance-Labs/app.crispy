@@ -77,7 +77,7 @@ get_data_from_postgres <- function(
 get_possible_trisk_combinations_from_api <- function(trisk_api_service){
   # Define the URL
   # by defaylt trisk_api_service should be equalt to "trisk-api-service"
-  url <- paste0("http://", trisk_api_service, ":80/get_possible_trisk_combinations")
+  url <- paste0(trisk_api_service, "/get_possible_trisk_combinations")
   # Make the POST request with a 6-minute timeout
   response <- httr::GET(url, httr::timeout(360))
   content <- httr::content(response, "text", encoding = "UTF-8")

@@ -1,38 +1,39 @@
 version: '3.8'
-
 services:
-  shiny_app:
-    build:
-      context: ./path_to_shiny_app_directory
-      dockerfile: Dockerfile_shiny # Name this according to your actual Dockerfile name for the Shiny app
-    volumes:
-      - ./path_to_shiny_app_directory:/srv/shiny-server
+  trisk-api:
+    image: registry.digitalocean.com/theia-1in1000-shinyapps/trisk_api:latest
     environment:
-      - CRISPY_APP_ENV=prod
-    networks:
-      - app_network
-
-  r_api:
-    build:
-      context: ./path_to_r_api_directory
-      dockerfile: Dockerfile_r_api # Name this according to your actual Dockerfile name for the R API
-    volumes:
-      - ./path_to_r_api_directory:/app
-    environment:
-      - POSTGRES_DB=NULL
-      - POSTGRES_USERNAME=NULL
-      - POSTGRES_PASSWORD=NULL
-      - POSTGRES_HOST=shiny_app # Use the service name as hostname for inter-container communication
-      - POSTGRES_PORT=NULL
-      - S3_URL=NULL
-      - S3_ACCESS_KEY=NULL
-      - S3_SECRET_KEY=NULL
-      - S3_BUCKET=NULL
-      - S3_REGION=NULL
+      POSTGRES_USERNAME: "your_username"
+      POSTGRES_PASSWORD: "your_password"
+      POSTGRES_HOST: "your_db_host"
+      POSTGRES_PORT: "your_db_port"
+      POSTGRES_DB: "your_db_name"
     ports:
-      - "8080:8080" # Expose the R API on port 8080
-    networks:
-      - app_network
+      - "8000:8000"
+
+  crispy-app:
+    image: registry.digitalocean.com/theia-1in1000-shinyapps/crispy_app:latest
+    environment:
+      POSTGRES_USERNAME: "your_username"
+      POSTGRES_PASSWORD: "your_password"
+      POSTGRES_HOST: "your_db_host"
+      POSTGRES_PORT: "your_db_port"
+      POSTGRES_DB: "your_db_name"
+    depends_on:
+      - trisk-api
+    ports:
+      - "6000:6000"
+
+  shinyproxy-server:
+    image: registry.digitalocean.com/theia-1in1000-shinyapps/shinyproxy:latest
+    volumes:
+      - ./application.yml:/opt/shinyproxy/application.yml
+    ports:
+      - "8080:8080"
+    depends_on:
+      - crispy-app
+      - trisk-api
 
 networks:
-  app_network:
+  default:
+    driver: bridge
