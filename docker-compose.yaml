@@ -3,22 +3,23 @@ services:
   trisk-api:
     image: registry.digitalocean.com/theia-1in1000-shinyapps/trisk_api:latest
     environment:
-      POSTGRES_USERNAME: "your_username"
-      POSTGRES_PASSWORD: "your_password"
-      POSTGRES_HOST: "your_db_host"
-      POSTGRES_PORT: "your_db_port"
-      POSTGRES_DB: "your_db_name"
+      POSTGRES_USERNAME: "${POSTGRES_USERNAME}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_HOST: "${POSTGRES_HOST}"
+      POSTGRES_PORT: "${POSTGRES_PORT}"
+      POSTGRES_DB: "${POSTGRES_DB}"
     ports:
       - "8000:8000"
 
   crispy-app:
     image: registry.digitalocean.com/theia-1in1000-shinyapps/crispy_app:latest
     environment:
-      POSTGRES_USERNAME: "your_username"
-      POSTGRES_PASSWORD: "your_password"
-      POSTGRES_HOST: "your_db_host"
-      POSTGRES_PORT: "your_db_port"
-      POSTGRES_DB: "your_db_name"
+      POSTGRES_USERNAME: "${POSTGRES_USERNAME}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_HOST: "${POSTGRES_HOST}"
+      POSTGRES_PORT: "${POSTGRES_PORT}"
+      POSTGRES_DB: "${POSTGRES_DB}"
+      TRISK_API_SERVICE: http://trisk-api-service:8000
     depends_on:
       - trisk-api
     ports:

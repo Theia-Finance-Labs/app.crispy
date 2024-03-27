@@ -3,11 +3,11 @@
 
 # TRISK API SERVICE ONLY USED IN "PROD" MODE
 # trisk kubernetes api endpoint url
-# trisk_api_service <- "http://trisk-api-service.default.svc.cluster.local:8080"
+# trisk_api_service <- "http://trisk-api-service.default.svc.cluster.local:8000"
 # trisk docker compose endpoint url
-# trisk_api_service <- "http://trisk-api-service:8080"
+# trisk_api_service <- "http://trisk-api-service:8000"
 # trisk local api endpoint url
-# trisk_api_service <- "http://0.0.0.0:8080"
+# trisk_api_service <- "http://0.0.0.0:8000"
 trisk_api_service <- Sys.getenv("TRISK_API_SERVICE")
 
 DBNAME  <-  Sys.getenv("POSTGRES_DB"),

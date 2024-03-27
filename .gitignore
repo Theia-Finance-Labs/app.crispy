@@ -7,6 +7,8 @@
 .Renviron
 rsconnect
 
+.env
+
 # project specific 
 scripts/raw_data
 private_repos/
@@ -18,3 +20,4 @@ cypress.config.js
 package-lock.json
 scripts/trisk_knative/st_inputs/*
 private_test.sh
+
