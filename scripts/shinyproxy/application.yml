@@ -29,11 +29,12 @@ proxy:
   # container-wait-time: 30000
   specs:
     - id: crispy_app
-      port: 5000 
+      port: 3838 
       display-name: Crispy App
       description: "Climate stress test for Equities, Bonds&Loans"
-      container-cmd: ["R", "-e", "shiny::runApp(host = \"0.0.0.0\", port = 5000)"]
+      container-cmd: ["R", "-e", "shiny::runApp(host = \"0.0.0.0\", port = 3838)"]
       container-image: registry.digitalocean.com/theia-1in1000-shinyapps/crispy_app:latest
+      # container-wait-time: 1000
       access-groups: ["admins", "users"]
       env:
         - name: POSTGRES_USERNAME

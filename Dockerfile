@@ -1,4 +1,4 @@
-FROM rocker/shiny:4.1.0
+FROM rocker/shiny:4.3.0
 
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -20,12 +20,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN addgroup --system shiny \
     && adduser --system --home /home/app --ingroup shiny shiny
 
+# Set the working directory to /home/app
+WORKDIR /home/app
 
 # Install R dependencies
-COPY --chown=shiny:shiny .Rprofile renv.lock ./
+COPY --chown=shiny:shiny .Rprofile renv.lock .renvignore dependencies.R ./
 COPY --chown=shiny:shiny renv/activate.R renv/
 RUN sudo -u shiny Rscript -e 'renv::restore(clean=T)'
-
 
 # Copy app
 COPY --chown=shiny:shiny app.R ./

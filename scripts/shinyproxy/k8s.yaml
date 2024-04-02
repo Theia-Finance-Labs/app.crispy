@@ -91,7 +91,7 @@ metadata:
     kubernetes.io/ingress.class: "nginx" 
 spec:
   rules:
-  - host: "apps.bigdata4policy-making.eu"
+  - host: "apps.1in1000.com"
     http:
       paths:
       - path: /
