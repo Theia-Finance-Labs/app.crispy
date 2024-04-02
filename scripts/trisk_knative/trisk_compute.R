@@ -32,7 +32,7 @@ check_if_table_exists <- function(table_name, postgres_conn) {
 # Before uploading results check if results exists, in case another parallel container
 # has done the same result in the meantime
 check_if_results_exist <- function(trisk_run_params, postgres_conn) {
-    if (!check_if_table_exists("run_metadata", postgres_conn)) {
+    if (check_if_table_exists("run_metadata", postgres_conn)) {
 
       # Filter the metadata based on the provided trisk run parameters
       query <- "SELECT * FROM run_metadata"
@@ -110,7 +110,16 @@ upload_to_postgres <- function(postgres_conn, st_results_wrangled_and_checked) {
     if (DBI::dbExistsTable(postgres_conn, st_output_name)) {
       DBI::dbAppendTable(postgres_conn, st_output_name, st_output_df)
     } else {
-      DBI::dbWriteTable(postgres_conn, st_output_name, st_output_df, create = TRUE)
+      # Dynamically construct field.types argument based on column data types
+      field_types <- sapply(st_output_df, function(column) {
+        if (is.numeric(column)) {
+          "NUMERIC"
+        } else {
+          "TEXT"
+        }
+      }, USE.NAMES = TRUE)
+
+      DBI::dbWriteTable(postgres_conn, st_output_name, st_output_df, create = TRUE, field.types = field_types)
     }
   }
   DBI::dbDisconnect(postgres_conn)

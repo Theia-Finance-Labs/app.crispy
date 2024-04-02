@@ -329,13 +329,14 @@
     },
     "bslib": {
       "Package": "bslib",
-      "Version": "0.6.2",
+      "Version": "0.7.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
         "base64enc",
         "cachem",
+        "fastmap",
         "grDevices",
         "htmltools",
         "jquerylib",
@@ -346,7 +347,7 @@
         "rlang",
         "sass"
       ],
-      "Hash": "7fb73102553e0c8e478bfaa0ccebe479"
+      "Hash": "8644cc53f43828f19133548195d7e59e"
     },
     "cachem": {
       "Package": "cachem",
@@ -361,7 +362,7 @@
     },
     "callr": {
       "Package": "callr",
-      "Version": "3.7.5",
+      "Version": "3.7.6",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -370,7 +371,7 @@
         "processx",
         "utils"
       ],
-      "Hash": "9f0e4fae4963ba775a5e5c520838c87b"
+      "Hash": "d7e13f49c19103ece9e58ad2d83a7354"
     },
     "checkmate": {
       "Package": "checkmate",
@@ -407,13 +408,13 @@
     },
     "codetools": {
       "Package": "codetools",
-      "Version": "0.2-19",
+      "Version": "0.2-20",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R"
       ],
-      "Hash": "c089a619a7fae175d149d89164f8c7d8"
+      "Hash": "61e097f35917d342622f21cdc79c256e"
     },
     "colorspace": {
       "Package": "colorspace",
@@ -566,17 +567,6 @@
         "vctrs"
       ],
       "Hash": "fedd9d00c2944ff00a0e2696ccf048ec"
-    },
-    "ellipsis": {
-      "Package": "ellipsis",
-      "Version": "0.3.2",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "rlang"
-      ],
-      "Hash": "bb0eec2fe32e88d9e2836c2f73ea2077"
     },
     "evaluate": {
       "Package": "evaluate",
@@ -759,20 +749,19 @@
     },
     "htmltools": {
       "Package": "htmltools",
-      "Version": "0.5.7",
+      "Version": "0.5.8",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
         "base64enc",
         "digest",
-        "ellipsis",
         "fastmap",
         "grDevices",
         "rlang",
         "utils"
       ],
-      "Hash": "2d7b3857980e0e0d0a1fd6f11928ab0f"
+      "Hash": "149431ee39aba5bdc264112c8ff94444"
     },
     "htmlwidgets": {
       "Package": "htmlwidgets",
@@ -791,7 +780,7 @@
     },
     "httpuv": {
       "Package": "httpuv",
-      "Version": "1.6.14",
+      "Version": "1.6.15",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -802,7 +791,7 @@
         "promises",
         "utils"
       ],
-      "Hash": "16abeb167dbf511f8cc0552efaf05bab"
+      "Hash": "d55aa087c47a63ead0f6fc10f8fa1ee0"
     },
     "httr": {
       "Package": "httr",
@@ -1030,14 +1019,14 @@
     },
     "munsell": {
       "Package": "munsell",
-      "Version": "0.5.0",
+      "Version": "0.5.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "colorspace",
         "methods"
       ],
-      "Hash": "6dfe8bf774944bd5595785e3229d8771"
+      "Hash": "4fd8900853b746af55b81fda99da7695"
     },
     "nlme": {
       "Package": "nlme",
@@ -1242,11 +1231,11 @@
       "Version": "0.0.0.9005",
       "Source": "GitHub",
       "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "r2dii.climate.stress.test",
       "RemoteUsername": "2DegreesInvesting",
+      "RemoteRepo": "r2dii.climate.stress.test",
       "RemoteRef": "HEAD",
-      "RemoteSha": "6a4cda0461e6a121970921053f58a1a05794b6f3",
+      "RemoteSha": "df41b9b7de17762245eeb7036b86b19a6ba3c503",
+      "RemoteHost": "api.github.com",
       "Requirements": [
         "R",
         "dplyr",
@@ -1263,7 +1252,7 @@
         "withr",
         "zoo"
       ],
-      "Hash": "9d0a04508ab2ccf45c98c5613bfb99c3"
+      "Hash": "31c58897ab9f4794757e5a1455b53eb6"
     },
     "r2dii.colours": {
       "Package": "r2dii.colours",
@@ -1291,7 +1280,7 @@
     },
     "r2dii.data": {
       "Package": "r2dii.data",
-      "Version": "0.4.1",
+      "Version": "0.5.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1300,7 +1289,7 @@
         "stats",
         "utils"
       ],
-      "Hash": "b28b8e4e4c3d4fc8878d14800d664737"
+      "Hash": "a6cb22034187e6e6512ce20219baf4e8"
     },
     "r2dii.plot": {
       "Package": "r2dii.plot",
@@ -1538,7 +1527,7 @@
     },
     "shiny": {
       "Package": "shiny",
-      "Version": "1.8.0",
+      "Version": "1.8.1.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1548,7 +1537,6 @@
         "cachem",
         "commonmark",
         "crayon",
-        "ellipsis",
         "fastmap",
         "fontawesome",
         "glue",
@@ -1568,7 +1556,7 @@
         "withr",
         "xtable"
       ],
-      "Hash": "3a1f41807d648a908e3c7f0334bf85e6"
+      "Hash": "54b26646816af9960a4c64d8ceec75d6"
     },
     "shiny.semantic": {
       "Package": "shiny.semantic",
@@ -1953,7 +1941,7 @@
     },
     "xfun": {
       "Package": "xfun",
-      "Version": "0.42",
+      "Version": "0.43",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1961,7 +1949,7 @@
         "stats",
         "tools"
       ],
-      "Hash": "fd1349170df31f7a10bd98b0189e85af"
+      "Hash": "ab6371d8653ce5f2f9290f4ec7b42a8e"
     },
     "xml2": {
       "Package": "xml2",

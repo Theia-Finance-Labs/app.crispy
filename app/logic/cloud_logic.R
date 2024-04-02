@@ -40,9 +40,10 @@ get_possible_trisk_combinations_from_api <- function(trisk_api_service){
   # Make the POST request with a 6-minute timeout
   response <- httr::GET(url, httr::timeout(360))
   content <- httr::content(response, "text", encoding = "UTF-8")
-  possible_trisk_combinations <- jsonlite::fromJSON(jsonlite::fromJSON(content))
+  possible_trisk_combinations <- tibble::as_tibble(jsonlite::fromJSON(jsonlite::fromJSON(content))$possible_trisk_combinations)
   return(possible_trisk_combinations)
 }
+
 
 get_data_from_postgres <- function(
     table_name,
