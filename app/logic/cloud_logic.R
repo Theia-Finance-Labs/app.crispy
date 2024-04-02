@@ -1,8 +1,7 @@
 trigger_trisk_api_computation <- function(trisk_run_params, trisk_api_service) {
   # Define the URL
   # by defaylt trisk_api_service should be equalt to "trisk-api-service"
-  url <- trisk_api_service
-
+  url <- paste0(trisk_api_service, "/compute_trisk")
   # Define the body of the request
   body <- list(
     trisk_run_params = trisk_run_params
@@ -12,7 +11,7 @@ trigger_trisk_api_computation <- function(trisk_run_params, trisk_api_service) {
 
   # Define the headers, including Host
   headers <- c(
-    `Host` = paste0("trisk-api.default.", trisk_api_service),
+    # `Host` = paste0("trisk-api.default.", trisk_api_service),
     `Content-Type` = "application/json"
   )
 
@@ -33,6 +32,17 @@ trigger_trisk_api_computation <- function(trisk_run_params, trisk_api_service) {
   return(run_id)
 }
 
+
+get_possible_trisk_combinations_from_api <- function(trisk_api_service){
+  # Define the URL
+  # by defaylt trisk_api_service should be equalt to "trisk-api-service"
+  url <- paste0(trisk_api_service, "/get_possible_trisk_combinations")
+  # Make the POST request with a 6-minute timeout
+  response <- httr::GET(url, httr::timeout(360))
+  content <- httr::content(response, "text", encoding = "UTF-8")
+  possible_trisk_combinations <- jsonlite::fromJSON(jsonlite::fromJSON(content))
+  return(possible_trisk_combinations)
+}
 
 get_data_from_postgres <- function(
     table_name,
@@ -73,13 +83,3 @@ get_data_from_postgres <- function(
   return(table_data)
 }
 
-
-get_possible_trisk_combinations_from_api <- function(trisk_api_service){
-  # Define the URL
-  # by defaylt trisk_api_service should be equalt to "trisk-api-service"
-  url <- paste0(trisk_api_service, "/get_possible_trisk_combinations")
-  # Make the POST request with a 6-minute timeout
-  response <- httr::GET(url, httr::timeout(360))
-  content <- httr::content(response, "text", encoding = "UTF-8")
-  possible_trisk_combinations <- jsonlite::fromJSON(jsonlite::fromJSON(content))
-}

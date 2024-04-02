@@ -19,6 +19,9 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8080   
+        envFrom:
+        - secretRef:
+            name: db-credentials
       affinity: 
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

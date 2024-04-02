@@ -23,21 +23,32 @@ run_trisk_and_upload_results_to_db_conn <- function(
   return(run_id)
 }
 
+check_if_table_exists <- function(table_name, postgres_conn) {
+  query <- sprintf("SELECT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename  = '%s');", table_name)
+  exists <- DBI::dbGetQuery(postgres_conn, query)$exists
+  return(as.logical(exists))
+}
+
 # Before uploading results check if results exists, in case another parallel container
 # has done the same result in the meantime
 check_if_results_exist <- function(trisk_run_params, postgres_conn) {
-  # Filter the metadata based on the provided trisk run parameters
-  query <- "SELECT * FROM run_metadata"
-  df <- DBI::dbGetQuery(postgres_conn, query)
-  for (trisk_param in names(trisk_run_params)) {
-    df <- df |> dplyr::filter(!!rlang::sym(trisk_param) == trisk_run_params[[trisk_param]])
-  }
-  if (nrow(df) > 0) {
-    existing_run_id <- df |> dplyr::pull(.data$run_id)
-    return(existing_run_id)
-  } else {
-    return(NULL)
-  }
+    if (!check_if_table_exists("run_metadata", postgres_conn)) {
+
+      # Filter the metadata based on the provided trisk run parameters
+      query <- "SELECT * FROM run_metadata"
+      df <- DBI::dbGetQuery(postgres_conn, query)
+      for (trisk_param in names(trisk_run_params)) {
+        df <- df |> dplyr::filter(!!rlang::sym(trisk_param) == trisk_run_params[[trisk_param]])
+      }
+      if (nrow(df) > 0) {
+        existing_run_id <- df |> dplyr::pull(.data$run_id)
+        return(existing_run_id)
+      } else {
+        return(NULL)
+      }
+    } else {
+      return(NULL)
+    }
 }
 
 # Function to run the trisk model with given parameters and input path

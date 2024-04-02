@@ -25,45 +25,24 @@ proxy:
     # port: 3838 # Default Shiny port, adjust if your app uses a different port
   # heartbeat-rate: 10000
   # heartbeat-timeout: 60000
-  # # Load balancing configuration
   # container-wait-time: 30000
   specs:
     - id: crispy_app
-      port: 3838 
+      port: 5000 
       display-name: Crispy App
       description: "Climate stress test for Equities, Bonds&Loans"
-      container-cmd: ["R", "-e", "shiny::runApp(host = \"0.0.0.0\", port = 3838)"]
+      container-cmd: ["R", "-e", "shiny::runApp(host = \"0.0.0.0\", port = 5000)"]
       container-image: registry.digitalocean.com/theia-1in1000-shinyapps/crispy_app:latest
       # container-wait-time: 1000
       access-groups: ["admins", "users"]
-      env:
-        - name: POSTGRES_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: db-credentials
-              key: postgres_username
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: db-credentials
-              key: postgres_password
-        - name: POSTGRES_HOST
-          valueFrom:
-            secretKeyRef:
-              name: db-credentials
-              key: postgres_host
-        - name: POSTGRES_PORT
-          valueFrom:
-            secretKeyRef:
-              name: db-credentials
-              key: postgres_port
-        - name: POSTGRES_DB
-          valueFrom:
-            secretKeyRef:
-              name: db-credentials
-              key: postgres_db    
-        - name: TRISK_API_SERVICE
-          value: http://trisk-api-service.default.svc.cluster.local:8000
+      container-env:
+        TRISK_API_SERVICE: http://trisk-api.default.svc.cluster.local
+      kubernetes-pod-patches: |
+        - op: add
+          path: /spec/containers/0/envFrom
+          value:
+            - secretRef:
+                name: db-credentials
       # container-memory-request: 500Mi
       # container-memory-limit: 1Gi
       # container-cpu-request: 500m
