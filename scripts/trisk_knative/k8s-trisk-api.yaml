@@ -13,6 +13,14 @@ spec:
       containers:
         - image: registry.digitalocean.com/theia-1in1000-shinyapps/trisk_api:latest
           imagePullPolicy: Always
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+              - ALL
+            seccompProfile:
+              type: RuntimeDefault          
           ports:
             - containerPort: 8000
           env:
