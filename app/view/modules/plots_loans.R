@@ -3,8 +3,8 @@ box::use(
 )
 
 box::use(
-  app / logic / plots / pd_term_plot[pipeline_pd_term_plot],
-  app / logic / plots / exposure_change_plot[draw_exposure_change_plot]
+  app/logic/plots/pd_term_plot[pipeline_pd_term_plot],
+  app/logic/plots/exposure_change_plot[draw_exposure_change_plot]
 )
 
 

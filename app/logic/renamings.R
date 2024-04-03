@@ -106,7 +106,7 @@ rename_string_vector <- function(string_vector, words_class, dev_to_ux = TRUE) {
         string_vector <- unname(RENAMING[string_vector])
       }
     } else {
-      if (all(string_vector %in% unname(RENAMING))){
+      if (all(string_vector %in% unname(RENAMING))) {
         REV_RENAMING <- stats::setNames(names(RENAMING), unname(RENAMING))
         string_vector <- unname(REV_RENAMING[string_vector])
       }

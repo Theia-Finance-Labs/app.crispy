@@ -1,8 +1,8 @@
 # Define an endpoint that accepts POST requests
 # Assume the JSON payload is directly analogous to the R list structure for trisk_run_param
 
-source(file.path(".","trisk_compute.R"))
-source(file.path(".","utils.R"))
+source(file.path(".", "trisk_compute.R"))
+source(file.path(".", "utils.R"))
 
 # Create a plumber router
 pr <- plumber::Plumber$new()
@@ -10,28 +10,29 @@ pr <- plumber::Plumber$new()
 POSTGRES_DB <- Sys.getenv("POSTGRES_DB")
 POSTGRES_HOST <- Sys.getenv("POSTGRES_HOST")
 POSTGRES_PORT <- Sys.getenv("POSTGRES_PORT")
-POSTGRES_USERNAME<- Sys.getenv("POSTGRES_USERNAME")
+POSTGRES_USERNAME <- Sys.getenv("POSTGRES_USERNAME")
 POSTGRES_PASSWORD <- Sys.getenv("POSTGRES_PASSWORD")
 
 # hardcoded input fp inside the container
 TRISK_INPUT_PATH <- file.path(".", "st_inputs")
 tables <- c(
   "Scenarios_AnalysisInput",
-   "abcd_stress_test_input", 
-   "ngfs_carbon_price",
-   "prewrangled_capacity_factors",
-    "prewrangled_financial_data_stress_test", 
-    "price_data_long"
-    )
+  "abcd_stress_test_input",
+  "ngfs_carbon_price",
+  "prewrangled_capacity_factors",
+  "prewrangled_financial_data_stress_test",
+  "price_data_long"
+)
 
 download_db_tables_postgres(
-  tables=tables,
- folder_path=TRISK_INPUT_PATH,
-      dbname = POSTGRES_DB,
-      host = POSTGRES_HOST,
-      port = POSTGRES_PORT,
-      user = POSTGRES_USERNAME,
-      password = POSTGRES_PASSWORD)
+  tables = tables,
+  folder_path = TRISK_INPUT_PATH,
+  dbname = POSTGRES_DB,
+  host = POSTGRES_HOST,
+  port = POSTGRES_PORT,
+  user = POSTGRES_USERNAME,
+  password = POSTGRES_PASSWORD
+)
 
 
 validate_trisk_run_params <- function(trisk_run_params) {
@@ -55,7 +56,7 @@ pr$handle("POST", "/compute_trisk", function(req, res) {
     port = POSTGRES_PORT,
     user = POSTGRES_USERNAME,
     password = POSTGRES_PASSWORD,
-    sslmode="require"
+    sslmode = "require"
   )
 
   run_id <- run_trisk_and_upload_results_to_db_conn(

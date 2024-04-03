@@ -1,12 +1,12 @@
 box::use(
   app/logic/constant[
-      DBNAME,
-      HOST_DB,
-      DB_PORT,
-      DB_USER,
-      DB_PASSWORD
+    DBNAME,
+    HOST_DB,
+    DB_PORT,
+    DB_USER,
+    DB_PASSWORD
   ],
-  app / logic / cloud_logic[
+  app/logic/cloud_logic[
     get_data_from_postgres
   ]
 )

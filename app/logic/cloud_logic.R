@@ -33,7 +33,7 @@ trigger_trisk_api_computation <- function(trisk_run_params, trisk_api_service) {
 }
 
 
-get_possible_trisk_combinations_from_api <- function(trisk_api_service){
+get_possible_trisk_combinations_from_api <- function(trisk_api_service) {
   # Define the URL
   # by defaylt trisk_api_service should be equalt to "trisk-api-service"
   url <- paste0(trisk_api_service, "/get_possible_trisk_combinations")
@@ -83,4 +83,3 @@ get_data_from_postgres <- function(
 
   return(table_data)
 }
-

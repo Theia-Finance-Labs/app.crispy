@@ -10,11 +10,11 @@
 # trisk_api_service <- "http://0.0.0.0:8000"
 trisk_api_service <- Sys.getenv("TRISK_API_SERVICE")
 
-DBNAME  <-  Sys.getenv("POSTGRES_DB")
-HOST_DB  <-  Sys.getenv("POSTGRES_HOST")
-DB_PORT  <-  Sys.getenv("POSTGRES_PORT")
-DB_USER  <- Sys.getenv("POSTGRES_USERNAME")
-DB_PASSWORD <-  Sys.getenv("POSTGRES_PASSWORD")
+DBNAME <- Sys.getenv("POSTGRES_DB")
+HOST_DB <- Sys.getenv("POSTGRES_HOST")
+DB_PORT <- Sys.getenv("POSTGRES_PORT")
+DB_USER <- Sys.getenv("POSTGRES_USERNAME")
+DB_PASSWORD <- Sys.getenv("POSTGRES_PASSWORD")
 
 
 # PROJECT CONSTANTS ====================================

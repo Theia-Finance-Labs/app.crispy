@@ -10,12 +10,12 @@ box::use(
 # Load required modules and logic files
 box::use(
   # modules
-  app / view / sidebar_parameters,
-  app / view / homepage,
-  app / view / crispy_equities,
-  app / view / crispy_loans,
+  app/view/sidebar_parameters,
+  app/view/homepage,
+  app/view/crispy_equities,
+  app/view/crispy_loans,
   # logic
-  app / logic / constant[
+  app/logic/constant[
     trisk_api_service,
     trisk_input_path,
     backend_trisk_run_folder,
@@ -172,41 +172,40 @@ ui <- function(id) {
 #' @export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
-
-  if (Sys.getenv("CRISPY_APP_ENV") == "dev") {
+    if (Sys.getenv("CRISPY_APP_ENV") == "dev") {
       possible_trisk_combinations <- r2dii.climate.stress.test::get_scenario_geography_x_ald_sector(trisk_input_path)
     } else if (Sys.getenv("CRISPY_APP_ENV") == "prod") {
-      possible_trisk_combinations <- get_possible_trisk_combinations_from_api(trisk_api_service=trisk_api_service)
+      possible_trisk_combinations <- get_possible_trisk_combinations_from_api(trisk_api_service = trisk_api_service)
     } else {
       stop("must set environment variable CRISPY_APP_ENV to 'dev' or 'prod'")
     }
-      # the TRISK runs are generated In the sidebar module
-      perimeter <- sidebar_parameters$server(
-        "sidebar_parameters",
-        max_trisk_granularity = max_trisk_granularity, # constant
-        possible_trisk_combinations = possible_trisk_combinations, # computed constant
-        backend_trisk_run_folder = backend_trisk_run_folder, # constant
-        trisk_input_path = trisk_input_path, # constant
-        available_vars = available_vars, # constant
-        hide_vars = hide_vars # constant
-      )
+    # the TRISK runs are generated In the sidebar module
+    perimeter <- sidebar_parameters$server(
+      "sidebar_parameters",
+      max_trisk_granularity = max_trisk_granularity, # constant
+      possible_trisk_combinations = possible_trisk_combinations, # computed constant
+      backend_trisk_run_folder = backend_trisk_run_folder, # constant
+      trisk_input_path = trisk_input_path, # constant
+      available_vars = available_vars, # constant
+      hide_vars = hide_vars # constant
+    )
 
-      homepage$server("homepage")
+    homepage$server("homepage")
 
-      crispy_equities$server(
-        "crispy_equities",
-        backend_trisk_run_folder = backend_trisk_run_folder, # constant
-        max_trisk_granularity = max_trisk_granularity, # constant
-        perimeter = perimeter
-      )
+    crispy_equities$server(
+      "crispy_equities",
+      backend_trisk_run_folder = backend_trisk_run_folder, # constant
+      max_trisk_granularity = max_trisk_granularity, # constant
+      perimeter = perimeter
+    )
 
-      crispy_loans$server(
-        "crispy_loans",
-        backend_trisk_run_folder = backend_trisk_run_folder, # constant
-        possible_trisk_combinations = possible_trisk_combinations, # computed constant
-        max_trisk_granularity = max_trisk_granularity, # constant
-        perimeter = perimeter
-      )
-      shinyjs::runjs('$("#loading-overlay").hide();')
+    crispy_loans$server(
+      "crispy_loans",
+      backend_trisk_run_folder = backend_trisk_run_folder, # constant
+      possible_trisk_combinations = possible_trisk_combinations, # computed constant
+      max_trisk_granularity = max_trisk_granularity, # constant
+      perimeter = perimeter
+    )
+    shinyjs::runjs('$("#loading-overlay").hide();')
   })
 }

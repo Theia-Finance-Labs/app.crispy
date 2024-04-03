@@ -1,16 +1,16 @@
 box::use(
   app/logic/constant[trisk_api_service],
-  app / logic / trisk_mgmt[
+  app/logic/trisk_mgmt[
     run_trisk_with_params,
     format_error_message
   ],
-  app / logic / cloud_logic[
+  app/logic/cloud_logic[
     trigger_trisk_api_computation,
   ],
-  app / logic / data_load[
+  app/logic/data_load[
     load_backend_trisk_run_metadata
   ],
-  app / logic / data_write[
+  app/logic/data_write[
     append_st_results_to_backend_data
   ]
 )
@@ -29,12 +29,11 @@ check_if_run_exists <- function(trisk_run_params, backend_trisk_run_folder) {
   }
 
   # If a single run is found, return its run_id, otherwise return NULL or throw an error
-  if (nrow(df) == 1) {
-    run_id <- df |> dplyr::pull(run_id)
-  } else if (nrow(df) == 0) {
-    run_id <- NULL
+  if (nrow(df) >= 1) {
+    # selects only 1 run id in case 2 users ran the same perimeter at the same time
+    run_id <- (df |> dplyr::pull(run_id))[1]
   } else {
-    stop("More than 1 run have been found with the provided trisk input parameters")
+    run_id <- NULL
   }
 
   # Return the run_id
@@ -76,7 +75,7 @@ trisk_generator <- function(
       run_id <- NULL
     }
   } else if (Sys.getenv("CRISPY_APP_ENV") == "prod") {
-    run_id <- trigger_trisk_api_computation(trisk_run_params, trisk_api_service=trisk_api_service)
+    run_id <- trigger_trisk_api_computation(trisk_run_params, trisk_api_service = trisk_api_service)
   } else {
     stop("must set environment variable CRISPY_APP_ENV to 'dev' or 'prod'")
   }

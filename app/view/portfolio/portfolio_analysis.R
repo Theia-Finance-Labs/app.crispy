@@ -13,9 +13,9 @@ box::use(
 
 
 box::use(
-  app / logic / constant[max_trisk_granularity, equity_portfolio_expiration_date, filter_crispy_outliers],
-  app / logic / renamings[rename_tibble_columns],
-  app / view / portfolio / simple_search_dropdown
+  app/logic/constant[max_trisk_granularity, equity_portfolio_expiration_date, filter_crispy_outliers],
+  app/logic/renamings[rename_tibble_columns],
+  app/view/portfolio/simple_search_dropdown
 )
 
 

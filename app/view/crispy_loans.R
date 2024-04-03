@@ -7,8 +7,8 @@ box::use(
 )
 
 box::use(
-  app / view / portfolio / portfolio_analysis,
-  app / view / modules / plots_loans
+  app/view/portfolio/portfolio_analysis,
+  app/view/modules/plots_loans
 )
 
 
