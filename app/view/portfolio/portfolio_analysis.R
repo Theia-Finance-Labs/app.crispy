@@ -342,7 +342,7 @@ generate_analysis_data <- function(portfolio_data_r, crispy_data_r, portfolio_as
             crispy_perc_value_change = round(.data$crispy_perc_value_change, digits = 4),
             crispy_value_loss = round(.data$crispy_value_loss, digits = 2),
             pd_shock = round(.data$pd_shock, digits = 4),
-            expected_loss_shock = -round(.data$expected_loss_shock, digits = 2)
+            expected_loss_shock = round(.data$expected_loss_shock, digits = 2)
           )
       } else {
         analysis_data <- dplyr::inner_join(

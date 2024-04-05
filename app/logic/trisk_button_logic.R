@@ -1,6 +1,6 @@
 box::use(
   app/logic/constant[trisk_api_service],
-  app/logic/trisk_mgmt[
+  app/logic/trisk_local[
     run_trisk_with_params,
     format_error_message
   ],
