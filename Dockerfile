@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libssh2-1-dev \
     libpq-dev \
     libxml2-dev \
+    cmake \ 
     && rm -rf /var/lib/apt/lists/*
 
 
@@ -23,9 +24,14 @@ RUN addgroup --system shiny \
 # Set the working directory to /home/app
 WORKDIR /home/app
 
+# Ensure shiny user has proper permissions to install packages
+RUN chown -R shiny:shiny /home/app && \
+    chmod -R 755 /home/app
+
 # Install R dependencies
 COPY --chown=shiny:shiny .Rprofile renv.lock .renvignore dependencies.R ./
 COPY --chown=shiny:shiny renv/activate.R renv/
+# RUN R -e "install.packages('withr', repos = 'http://cran.rstudio.com'); withr::with_envvar(c(NOT_CRAN = 'true'), renv::install('arrow'))"
 RUN sudo -u shiny Rscript -e 'renv::restore(clean=T)'
 
 # Copy app
