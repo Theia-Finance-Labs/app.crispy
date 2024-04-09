@@ -96,3 +96,17 @@ export POSTGRES_PASSWORD=""
 ./deploy_secrets.sh "$POSTGRES_USERNAME" "$POSTGRES_PASSWORD" "$POSTGRES_HOST" "$POSTGRES_PORT" "$POSTGRES_DB"
 
 ```
+
+
+# for cloud deployment mode, set env var : 
+
+```{r}
+
+# trisk kubernetes api endpoint url
+# trisk_api_service <- "http://trisk-api-service.default.svc.cluster.local:8000"
+# trisk docker compose endpoint url
+# trisk_api_service <- "http://trisk-api-service:8000"
+# trisk local api endpoint url
+# trisk_api_service <- "http://0.0.0.0:8000"
+
+```
