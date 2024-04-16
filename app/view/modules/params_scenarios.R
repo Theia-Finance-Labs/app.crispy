@@ -14,42 +14,37 @@ box::use(
 
 ui <- function(id) {
   ns <- NS(id)
-  segment(
+
+  shiny::tagList(
     div(
-      class = "content",
-      shinyjs::useShinyjs(),
-      div(class = "header", "Scenario Choice", style = "font-size: 150%;"),
-      tags$hr(),
+      class = "description",
       div(
-        class = "description",
+        class = "content",
+        p("Baseline Scenario"),
         div(
-          class = "content",
-          p("Baseline Scenario"),
-          div(
-            class = "description",
-            shiny.semantic::dropdown_input(ns("baseline_scenario"),
-              choices = NULL
-            )
+          class = "description",
+          shiny.semantic::dropdown_input(ns("baseline_scenario"),
+            choices = NULL
           )
-        ),
+        )
+      ),
+      div(
+        class = "content",
+        p("Target Scenario"),
         div(
-          class = "content",
-          p("Target Scenario"),
-          div(
-            class = "description",
-            shiny.semantic::dropdown_input(ns("shock_scenario"),
-              choices = NULL
-            )
+          class = "description",
+          shiny.semantic::dropdown_input(ns("shock_scenario"),
+            choices = NULL
           )
-        ),
+        )
+      ),
+      div(
+        class = "content",
+        p("Scenario Geography"),
         div(
-          class = "content",
-          p("Scenario Geography"),
-          div(
-            class = "description",
-            shiny.semantic::dropdown_input(ns("scenario_geography"),
-              choices = NULL
-            )
+          class = "description",
+          shiny.semantic::dropdown_input(ns("scenario_geography"),
+            choices = NULL
           )
         )
       )
@@ -118,7 +113,7 @@ update_scenarios_dropdowns <- function(input, session,
     new_choices <- rename_string_vector(possible_baselines, words_class = "scenarios")
 
     # Update shock_scenario dropdown with unique values from the filtered data
-    update_dropdown_input(session, "baseline_scenario", choices = new_choices)
+    update_dropdown_input(session, "baseline_scenario", choices = new_choices, value=new_choices[1])
   })
 
   # Observe changes in baseline_scenario dropdown and update shock_scenario dropdown
@@ -137,7 +132,7 @@ update_scenarios_dropdowns <- function(input, session,
     new_choices <- rename_string_vector(possible_shocks, words_class = "scenarios")
 
     # Update shock_scenario dropdown with unique values from the filtered data
-    update_dropdown_input(session, "shock_scenario", choices = new_choices)
+    update_dropdown_input(session, "shock_scenario", choices = new_choices, value=new_choices[1])
   })
 
   # Observe changes in both baseline_scenario and shock_scenario dropdowns to update scenario_geography dropdown
@@ -161,6 +156,6 @@ update_scenarios_dropdowns <- function(input, session,
     new_choices <- possible_geographies
 
     # Update scenario_geography dropdown with unique values from the filtered data
-    update_dropdown_input(session, "scenario_geography", choices = new_choices)
+    update_dropdown_input(session, "scenario_geography", choices = new_choices, value=new_choices[1])
   })
 }

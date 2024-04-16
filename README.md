@@ -12,8 +12,8 @@ The following env variables must be set, for example in an .Renviron file at the
 ```sh
 # ./.Renviron
 
-# 'prod' or 'dev'
-CRISPY_APP_ENV="dev" 
+# 'cloud' or 'local'
+CRISPY_APP_ENV="local" 
 
 # IP to the kubernetes endpoint running trisk api
 TRISK_API_SERVICE="0.0.0.0" 
@@ -103,10 +103,10 @@ export POSTGRES_PASSWORD=""
 ```{r}
 
 # trisk kubernetes api endpoint url
-# trisk_api_service <- "http://trisk-api-service.default.svc.cluster.local:8000"
+# TRISK_API_SERVICE <- "http://trisk-api-service.default.svc.cluster.local:8000"
 # trisk docker compose endpoint url
-# trisk_api_service <- "http://trisk-api-service:8000"
+# TRISK_API_SERVICE <- "http://trisk-api-service:8000"
 # trisk local api endpoint url
-# trisk_api_service <- "http://0.0.0.0:8000"
+# TRISK_API_SERVICE <- "http://0.0.0.0:8000"
 
 ```

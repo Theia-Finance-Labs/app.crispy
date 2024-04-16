@@ -7,7 +7,7 @@ box::use(
 )
 
 box::use(
-  app/view/portfolio/portfolio_analysis,
+  app/view/modules/portfolio_analysis,
   app/view/modules/plots_loans
 )
 
@@ -24,7 +24,7 @@ ui <- function(id, max_trisk_granularity, available_vars) {
       class = "ui segment", style = "min-height: 100vh;",
       shiny::tags$div(
         class = "ui stackable grid",
-        portfolio_analysis$ui(ns("portfolio_analysis"), portfolio_class = "Loans Portfolio"),
+        portfolio_analysis$ui(ns("portfolio_analysis"), portfolio_class = "fixed_income"),
         plots_loans$ui(ns("plots_loans"))
       )
     )
@@ -33,7 +33,7 @@ ui <- function(id, max_trisk_granularity, available_vars) {
 
 ####### Server
 
-server <- function(id, perimeter, backend_trisk_run_folder, possible_trisk_combinations, max_trisk_granularity) {
+server <- function(id, perimeter, backend_trisk_run_folder, possible_trisk_combinations, max_trisk_granularity, portfolio_uploaded_r) {
   moduleServer(id, function(input, output, session) {
     # SELECT PARAMETERS =========================
     trisk_granularity_r <- perimeter$trisk_granularity_r
@@ -54,13 +54,13 @@ server <- function(id, perimeter, backend_trisk_run_folder, possible_trisk_combi
     editable_columns_names_loans <- c("exposure_value_usd", "loss_given_default")
     colored_columns_names_loans <- c()
 
-    out <- portfolio_analysis$server(
+    analysis_data_r <- portfolio_analysis$server(
       "portfolio_analysis",
-      portfolio_class = "Loans Portfolio",
+      portfolio_class = "fixed_income",
+      portfolio_uploaded_r = portfolio_uploaded_r,
       crispy_data_r = crispy_data_r,
       trisk_granularity_r = trisk_granularity_r,
       max_trisk_granularity = max_trisk_granularity,
-      portfolio_asset_type = "fixed_income",
       display_columns = display_columns_loans,
       editable_columns_names = editable_columns_names_loans,
       colored_columns_names = colored_columns_names_loans,
@@ -68,12 +68,10 @@ server <- function(id, perimeter, backend_trisk_run_folder, possible_trisk_combi
       possible_trisk_combinations = possible_trisk_combinations
     )
 
-    analysis_data_r <- out$analysis_data_r
-    crispy_data_agg_r <- out$crispy_data_agg_r
 
     plots_loans$server("plots_loans",
       analysis_data_r = analysis_data_r,
-      crispy_data_agg_r = crispy_data_agg_r,
+      crispy_data_r = crispy_data_r,
       max_trisk_granularity = max_trisk_granularity
     )
   })

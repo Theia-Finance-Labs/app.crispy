@@ -1071,7 +1071,7 @@
     },
     "knitr": {
       "Package": "knitr",
-      "Version": "1.45",
+      "Version": "1.46",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1083,7 +1083,7 @@
         "xfun",
         "yaml"
       ],
-      "Hash": "1ec462871063897135c1bcbe0fc8f07d"
+      "Hash": "6e008ab1d696a5283c79765fa7b56b47"
     },
     "labeling": {
       "Package": "labeling",
@@ -1503,7 +1503,7 @@
     },
     "promises": {
       "Package": "promises",
-      "Version": "1.2.1",
+      "Version": "1.3.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1515,7 +1515,7 @@
         "rlang",
         "stats"
       ],
-      "Hash": "0d8a15c9d000970ada1ab21405387dee"
+      "Hash": "434cd5388a3979e74be5c219bcd6e77d"
     },
     "ps": {
       "Package": "ps",
@@ -1594,11 +1594,11 @@
       "Version": "0.0.0.9000",
       "Source": "GitHub",
       "RemoteType": "github",
+      "RemoteHost": "api.github.com",
       "RemoteUsername": "RMI-PACTA",
       "RemoteRepo": "r2dii.colours",
-      "RemoteRef": "master",
+      "RemoteRef": "main",
       "RemoteSha": "748394821220f708b15d007da829ae826e7015d2",
-      "RemoteHost": "api.github.com",
       "Requirements": [
         "R",
         "dplyr",
@@ -1611,7 +1611,7 @@
         "stringr",
         "tibble"
       ],
-      "Hash": "4e8ef50159ce03fcc199fcdc4ab6c68c"
+      "Hash": "72ece60ac4cc2926a8d9999d4c53f6ce"
     },
     "r2dii.data": {
       "Package": "r2dii.data",
@@ -1704,13 +1704,13 @@
     },
     "renv": {
       "Package": "renv",
-      "Version": "1.0.5",
+      "Version": "1.0.7",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "utils"
       ],
-      "Hash": "32c3f93e8360f667ca5863272ec8ba6a"
+      "Hash": "397b7b2a265bc5a7a06852524dabae20"
     },
     "rex": {
       "Package": "rex",
@@ -1918,7 +1918,7 @@
     },
     "shiny.semantic": {
       "Package": "shiny.semantic",
-      "Version": "0.5.0",
+      "Version": "0.5.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1934,7 +1934,7 @@
         "shiny",
         "stats"
       ],
-      "Hash": "914f0287f2f1bedf5ecdfdd354f408a3"
+      "Hash": "7ba90374cf8d858e273e601b79473c16"
     },
     "shinyjs": {
       "Package": "shinyjs",
@@ -1967,7 +1967,7 @@
       "RemoteUsername": "2DegreesInvesting",
       "RemoteRepo": "stress.test.plot.report",
       "RemoteRef": "master",
-      "RemoteSha": "0eb58207f29203d956d6538fd43ed0adab760481",
+      "RemoteSha": "e2e9d341771ceac5951955ae85ae97db11de85e9",
       "RemoteHost": "api.github.com",
       "Remotes": "2DegreesInvesting/r2dii.climate.stress.test, 2DegreesInvesting/STDataMGMT, RMI-PACTA/r2dii.colours",
       "Requirements": [
@@ -1992,7 +1992,7 @@
         "tidyr",
         "tidytext"
       ],
-      "Hash": "ed58849155995c86357672c0d61a1be6"
+      "Hash": "e27385212d83418e4ec09060a55359d0"
     },
     "stringi": {
       "Package": "stringi",
@@ -2026,7 +2026,7 @@
     },
     "styler": {
       "Package": "styler",
-      "Version": "1.10.2",
+      "Version": "1.10.3",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -2041,7 +2041,7 @@
         "vctrs",
         "withr"
       ],
-      "Hash": "d61238fd44fc63c8adf4565efe8eb682"
+      "Hash": "93a2b1beac2437bdcc4724f8bf867e2c"
     },
     "survival": {
       "Package": "survival",
@@ -2068,7 +2068,7 @@
     },
     "testthat": {
       "Package": "testthat",
-      "Version": "3.2.1",
+      "Version": "3.2.1.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -2093,7 +2093,7 @@
         "waldo",
         "withr"
       ],
-      "Hash": "4767a686ebe986e6cb01d075b3f09729"
+      "Hash": "3f6e7e5e2220856ff865e4834766bf2b"
     },
     "tibble": {
       "Package": "tibble",
@@ -2155,7 +2155,7 @@
     },
     "tidytext": {
       "Package": "tidytext",
-      "Version": "0.4.1",
+      "Version": "0.4.2",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -2174,7 +2174,7 @@
         "tokenizers",
         "vctrs"
       ],
-      "Hash": "eb8386c938a086eb3216595eba76831d"
+      "Hash": "612125521ebc22fd028182761211b5d9"
     },
     "timechange": {
       "Package": "timechange",

@@ -12,41 +12,44 @@ box::use(
   app/logic/renamings[rename_string_vector]
 )
 
-
 ui <- function(id, max_trisk_granularity) {
   ns <- NS(id)
-  # First segment in the left half // Granularity
-  shiny.semantic::segment(
-    tags$div(class = "header", "Dashboard", style = "font-size: 150%;"),
-    tags$hr(),
+
+  shiny::tagList(
+    tags$head(
+      tags$script(HTML(sprintf("
+        $(document).ready(function() {
+          $('#%s').css({'background-color': '#000000', 'color': '#FFFFFF'});
+        });
+      ", ns("granul_1"))))
+    ),
     tags$div(
       class = "description",
       tags$div(
         class = "ui buttons",
-        shinyjs::useShinyjs(), # Initialize shinyjs
-        tags$head(
-          tags$style(HTML("
-      .ui.buttons .button { margin: 0; }
-    "))
-        ),
+        shinyjs::useShinyjs(),
         shiny.semantic::button(
           ns("granul_1"),
           rename_string_vector(names(which(max_trisk_granularity == 1)), words_class = "analysis_columns"),
-          class = "ui secondary button fluid"
+          class = "ui button fluid"
         ),
         shiny.semantic::button(
           ns("granul_2"),
           rename_string_vector(names(which(max_trisk_granularity == 2)), words_class = "analysis_columns"),
           class = "ui button fluid"
         )
-        # ,shiny.semantic::button(
+        # ,
+        # shiny.semantic::button(
         #   ns("granul_3"),
         #   rename_string_vector(names(which(max_trisk_granularity == 3)), words_class = "analysis_columns"),
-        #   class = "ui primary button fluid")
+        #   class = "ui button fluid"
+        # )
       )
     )
   )
 }
+
+
 # get the column names defining the displayed data granularity
 server <- function(id, max_trisk_granularity) {
   moduleServer(id, function(input, output, session) {
@@ -55,30 +58,31 @@ server <- function(id, max_trisk_granularity) {
       get_trisk_granularity(max_trisk_granularity, 1)
     )
 
-
     observeEvent(input$granul_1, {
-      update_class(session$ns("granul_1"), "ui secondary button fluid")
-      update_class(session$ns("granul_2"), "ui button fluid")
-      # update_class(session$ns("granul_3"), "ui primary button fluid")
+      update_button_style(session$ns("granul_1"), TRUE)
+      update_button_style(session$ns("granul_2"), FALSE)
+      # update_button_style(session$ns("granul_3"), FALSE)
       trisk_granularity_r(
         get_trisk_granularity(max_trisk_granularity, 1)
       )
     })
 
     observeEvent(input$granul_2, {
-      update_class(session$ns("granul_1"), "ui button fluid")
-      update_class(session$ns("granul_2"), "ui secondary button fluid")
-      # update_class(session$ns("granul_3"), "ui primary button fluid")
+      update_button_style(session$ns("granul_1"), FALSE)
+      update_button_style(session$ns("granul_2"), TRUE)
+      # update_button_style(session$ns("granul_3"), FALSE)
       trisk_granularity_r(
         get_trisk_granularity(max_trisk_granularity, 2)
       )
     })
 
     # observeEvent(input$granul_3, {
-    #   update_class(session, "granul_1", "ui primary button fluid")
-    #   update_class(session, "granul_2", "ui primary button fluid")
-    #   update_class(session, "granul_3", "ui green button fluid")
-    #   trisk_granularity_r(names(which(max_trisk_granularity == 3)))
+    #   update_button_style(session$ns("granul_1"), FALSE)
+    #   update_button_style(session$ns("granul_2"), FALSE)
+    #   update_button_style(session$ns("granul_3"), TRUE)
+    #   trisk_granularity_r(
+    #     get_trisk_granularity(max_trisk_granularity, 3)
+    #   )
     # })
 
 
@@ -94,8 +98,25 @@ get_trisk_granularity <- function(max_trisk_granularity, granularity_level) {
   trisk_granularity <- names(max_trisk_granularity)[granul_and_lower]
   return(trisk_granularity)
 }
+# Updated function to toggle button styles through direct CSS manipulation
+update_button_style <- function(input_id, clicked = FALSE) {
+  js_code <- if (clicked) {
+    # JavaScript to apply when button is clicked
+    sprintf("
+      $('#%s').css({
+        'background-color': '#000000',
+        'color': '#FFFFFF'
+      });
+    ", input_id)
+  } else {
+    # JavaScript to revert to original "ui button" style
+    sprintf("
+      $('#%s').css({
+        'background-color': '',
+        'color': ''
+      }).removeClass('ui button').addClass('ui button');
+    ", input_id)
+  }
 
-# Function to update button classes, now correctly utilized
-update_class <- function(input_id, class) {
-  shinyjs::runjs(sprintf("$('#%s').attr('class', '%s');", input_id, class))
+  shinyjs::runjs(js_code)
 }

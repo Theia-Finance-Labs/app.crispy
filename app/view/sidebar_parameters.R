@@ -9,28 +9,81 @@ box::use(
 )
 
 box::use(
-  app/view/params/params_scenarios,
-  app/view/params/params_dimensions,
-  app/view/params/params_trisk,
+  app/view/modules/params_scenarios,
+  app/view/modules/params_dimensions,
+  app/view/modules/params_trisk,
   app/view/modules/trisk_button,
+  app/view/modules/portfolio_upload,
   app/logic/renamings[rename_string_vector]
 )
 
 
 ####### UI
-
 ui <- function(id, max_trisk_granularity, available_vars) {
   ns <- NS(id)
-
-  list(
-    # Run TRISK button
-    trisk_button$ui(ns("trisk_button")),
-    # Dimensions
-    params_dimensions$ui(ns("params_dimensions"), max_trisk_granularity),
-    #  Scenario Choice
-    params_scenarios$ui(ns("params_scenarios")),
-    # TRISK params
-    params_trisk$ui(ns("params_trisk"), available_vars)
+  shiny::tagList(
+    shiny::tags$head(
+      shiny::tags$style(HTML(paste0("
+        .sidebar-section {
+          padding: 20px;
+          background-color: #f9f9f9;
+          margin: 15px 0;
+          border-radius: 8px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .sidebar-section .ui.header {
+          font-size: 18px;
+          color: #333;
+          margin-bottom: 15px;
+        }
+        .ui.button {
+          background-color: #d4d4d5;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          margin: 8px 0;
+          display: block;
+          width: 100%; /* Ensures full width */
+        }
+        .ui.buttons {
+          width: 50%; /* Ensures full width */
+        }
+        .ui.divider {
+          margin: 20px 0;
+        }
+        .ui.dropdown {
+          width: 100%;
+          margin-bottom: 10px;
+        }
+      ")))
+    ),
+    # Data Section
+    div(
+      class = "sidebar-section",
+      shiny::tags$div(class = "ui header", "Data"),
+      shiny::tags$div(class = "ui divider"),
+      # Run TRISK button
+      trisk_button$ui(ns("trisk_button")),
+      # Dimensions
+      params_dimensions$ui(ns("params_dimensions"), max_trisk_granularity)
+      #, portfolio_upload$ui(ns("portfolio_upload"))
+    ),
+    # Scenario Choice Section
+    div(
+      class = "sidebar-section",
+      shinyjs::useShinyjs(),
+      shiny::tags$div(class = "ui header", "Scenario Choice"),
+      shiny::tags$div(class = "ui divider"),
+      # Scenario Choice
+      params_scenarios$ui(ns("params_scenarios"))
+    ),
+    # TRISK Parameters Section
+    div(
+      class = "sidebar-section",
+      shiny::tags$div(class = "ui header", "TRISK Parameters"),
+      shiny::tags$div(class = "ui divider"),
+      params_trisk$ui(ns("params_trisk"), available_vars)
+    )
   )
 }
 
@@ -91,6 +144,9 @@ server <- function(id, backend_trisk_run_folder, trisk_input_path,
     crispy_data_r <- results$crispy_data_r
     trajectories_data_r <- results$trajectories_data_r
 
+    portfolio_uploaded_r <- portfolio_upload$server("portfolio_upload")
+    
+
 
     perimeter <- list(
       "trisk_granularity_r" = trisk_granularity_r,
@@ -99,8 +155,9 @@ server <- function(id, backend_trisk_run_folder, trisk_input_path,
       "trajectories_data_r" = trajectories_data_r
     )
 
-    return(
-      perimeter
-    )
+    return(list(
+      "perimeter" = perimeter,
+      "portfolio_uploaded_r" = portfolio_uploaded_r
+    ))
   })
 }

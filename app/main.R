@@ -11,12 +11,13 @@ box::use(
 box::use(
   # modules
   app/view/sidebar_parameters,
-  app/view/homepage,
-  app/view/crispy_equities,
-  app/view/crispy_loans,
+  app/view/tab_documentation,
+  app/view/tab_equities,
+  app/view/tab_loans,
   # logic
   app/logic/constant[
-    trisk_api_service,
+    TRISK_API_SERVICE,
+    CRISPY_MODE,
     trisk_input_path,
     backend_trisk_run_folder,
     max_trisk_granularity,
@@ -31,7 +32,6 @@ box::use(
 #' @export
 ui <- function(id) {
   ns <- NS(id)
-
 
   shiny.semantic::semanticPage(
     shinyjs::useShinyjs(), # Initialize shinyjs
@@ -58,7 +58,7 @@ ui <- function(id) {
       div(id = "loading-overlay", "Initializing...")
     ),
     dashboardPage(
-      title = "Homepage",
+      title = "Documentation",
       # dashboardHeader
       dashboardHeader(title = "CRISPY"),
       # dashboardSidebar
@@ -86,68 +86,24 @@ ui <- function(id) {
 
       # dashboardBody
       dashboardBody(
-        # Include custom CSS to display tabs as full width
-        tags$head(
-          tags$style(HTML("
-            .full-width-tabs {
-              width: 100% !important;
-              display: flex !important;
-            }
-            .full-width-tabs .item {
-              flex: 1 !important;
-              text-align: center !important;
-            }
-          "))
-        ),
-        # Fomantic UI tabs with custom CSS to display as full width
-        tags$div(
-          class = "ui top attached tabular menu full-width-tabs",
-          tags$a(class = "item active", `data-tab` = "first", "Home"),
-          tags$a(class = "item", `data-tab` = "second", "Equities"),
-          tags$a(class = "item", `data-tab` = "third", "Loans")
-        ),
-        # dynamic tabs content, the `data-tab` attribute must match the `data-tab` attribute
-        # of the corresponding tab in the tabular menu
-        tags$div(
-          class = "ui bottom attached active tab segment", `data-tab` = "first",
-          div(
-            class = "ui container",
-            # homepage tab
-            homepage$ui(
-              ns("homepage")
-            )
-          )
-        ),
-        tags$div(
-          class = "ui bottom attached tab segment", `data-tab` = "second",
-          div(
-            class = "ui container",
-            # equities tab
-            crispy_equities$ui(
-              ns("crispy_equities"),
+        div(
+          class = "ui container",
+          if ((CRISPY_MODE == "equity") | CRISPY_MODE == "") {
+            # equity tab
+            tab_equities$ui(
+              ns("tab_equities"),
               max_trisk_granularity = max_trisk_granularity, # constant
               available_vars = available_vars # constant
             )
-          )
-        ),
-        tags$div(
-          class = "ui bottom attached tab segment", `data-tab` = "third",
-          div(
-            class = "ui container",
-            # equities tab
-            crispy_loans$ui(
-              ns("crispy_loans"),
+          },
+          if ((CRISPY_MODE == "fixed_income")) {
+            # fixed_income tab
+            tab_loans$ui(
+              ns("tab_loans"),
               max_trisk_granularity = max_trisk_granularity, # constant
               available_vars = available_vars # constant
             )
-          )
-        ),
-        # this javascript snippet initializes the tabs menu and makes the tabs clickable
-        tags$script(
-          "$(document).ready(function() {
-                  // Initialize tabs (if not already initialized)
-                  $('.menu .item').tab();
-              });"
+          }
         )
       )
     )
@@ -155,32 +111,19 @@ ui <- function(id) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Define the server function
 #' @export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
-    if (Sys.getenv("CRISPY_APP_ENV") == "dev") {
+    if (Sys.getenv("CRISPY_APP_ENV") == "local") {
       possible_trisk_combinations <- r2dii.climate.stress.test::get_scenario_geography_x_ald_sector(trisk_input_path)
-    } else if (Sys.getenv("CRISPY_APP_ENV") == "prod") {
-      possible_trisk_combinations <- get_possible_trisk_combinations_from_api(trisk_api_service = trisk_api_service)
+    } else if (Sys.getenv("CRISPY_APP_ENV") == "cloud") {
+      possible_trisk_combinations <- get_possible_trisk_combinations_from_api(trisk_api_service = TRISK_API_SERVICE)
     } else {
-      stop("must set environment variable CRISPY_APP_ENV to 'dev' or 'prod'")
+      stop("must set environment variable CRISPY_APP_ENV to 'local' or 'cloud'")
     }
     # the TRISK runs are generated In the sidebar module
-    perimeter <- sidebar_parameters$server(
+    sidebar_parameters_out <- sidebar_parameters$server(
       "sidebar_parameters",
       max_trisk_granularity = max_trisk_granularity, # constant
       possible_trisk_combinations = possible_trisk_combinations, # computed constant
@@ -190,22 +133,30 @@ server <- function(id) {
       hide_vars = hide_vars # constant
     )
 
-    homepage$server("homepage")
+    perimeter <- sidebar_parameters_out$perimeter
+    portfolio_uploaded_r <- sidebar_parameters_out$portfolio_uploaded_r
 
-    crispy_equities$server(
-      "crispy_equities",
-      backend_trisk_run_folder = backend_trisk_run_folder, # constant
-      max_trisk_granularity = max_trisk_granularity, # constant
-      perimeter = perimeter
-    )
+    tab_documentation$server("tab_documentation")
 
-    crispy_loans$server(
-      "crispy_loans",
-      backend_trisk_run_folder = backend_trisk_run_folder, # constant
-      possible_trisk_combinations = possible_trisk_combinations, # computed constant
-      max_trisk_granularity = max_trisk_granularity, # constant
-      perimeter = perimeter
-    )
+    if ((CRISPY_MODE == "equity") | CRISPY_MODE == "") {
+      tab_equities$server(
+        "tab_equities",
+        backend_trisk_run_folder = backend_trisk_run_folder, # constant
+        max_trisk_granularity = max_trisk_granularity, # constant
+        perimeter = perimeter,
+        portfolio_uploaded_r = portfolio_uploaded_r
+      )
+    }
+    if ((CRISPY_MODE == "fixed_income")) {
+      tab_loans$server(
+        "tab_loans",
+        backend_trisk_run_folder = backend_trisk_run_folder, # constant
+        possible_trisk_combinations = possible_trisk_combinations, # computed constant
+        max_trisk_granularity = max_trisk_granularity, # constant
+        perimeter = perimeter,
+        portfolio_uploaded_r = portfolio_uploaded_r
+      )
+    }
     shinyjs::runjs('$("#loading-overlay").hide();')
   })
 }

@@ -32,7 +32,7 @@ ui <- function(id) {
       tags$div(class = "header", "Processing"),
       tags$div(
         class = "content",
-        tags$p("Please wait while the model is being run with the chosen parameters. This may take up to 10 minutes.")
+        tags$p("Please wait while the model is being ran with the chosen parameters. This may take up to 10 minutes.")
       )
     ),
     tags$div(
@@ -44,23 +44,10 @@ ui <- function(id) {
         tags$p("This dialog should close automatically when the data is loaded. Click outside of it to close manually.")
       )
     ),
-    tags$head(
-      tags$style(shiny::HTML("
-      .ui.fluid.container {
-        padding-top: 20px; /* Adds padding at the top of the container */
-        padding-right: 20px; /* Adds padding at the top of the container */
-        padding-left: 20px; /* Adds padding at the bottom of the container */
-      }
-    "))
-    ),
-    tags$div(
-      class = "ui fluid container",
-      # Fomantic UI styled action button with added custom class for styling
-      tags$button(
-        id = ns("run_trisk"),
-        class = "ui fluid button ", # Added custom class for styling
-        "Run Trisk (click again when switching tabs to refresh data)"
-      )
+    tags$button(
+      id = ns("run_trisk"),
+      class = "ui fluid button ", # Added custom class for styling
+      "Run Trisk (click again when switching tabs to refresh data)"
     )
   )
 }
@@ -153,8 +140,7 @@ server <- function(
 
 
 fetch_crispy_and_trajectories_data <- function(session, backend_trisk_run_folder,
-                                               run_id_r,
-                                               trisk_granularity_r) {
+                                               run_id_r, trisk_granularity_r) {
   # FETCH CRISPY AND TRAJECTORIES DATA =========================
 
   # Connect to the data sources, filter run perimter, and process to the appropriate granularity
@@ -185,6 +171,8 @@ fetch_crispy_and_trajectories_data <- function(session, backend_trisk_run_folder
     }
   })
 
+  # preprocess the raw data to the appropriate granularity
+
   crispy_data_r <- reactiveVal()
   trajectories_data_r <- reactiveVal()
 
@@ -192,7 +180,10 @@ fetch_crispy_and_trajectories_data <- function(session, backend_trisk_run_folder
     if (!is.null(trisk_granularity_r()) & !is.null(raw_crispy_data_r()) & !is.null(raw_trajectories_data_r())) {
       crispy_data_r(
         raw_crispy_data_r() |>
-          stress.test.plot.report::main_load_multi_crispy_data(granularity = trisk_granularity_r())
+          stress.test.plot.report::main_load_multi_crispy_data(
+            granularity = trisk_granularity_r(),
+            filter_outliers=FALSE
+            )
       )
       trajectories_data_r(
         raw_trajectories_data_r() |>
