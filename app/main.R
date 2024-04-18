@@ -70,8 +70,8 @@ ui <- function(id) {
             available_vars = available_vars # constant
           ),
           shiny::img(
-            src = "static/logo_1in1000.png",
-            height = "10%", width = "auto",
+            src = "static/logo_life_stress.jpg",
+            height = "30%", width = "auto",
             style = "
               display: block;
               margin-left: auto;

@@ -65,9 +65,16 @@ ui <- function(id, max_trisk_granularity, available_vars) {
       # Run TRISK button
       trisk_button$ui(ns("trisk_button")),
       # Dimensions
-      params_dimensions$ui(ns("params_dimensions"), max_trisk_granularity)
+      params_dimensions$ui(ns("params_dimensions"), max_trisk_granularity),
       #, portfolio_upload$ui(ns("portfolio_upload"))
-    ),
+      # Download button
+        tags$a(
+          id = ns("download_scenario_data"),
+          class = "ui fluid button",
+          href = "https://scenarios-repository.fra1.cdn.digitaloceanspaces.com/scenario_repository.zip",
+          target = "_blank",  # Opens the link in a new tab or window
+          "Download Scenario Data")
+  ),
     # Scenario Choice Section
     div(
       class = "sidebar-section",
