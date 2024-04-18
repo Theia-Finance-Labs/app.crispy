@@ -13,7 +13,7 @@ ui <- function(id) {
       plotOutput(ns("pd_term_plot_output"), height = "100%")
     ),
     semantic.dashboard::box(
-      title = "Exposure Change", width = 8, collapsible = FALSE,
+      title = "Expected Loss", width = 8, collapsible = FALSE,
       plotOutput(ns("expected_loss_plot_output"), height = "100%")
     )
   )
