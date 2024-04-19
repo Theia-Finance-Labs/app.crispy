@@ -13,7 +13,7 @@ box::use(
   app/view/sidebar_parameters,
   app/view/tab_documentation,
   app/view/tab_equities,
-  app/view/tab_fixed_income,
+  app/view/tab_loans,
   # logic
   app/logic/constant[
     TRISK_API_SERVICE,
@@ -98,8 +98,8 @@ ui <- function(id) {
           },
           if ((CRISPY_MODE == "fixed_income")) {
             # fixed_income tab
-            tab_fixed_income$ui(
-              ns("tab_fixed_income"),
+            tab_loans$ui(
+              ns("tab_loans"),
               max_trisk_granularity = max_trisk_granularity, # constant
               available_vars = available_vars # constant
             )
@@ -148,8 +148,8 @@ server <- function(id) {
       )
     }
     if ((CRISPY_MODE == "fixed_income")) {
-      tab_fixed_income$server(
-        "tab_fixed_income",
+      tab_loans$server(
+        "tab_loans",
         backend_trisk_run_folder = backend_trisk_run_folder, # constant
         possible_trisk_combinations = possible_trisk_combinations, # computed constant
         max_trisk_granularity = max_trisk_granularity, # constant
