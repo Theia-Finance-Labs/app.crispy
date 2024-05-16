@@ -33,8 +33,7 @@ COPY --chown=shiny:shiny renv/activate.R renv/
 RUN chown -R shiny:shiny /home/app
 
 # Install R dependencies
-RUN sudo -u shiny Rscript -e "install.packages('withr', repos = 'http://cran.rstudio.com'); withr::with_envvar(c(NOT_CRAN = 'true'), renv::install('arrow'))"
-RUN sudo -u shiny Rscript -e 'renv::restore()'
+RUN sudo -u shiny Rscript -e 'renv::restore(clean=TRUE)'
 
 # Copy app
 COPY --chown=shiny:shiny app.R ./

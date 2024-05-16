@@ -75,7 +75,7 @@
 #     st_results_wrangled_and_checked_2$run_metadata |> dplyr::pull(run_id)
 #   )
 
-#   run_metadata <- arrow::read_parquet(file.path(TEST_BACKEND_TRISK_RUN_FOLDER, "run_metadata.parquet"))
+#   run_metadata <- readr::read_csv(file.path(TEST_BACKEND_TRISK_RUN_FOLDER, "run_metadata.parquet"))
 #   expect_true(all(run_ids %in% (run_metadata |> dplyr::pull(run_id))))
 # })
 

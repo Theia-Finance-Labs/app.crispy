@@ -232,28 +232,6 @@
       ],
       "Hash": "4f57884290cc75ab22f4af9e9d4ca862"
     },
-    "arrow": {
-      "Package": "arrow",
-      "Version": "15.0.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "R6",
-        "assertthat",
-        "bit64",
-        "cpp11",
-        "glue",
-        "methods",
-        "purrr",
-        "rlang",
-        "stats",
-        "tidyselect",
-        "utils",
-        "vctrs"
-      ],
-      "Hash": "85c24dd7844977e4a680ba28f576125c"
-    },
     "askpass": {
       "Package": "askpass",
       "Version": "1.2.0",
@@ -264,15 +242,21 @@
       ],
       "Hash": "cad6cf7f1d5f6e906700b9d3e718c796"
     },
-    "assertthat": {
-      "Package": "assertthat",
-      "Version": "0.2.1",
+    "assertr": {
+      "Package": "assertr",
+      "Version": "3.0.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
-        "tools"
+        "MASS",
+        "R",
+        "dplyr",
+        "methods",
+        "rlang",
+        "stats",
+        "utils"
       ],
-      "Hash": "50c838a310445e954bc13f26f26a6ecf"
+      "Hash": "dd34511e88d11c95e80f8d9bb0606e79"
     },
     "aws.s3": {
       "Package": "aws.s3",
@@ -383,13 +367,13 @@
     },
     "brio": {
       "Package": "brio",
-      "Version": "1.1.4",
+      "Version": "1.1.5",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R"
       ],
-      "Hash": "68bd2b066e1fe780bbf62fc8bcc36de3"
+      "Hash": "c1ee497a6d999947c2c224ae46799b1a"
     },
     "broom": {
       "Package": "broom",
@@ -789,14 +773,14 @@
     },
     "fs": {
       "Package": "fs",
-      "Version": "1.6.3",
+      "Version": "1.6.4",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
         "methods"
       ],
-      "Hash": "47b5f30c720c23999b913a1a635cf0bb"
+      "Hash": "15aeb8c27f5ea5161f9f6a641fafd93a"
     },
     "generics": {
       "Package": "generics",
@@ -811,7 +795,7 @@
     },
     "ggplot2": {
       "Package": "ggplot2",
-      "Version": "3.5.0",
+      "Version": "3.5.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -832,7 +816,7 @@
         "vctrs",
         "withr"
       ],
-      "Hash": "52ef83f93f74833007f193b2d4c159a2"
+      "Hash": "44c6a2f8202d5b7e878ea274b1092426"
     },
     "ggpubr": {
       "Package": "ggpubr",
@@ -929,7 +913,7 @@
     },
     "gtable": {
       "Package": "gtable",
-      "Version": "0.3.4",
+      "Version": "0.3.5",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -940,7 +924,7 @@
         "lifecycle",
         "rlang"
       ],
-      "Hash": "b29cf3031f49b04ab9c852c912547eef"
+      "Hash": "e18861963cbc65a27736e02b3cd3c4a0"
     },
     "highr": {
       "Package": "highr",
@@ -1168,7 +1152,7 @@
     },
     "lme4": {
       "Package": "lme4",
-      "Version": "1.1-35.2",
+      "Version": "1.1-35.3",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1190,7 +1174,7 @@
         "stats",
         "utils"
       ],
-      "Hash": "c255dd80a1771f41321db15041feed11"
+      "Hash": "862f9d995f528f3051f524791955b20c"
     },
     "logger": {
       "Package": "logger",
@@ -1332,13 +1316,13 @@
     },
     "openssl": {
       "Package": "openssl",
-      "Version": "2.1.1",
+      "Version": "2.1.2",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "askpass"
       ],
-      "Hash": "2a0dc8c6adfb6f032e4d4af82d258ab5"
+      "Hash": "ea2475b073243d9d338aa8f086ce973e"
     },
     "patchwork": {
       "Package": "patchwork",
@@ -1569,7 +1553,7 @@
       "RemoteUsername": "2DegreesInvesting",
       "RemoteRepo": "r2dii.climate.stress.test",
       "RemoteRef": "HEAD",
-      "RemoteSha": "df41b9b7de17762245eeb7036b86b19a6ba3c503",
+      "RemoteSha": "42a285139242b419023342602b6fb0177d98ba2b",
       "RemoteHost": "api.github.com",
       "Requirements": [
         "R",
@@ -1587,18 +1571,18 @@
         "withr",
         "zoo"
       ],
-      "Hash": "31c58897ab9f4794757e5a1455b53eb6"
+      "Hash": "f05e1bf3d6940feec259971d582491e6"
     },
     "r2dii.colours": {
       "Package": "r2dii.colours",
       "Version": "0.0.0.9000",
       "Source": "GitHub",
       "RemoteType": "github",
-      "RemoteHost": "api.github.com",
       "RemoteUsername": "RMI-PACTA",
       "RemoteRepo": "r2dii.colours",
       "RemoteRef": "main",
-      "RemoteSha": "748394821220f708b15d007da829ae826e7015d2",
+      "RemoteSha": "10c5055cc3addd632e13d9d88bf4d6cf8d98d71b",
+      "RemoteHost": "api.github.com",
       "Requirements": [
         "R",
         "dplyr",
@@ -1611,7 +1595,7 @@
         "stringr",
         "tibble"
       ],
-      "Hash": "72ece60ac4cc2926a8d9999d4c53f6ce"
+      "Hash": "68ef5a67a15b60010a61b4e227b39ebb"
     },
     "r2dii.data": {
       "Package": "r2dii.data",
@@ -1967,10 +1951,11 @@
       "RemoteUsername": "2DegreesInvesting",
       "RemoteRepo": "stress.test.plot.report",
       "RemoteRef": "master",
-      "RemoteSha": "e2e9d341771ceac5951955ae85ae97db11de85e9",
+      "RemoteSha": "1486b0180142c8debe526cc008c2f5536534d19b",
       "RemoteHost": "api.github.com",
       "Remotes": "2DegreesInvesting/r2dii.climate.stress.test, 2DegreesInvesting/STDataMGMT, RMI-PACTA/r2dii.colours",
       "Requirements": [
+        "assertr",
         "dplyr",
         "forcats",
         "ggplot2",
@@ -1992,11 +1977,11 @@
         "tidyr",
         "tidytext"
       ],
-      "Hash": "e27385212d83418e4ec09060a55359d0"
+      "Hash": "37e24b2e3f31862fe37481651614e43a"
     },
     "stringi": {
       "Package": "stringi",
-      "Version": "1.8.3",
+      "Version": "1.8.4",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -2005,7 +1990,7 @@
         "tools",
         "utils"
       ],
-      "Hash": "058aebddea264f4c99401515182e656a"
+      "Hash": "39e1144fd75428983dc3f63aa53dfa91"
     },
     "stringr": {
       "Package": "stringr",
@@ -2045,7 +2030,7 @@
     },
     "survival": {
       "Package": "survival",
-      "Version": "3.5-8",
+      "Version": "3.6-4",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -2057,7 +2042,7 @@
         "stats",
         "utils"
       ],
-      "Hash": "184d7799bca4ba8c3be72ea396f4b9a3"
+      "Hash": "e6e3071f471513e4b85f98ca041303c7"
     },
     "sys": {
       "Package": "sys",
@@ -2189,13 +2174,13 @@
     },
     "tinytex": {
       "Package": "tinytex",
-      "Version": "0.50",
+      "Version": "0.51",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "xfun"
       ],
-      "Hash": "be7a76845222ad20adb761f462eed3ea"
+      "Hash": "d44e2fcd2e4e076f0aac540208559d1d"
     },
     "tokenizers": {
       "Package": "tokenizers",

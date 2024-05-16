@@ -22,11 +22,11 @@ append_st_results_to_backend_data <- function(
     }
 
     # Get the path of the file to write the data to
-    fpath <- fs::path(backend_trisk_run_folder, fname, ext = "parquet")
+    fpath <- fs::path(backend_trisk_run_folder, fname, ext = "csv")
 
     # If the file exists, read the existing data, otherwise set the existing data to NULL
     if (file.exists(fpath)) {
-      persistent_data <- arrow::read_parquet(fpath)
+      persistent_data <- readr::read_csv(fpath)
     } else {
       persistent_data <- NULL
     }
@@ -35,6 +35,6 @@ append_st_results_to_backend_data <- function(
     persistent_data <- dplyr::bind_rows(persistent_data, new_data)
 
     # Write the updated data back to the file
-    arrow::write_parquet(persistent_data, fpath)
+    readr::write_csv(persistent_data, fpath)
   }
 }

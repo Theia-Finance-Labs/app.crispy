@@ -16,10 +16,10 @@ base_data_load <- function(table_name, run_id = NULL, backend_trisk_run_folder =
     table_data_path <- fs::path(backend_trisk_run_folder, table_name, ext = "parquet")
     if (file.exists(table_data_path)) {
       if (!is.null(run_id)) {
-        table_data <- arrow::read_parquet(table_data_path) |>
+        table_data <- readr::read_csv(table_data_path) |>
           dplyr::filter(.data$run_id == .env$run_id)
       } else {
-        table_data <- arrow::read_parquet(table_data_path)
+        table_data <- readr::read_csv(table_data_path)
       }
     } else {
       table_data <- default_tibble

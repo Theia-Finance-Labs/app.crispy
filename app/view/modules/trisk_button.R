@@ -32,7 +32,7 @@ ui <- function(id) {
       tags$div(class = "header", "Processing"),
       tags$div(
         class = "content",
-        tags$p("Please wait while the model is being ran with the chosen parameters. This may take up to 10 minutes.")
+        tags$p("Please wait while the model is being run with the chosen parameters. This may take up to 10 minutes.")
       )
     ),
     tags$div(

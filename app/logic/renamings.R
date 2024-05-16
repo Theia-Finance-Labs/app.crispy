@@ -48,7 +48,7 @@ RENAMING_ANALYSIS_COLUMNS <- c(
   "company_id" = "Company/Asset",
   "ald_sector" = "Sector",
   "ald_business_unit" = "Business Unit",
-  "exposure_value_usd" = "Exposure (USD)",
+  "exposure_value_usd" = "Exposure",
   "pd_portfolio" = "Probability of Default",
   "loss_given_default" = "Loss Given Default (0-1 range)",
   "run_id" = "Run ID",
