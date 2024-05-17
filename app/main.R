@@ -116,7 +116,7 @@ ui <- function(id) {
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
     if (Sys.getenv("CRISPY_APP_ENV") == "local") {
-      possible_trisk_combinations <- r2dii.climate.stress.test::get_scenario_geography_x_ald_sector(trisk_input_path)
+      possible_trisk_combinations <- trisk.model::get_scenario_geography_x_ald_sector(trisk_input_path)
     } else if (Sys.getenv("CRISPY_APP_ENV") == "cloud") {
       possible_trisk_combinations <- get_possible_trisk_combinations_from_api(trisk_api_service = TRISK_API_SERVICE)
     } else {

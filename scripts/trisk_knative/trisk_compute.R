@@ -58,7 +58,7 @@ run_trisk_with_params <- function(trisk_run_params, trisk_input_path) {
       # Run the trisk model with the provided parameters and input path
       # The results are returned and stored in st_results_wrangled_and_checked
       st_results_wrangled_and_checked <- do.call(
-        r2dii.climate.stress.test::run_trisk,
+        trisk.model::run_trisk,
         c(
           trisk_run_params,
           list(

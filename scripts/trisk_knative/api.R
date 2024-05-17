@@ -36,7 +36,7 @@ download_db_tables_postgres(
 
 
 validate_trisk_run_params <- function(trisk_run_params) {
-  required_keys <- names(formals(r2dii.climate.stress.test::run_trisk))
+  required_keys <- names(formals(trisk.model::run_trisk))
   param_keys <- names(trisk_run_params)
 
   if (!all(names(param_keys) %in% required_keys)) {
@@ -73,7 +73,7 @@ pr$handle("POST", "/compute_trisk", function(req, res) {
 })
 
 pr$handle("GET", "/get_possible_trisk_combinations", function(req, res) {
-  possible_trisk_combinations <- r2dii.climate.stress.test::get_scenario_geography_x_ald_sector(TRISK_INPUT_PATH)
+  possible_trisk_combinations <- trisk.model::get_scenario_geography_x_ald_sector(TRISK_INPUT_PATH)
   response <- list(possible_trisk_combinations = possible_trisk_combinations)
   response <- jsonlite::toJSON(response, auto_unbox = TRUE)
   return(response)
