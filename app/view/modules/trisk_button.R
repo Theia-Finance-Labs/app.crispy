@@ -180,14 +180,14 @@ fetch_crispy_and_trajectories_data <- function(session, backend_trisk_run_folder
     if (!is.null(trisk_granularity_r()) & !is.null(raw_crispy_data_r()) & !is.null(raw_trajectories_data_r())) {
       crispy_data_r(
         raw_crispy_data_r() |>
-          stress.test.plot.report::main_load_multi_crispy_data(
+          trisk.plots::main_load_multi_crispy_data(
             granularity = trisk_granularity_r(),
             filter_outliers=FALSE
             )
       )
       trajectories_data_r(
         raw_trajectories_data_r() |>
-          stress.test.plot.report::main_data_load_trajectories_data(granularity = trisk_granularity_r())
+          trisk.plots::main_data_load_trajectories_data(granularity = trisk_granularity_r())
       )
     }
   })

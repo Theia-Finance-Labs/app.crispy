@@ -190,8 +190,8 @@ generate_analysis_data <- function(portfolio_data_r, crispy_data_r, trisk_granul
   observeEvent(analysis_data_r(), ignoreInit=TRUE, {
     if (!is.null(analysis_data_r())){
       analysis_data <- analysis_data_r() |>
-        stress.test.plot.report:::aggregate_equities() |>
-        stress.test.plot.report:::compute_analysis_metrics() |>
+        trisk.plots:::aggregate_equities() |>
+        trisk.plots:::compute_analysis_metrics() |>
             dplyr::mutate(
               crispy_perc_value_change = round(.data$crispy_perc_value_change, digits = 4),
               crispy_value_loss = round(.data$crispy_value_loss, digits = 2),
@@ -207,9 +207,9 @@ generate_analysis_data <- function(portfolio_data_r, crispy_data_r, trisk_granul
     if (!is.null(portfolio_data_r()) & !is.null(crispy_data_r())) {
       granularity <- dplyr::intersect(colnames(portfolio_data_r()), colnames(crispy_data_r()))
       if (all(granularity %in% trisk_granularity_r())) { # only does anything if things stable
-        # Creates and aggregate Analysis data without portfolio with stress.test.plot.report fun
+        # Creates and aggregate Analysis data without portfolio with trisk.plots fun
         if (nrow(portfolio_data_r() > 0)) {
-          analysis_data <- stress.test.plot.report:::load_input_plots_data_from_tibble(
+          analysis_data <- trisk.plots:::load_input_plots_data_from_tibble(
             portfolio_data = portfolio_data_r(),
             multi_crispy_data = crispy_data_r(),
             granularity = granularity,

@@ -18,7 +18,7 @@ trisk_input_path <- file.path("app", "data", "st_inputs")
 backend_trisk_run_folder <- file.path("app", "data", "backend_db")
 
 # Filter outliers in crispy when generating the analysis data
-# see stress.test.plot.report:::load_input_plots_data_from_tibble documentation for more details
+# see trisk.plots:::load_input_plots_data_from_tibble documentation for more details
 FILTER_CRISPY_OUTLIERS <- TRUE
 
 # 1st january of the next year is the default expiration date for the equity portfolio

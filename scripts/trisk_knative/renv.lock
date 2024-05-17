@@ -626,13 +626,13 @@
       ],
       "Hash": "1cba04a4e9414bdefc9dcaa99649a8dc"
     },
-    "r2dii.climate.stress.test": {
-      "Package": "r2dii.climate.stress.test",
+    "trisk.model": {
+      "Package": "trisk.model",
       "Version": "0.0.0.9005",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteUsername": "2DegreesInvesting",
-      "RemoteRepo": "r2dii.climate.stress.test",
+      "RemoteRepo": "trisk.model",
       "RemoteRef": "master",
       "RemoteSha": "42a285139242b419023342602b6fb0177d98ba2b",
       "RemoteHost": "api.github.com",

@@ -1545,13 +1545,13 @@
       ],
       "Hash": "1bbc97f7d637ab3917c514a69047b2c1"
     },
-    "r2dii.climate.stress.test": {
-      "Package": "r2dii.climate.stress.test",
+    "trisk.model": {
+      "Package": "trisk.model",
       "Version": "0.0.0.9005",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteUsername": "2DegreesInvesting",
-      "RemoteRepo": "r2dii.climate.stress.test",
+      "RemoteRepo": "trisk.model",
       "RemoteRef": "HEAD",
       "RemoteSha": "42a285139242b419023342602b6fb0177d98ba2b",
       "RemoteHost": "api.github.com",
@@ -1953,7 +1953,7 @@
       "RemoteRef": "master",
       "RemoteSha": "1486b0180142c8debe526cc008c2f5536534d19b",
       "RemoteHost": "api.github.com",
-      "Remotes": "2DegreesInvesting/r2dii.climate.stress.test, 2DegreesInvesting/STDataMGMT, RMI-PACTA/r2dii.colours",
+      "Remotes": "2DegreesInvesting/trisk.model, 2DegreesInvesting/STDataMGMT, RMI-PACTA/r2dii.colours",
       "Requirements": [
         "assertr",
         "dplyr",
