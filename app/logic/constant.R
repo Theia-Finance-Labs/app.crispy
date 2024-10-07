@@ -1,24 +1,19 @@
-# CLOUD SERVICES CONSTANT
-
-
-# TRISK API SERVICE ONLY USED IN "cloud" MODE
-TRISK_API_SERVICE <- Sys.getenv("TRISK_API_SERVICE")
-CRISPY_MODE <- Sys.getenv("CRISPY_MODE")
-
-DBNAME <- Sys.getenv("POSTGRES_DB")
-HOST_DB <- Sys.getenv("POSTGRES_HOST")
-DB_PORT <- Sys.getenv("POSTGRES_PORT")
-DB_USER <- Sys.getenv("POSTGRES_USERNAME")
-DB_PASSWORD <- Sys.getenv("POSTGRES_PASSWORD")
-
-
 # PROJECT CONSTANTS ====================================
 
-trisk_input_path <- file.path("app", "data", "st_inputs")
-backend_trisk_run_folder <- file.path("app", "data", "backend_db")
+
+TRISK_POSTGRES_DB <- Sys.getenv("POSTGRES_DB_V2")
+TRISK_POSTGRES_HOST <- Sys.getenv("POSTGRES_HOST")
+TRISK_POSTGRES_PORT <- Sys.getenv("POSTGRES_PORT")
+TRISK_POSTGRES_USER <- Sys.getenv("POSTGRES_USERNAME")
+TRISK_POSTGRES_PASSWORD <- Sys.getenv("POSTGRES_PASSWORD")
+
+
+CRISPY_MODE <- Sys.getenv("CRISPY_MODE")
+
+TRISK_INPUT_PATH <- file.path("app", "data", "st_inputs")
 
 # Filter outliers in crispy when generating the analysis data
-# see stress.test.plot.report:::load_input_plots_data_from_tibble documentation for more details
+# see trisk.analysis:::load_input_plots_data_from_tibble documentation for more details
 FILTER_CRISPY_OUTLIERS <- TRUE
 
 # 1st january of the next year is the default expiration date for the equity portfolio
@@ -27,8 +22,8 @@ DEFAULT_ASSET_EXPIRATION_DATE <- paste0(round(seq(from = 2024, to = 2034, length
 
 # Must be ordered from "less granular" to "more granular"
 max_trisk_granularity <- list(
-  "ald_sector" = 1,
-  "ald_business_unit" = 2
+  "sector" = 1,
+  "technology" = 2
   # ,"company_id" = 3
 )
 

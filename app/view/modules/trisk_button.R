@@ -1,22 +1,11 @@
 # Load required packages
 box::use(
-  shiny[moduleServer, NS, div, h1, tags, reactiveVal, observeEvent, reactive, observe],
+  semantic.dashboard[dashboardBody, dashboardHeader, dashboardPage, dashboardSidebar],
+  shiny[div, h1, moduleServer, NS, observe, observeEvent, reactive, reactiveVal, tags, reactiveValues],
   shiny.semantic[semanticPage],
-  semantic.dashboard[dashboardPage, dashboardBody, dashboardSidebar, dashboardHeader],
-  shinyjs[useShinyjs]
+  shinyjs[useShinyjs],
+  app/logic/trisk_button_logic[run_trisk_analysis]
 )
-
-box::use(
-  app/logic/trisk_button_logic[
-    trisk_generator,
-    check_if_run_exists
-  ],
-  app/logic/data_load[
-    load_backend_crispy_data,
-    load_backend_trajectories_data
-  ]
-)
-
 
 
 ####### UI
@@ -24,8 +13,6 @@ box::use(
 ui <- function(id) {
   ns <- NS(id)
   tags$div(
-    useShinyjs(), # Initialize shinyjs
-    # Custom Semantic UI Modal
     tags$div(
       id = ns("mymodal"),
       class = "ui modal",
@@ -35,19 +22,10 @@ ui <- function(id) {
         tags$p("Please wait while the model is being run with the chosen parameters. This may take up to 10 minutes.")
       )
     ),
-    tags$div(
-      id = ns("model_load_db"),
-      class = "ui modal",
-      tags$div(class = "header", "Fetching precomputed results from database..."),
-      tags$div(
-        class = "content",
-        tags$p("This dialog should close automatically when the data is loaded. Click outside of it to close manually.")
-      )
-    ),
     tags$button(
       id = ns("run_trisk"),
       class = "ui fluid button ", # Added custom class for styling
-      "Run Trisk (click again when switching tabs to refresh data)"
+      "Run Trisk"
     )
   )
 }
@@ -56,146 +34,61 @@ ui <- function(id) {
 
 server <- function(
     id,
-    trisk_run_params_r,
-    trisk_granularity_r,
-    backend_trisk_run_folder,
-    trisk_input_path,
-    max_trisk_granularity) {
+    assets_data,
+    scenarios_data,
+    financial_data,
+    carbon_data,
+    trisk_run_params_r) {
   moduleServer(id, function(input, output, session) {
-    # TRISK COMPUTATION =========================
-    run_id_r <- reactiveVal(NULL)
 
-    # fetch or compute trisk on button click
-    shiny::observeEvent(input$run_trisk, ignoreNULL = T, {
-      if (!is.null(trisk_run_params_r())) {
-        trisk_run_params <- shiny::reactiveValuesToList(trisk_run_params_r())
+    # Reactive values defined at the top
+    reactive_trisk_results <- reactiveValues(
+      params = NULL,
+      trajectories = NULL,
+      npv_results = NULL,
+      pd_results = NULL
+    )
 
+    # Fetch or compute trisk on button click
+    shiny::observeEvent(input$run_trisk, ignoreNULL = TRUE, {
 
-        all_input_params_initialized <- !any(sapply(trisk_run_params, function(x) {
-          is.null(x)
-        }))
-        if (all_input_params_initialized) {
-          # hardcoded market passthrough value for no carbon tax price model
-          if (trisk_run_params$carbon_price_model == "no_carbon_tax") {
-            trisk_run_params$market_passthrough <- 0
-          }
-          # Check if the run already exists (locally OR in database)
-          run_id <- check_if_run_exists(trisk_run_params, backend_trisk_run_folder)
+      # Convert reactive values to a list for use in the function
+      trisk_run_params <- shiny::reactiveValuesToList(trisk_run_params_r())
+      selected_country <- selected_country_r()
 
-          if (is.null(run_id)) {
-            # open the model dialog
-            shinyjs::runjs(
-              paste0(
-                "$('#", session$ns("mymodal"), "').modal({closable: true}).modal('show');"
-              )
-            )
+      # Open modal dialog
+      shinyjs::runjs(
+        paste0(
+          "$('#", session$ns("mymodal"), "').modal({closable: true}).modal('show');"
+        )
+      )
 
-            # get run_id either by running locally, or by fetching from backend
-            run_id <- trisk_generator(
-              backend_trisk_run_folder = backend_trisk_run_folder,
-              trisk_input_path = trisk_input_path,
-              trisk_run_params = trisk_run_params,
-              max_trisk_granularity = max_trisk_granularity
-            )
-          }
-        }
+      # Run trisk analysis and get new results
+      new_results <- run_trisk_analysis(
+        assets_data = assets_data,
+        scenarios_data = scenarios_data,
+        financial_data = financial_data,
+        carbon_data = carbon_data,
+        trisk_run_params = trisk_run_params,
+        selected_country = selected_country
+      )
+
+      if (!is.null(new_results)) {
+        # Update the reactive values with new results
+        reactive_trisk_results$params <- new_results$params
+        reactive_trisk_results$trajectories <- new_results$trajectories
+        reactive_trisk_results$npv_results <- new_results$npv_results
+        reactive_trisk_results$pd_results <- new_results$pd_results
       }
 
-      # close the modal dialog
+      # Close the modal dialog
       shinyjs::runjs(
         paste0(
           "$('#", session$ns("mymodal"), "').modal('hide');"
         )
       )
-
-      run_id_r(run_id)
     })
 
-    # redudant reactive allowing to re-trigger trisk_outputs on run_id_r change
-    run_id_rr <- reactive({
-      input$run_trisk
-      run_id_r()
-    })
-
-    # load trisk outputs either from local storage, or cloud backend
-    trisk_outputs <- fetch_crispy_and_trajectories_data(
-      session = session,
-      backend_trisk_run_folder = backend_trisk_run_folder,
-      run_id_r = run_id_rr,
-      trisk_granularity_r = trisk_granularity_r
-    )
-
-    crispy_data_r <- trisk_outputs$crispy_data_r
-    trajectories_data_r <- trisk_outputs$trajectories_data_r
-
-
-    return(
-      list(
-        "crispy_data_r" = crispy_data_r,
-        "trajectories_data_r" = trajectories_data_r
-      )
-    )
+    return(reactive_trisk_results)
   })
-}
-
-
-fetch_crispy_and_trajectories_data <- function(session, backend_trisk_run_folder,
-                                               run_id_r, trisk_granularity_r) {
-  # FETCH CRISPY AND TRAJECTORIES DATA =========================
-
-  # Connect to the data sources, filter run perimter, and process to the appropriate granularity
-  raw_crispy_data_r <- reactiveVal()
-  raw_trajectories_data_r <- reactiveVal()
-
-  observe({
-    if (!is.null(run_id_r())) {
-      shinyjs::runjs(
-        paste0(
-          "$('#", session$ns("model_load_db"), "').modal({closable: true}).modal('show');"
-        )
-      )
-
-      raw_crispy_data_r(
-        load_backend_crispy_data(backend_trisk_run_folder, run_id = run_id_r())
-      )
-      raw_trajectories_data_r(
-        load_backend_trajectories_data(backend_trisk_run_folder, run_id = run_id_r())
-      )
-
-      # close the modal dialog
-      shinyjs::runjs(
-        paste0(
-          "$('#", session$ns("model_load_db"), "').modal('hide');"
-        )
-      )
-    }
-  })
-
-  # preprocess the raw data to the appropriate granularity
-
-  crispy_data_r <- reactiveVal()
-  trajectories_data_r <- reactiveVal()
-
-  observe({
-    if (!is.null(trisk_granularity_r()) & !is.null(raw_crispy_data_r()) & !is.null(raw_trajectories_data_r())) {
-      crispy_data_r(
-        raw_crispy_data_r() |>
-          stress.test.plot.report::main_load_multi_crispy_data(
-            granularity = trisk_granularity_r(),
-            filter_outliers=FALSE
-            )
-      )
-      trajectories_data_r(
-        raw_trajectories_data_r() |>
-          stress.test.plot.report::main_data_load_trajectories_data(granularity = trisk_granularity_r())
-      )
-    }
-  })
-
-  trisk_outputs <- list(
-    "crispy_data_r" = crispy_data_r,
-    "trajectories_data_r" = trajectories_data_r
-  )
-
-  return(trisk_outputs)
 }

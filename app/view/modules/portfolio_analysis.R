@@ -190,8 +190,8 @@ generate_analysis_data <- function(portfolio_data_r, crispy_data_r, trisk_granul
   observeEvent(analysis_data_r(), ignoreInit=TRUE, {
     if (!is.null(analysis_data_r())){
       analysis_data <- analysis_data_r() |>
-        stress.test.plot.report:::aggregate_equities() |>
-        stress.test.plot.report:::compute_analysis_metrics() |>
+        aggregate_equities() |>
+        trisk.analysis:::compute_analysis_metrics() |>
             dplyr::mutate(
               crispy_perc_value_change = round(.data$crispy_perc_value_change, digits = 4),
               crispy_value_loss = round(.data$crispy_value_loss, digits = 2),
@@ -207,9 +207,9 @@ generate_analysis_data <- function(portfolio_data_r, crispy_data_r, trisk_granul
     if (!is.null(portfolio_data_r()) & !is.null(crispy_data_r())) {
       granularity <- dplyr::intersect(colnames(portfolio_data_r()), colnames(crispy_data_r()))
       if (all(granularity %in% trisk_granularity_r())) { # only does anything if things stable
-        # Creates and aggregate Analysis data without portfolio with stress.test.plot.report fun
+        # Creates and aggregate Analysis data without portfolio with trisk.analysis fun
         if (nrow(portfolio_data_r() > 0)) {
-          analysis_data <- stress.test.plot.report:::load_input_plots_data_from_tibble(
+          analysis_data <- trisk.analysis:::load_input_plots_data_from_tibble(
             portfolio_data = portfolio_data_r(),
             multi_crispy_data = crispy_data_r(),
             granularity = granularity,
@@ -433,8 +433,8 @@ rows_addition <- function(input, portfolio_data_r, selected_ald_business_unit_r,
     
     user_defined_row <- tibble::as_tibble(list(
       # company_id = ifelse(is.null(selected_company_name_r()), NA, selected_company_name_r()),
-      ald_business_unit = ifelse(is.null(selected_ald_business_unit_r()), NA, selected_ald_business_unit_r()),
-      ald_sector = ifelse(is.null(selected_ald_sector_r()), NA, selected_ald_sector_r()),
+      technology = ifelse(is.null(selected_ald_business_unit_r()), NA, selected_ald_business_unit_r()),
+      sector = ifelse(is.null(selected_ald_sector_r()), NA, selected_ald_sector_r()),
       expiration_date = paste0(as.character(selected_maturity_year_r()), "-01-01"),
       asset_type = "fixed_income" #HARDCODED BC ONLY LOANS APP ACCESS THIS CODE
     ))
@@ -479,7 +479,7 @@ update_ald_dropdowns <- function(input, session,
   # Observe changes in possible_trisk_combinations and update baseline_scenario dropdown
   observeEvent(crispy_data_r(), ignoreInit = TRUE, {
     
-    possible_sectors <- unique(crispy_data_r()$ald_sector)
+    possible_sectors <- unique(crispy_data_r()$sector)
 
     # rename the scenarios to front end appropriate name
     # new_choices <- rename_string_vector(possible_shocks, words_class = "scenarios")
@@ -493,9 +493,9 @@ update_ald_dropdowns <- function(input, session,
     if (is.null(input$ald_sector_dropdown) || length(input$ald_sector_dropdown) == 0) {
       return() # Skip further execution if no selection is made
     }
-    if ("ald_business_unit" %in% trisk_granularity_r()) {
-      possible_ald_business_units <- crispy_data_r() |> dplyr::filter(ald_sector == input$ald_sector_dropdown)
-      possible_ald_business_units <- unique(possible_ald_business_units$ald_business_unit)
+    if ("technology" %in% trisk_granularity_r()) {
+      possible_ald_business_units <- crispy_data_r() |> dplyr::filter(sector == input$ald_sector_dropdown)
+      possible_ald_business_units <- unique(possible_ald_business_units$technology)
     } else {
       possible_ald_business_units <- c("")
     }
@@ -505,4 +505,27 @@ update_ald_dropdowns <- function(input, session,
       choices = possible_ald_business_units
     )
   })
+}
+
+
+aggregate_equities <- function (analysis_data) {
+
+    facts <- c("net_present_value_baseline", "net_present_value_shock", 
+        "pd_baseline", "pd_shock", "exposure_value_usd", "loss_given_default", 
+        "pd_portfolio")
+    equities_subgroup_analysis <- dplyr::mutate(dplyr::ungroup(dplyr::summarise(dplyr::group_by_at(dplyr::filter(analysis_data, 
+        asset_type == "equity"), colnames(analysis_data)[!colnames(analysis_data) %in% 
+        c(facts, "term")]), exposure_value_usd = stats::median(.data$exposure_value_usd, 
+        na.rm = T), net_present_value_baseline = stats::median(.data$net_present_value_baseline, 
+        na.rm = T), net_present_value_shock = stats::median(.data$net_present_value_shock, 
+        na.rm = T), pd_baseline = stats::median(.data$pd_baseline, 
+        na.rm = T), pd_shock = stats::median(.data$pd_shock, 
+        na.rm = T), loss_given_default = stats::median(.data$loss_given_default, 
+        na.rm = T), pd_portfolio = stats::median(.data$pd_portfolio, 
+        na.rm = T))), term = NA, loss_given_default = NA)
+    non_equities_subgroup_analysis <- dplyr::filter(analysis_data, 
+        (asset_type != "equity") | is.na(asset_type))
+    analysis_data <- dplyr::bind_rows(equities_subgroup_analysis, 
+        non_equities_subgroup_analysis)
+    return(analysis_data)
 }

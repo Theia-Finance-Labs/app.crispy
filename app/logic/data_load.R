@@ -1,118 +1,51 @@
-box::use(
-  app/logic/constant[
-    DBNAME,
-    HOST_DB,
-    DB_PORT,
-    DB_USER,
-    DB_PASSWORD
-  ],
-  app/logic/cloud_logic[
-    get_data_from_postgres
-  ]
-)
-
-base_data_load <- function(table_name, run_id = NULL, backend_trisk_run_folder = NULL, default_tibble = NULL) {
-  if (Sys.getenv("CRISPY_APP_ENV") == "local") {
-    table_data_path <- fs::path(backend_trisk_run_folder, table_name, ext = "parquet")
-    if (file.exists(table_data_path)) {
-      if (!is.null(run_id)) {
-        table_data <- readr::read_csv(table_data_path) |>
-          dplyr::filter(.data$run_id == .env$run_id)
-      } else {
-        table_data <- readr::read_csv(table_data_path)
-      }
-    } else {
-      table_data <- default_tibble
-    }
-  } else if (Sys.getenv("CRISPY_APP_ENV") == "cloud") {
-    if (!is.null(run_id)) {
-      query_filter <- paste0("run_id = '", run_id, "'")
-    } else {
-      query_filter <- NULL
-    }
-
-    table_data <- get_data_from_postgres(
-      table_name = table_name,
-      dbname = DBNAME,
-      host_db = HOST_DB,
-      db_port = DB_PORT,
-      db_user = DB_USER,
-      db_password = DB_PASSWORD,
-      query_filter = query_filter,
-      default_tibble = default_tibble
-    )
-  } else {
-    stop("You must set the env variable CRISPY_APP_ENV to either 'local' or 'cloud'")
+download_db_tables_postgres <- function(conn, tables, save_dir, dbname, host, port, user, password) {
+  conn <- DBI::dbConnect(
+    RPostgres::Postgres(),
+    dbname = dbname,
+    host = host,
+    port = port,
+    user = user,
+    password = password,
+    sslmode = "require"
+  )
+  # Ensure the directory exists
+  if (!dir.exists(save_dir)) {
+    dir.create(save_dir, recursive = TRUE)
   }
 
-  return(table_data)
+  for (table_name in tables) {
+    query <- sprintf("SELECT * FROM public.\"%s\"", table_name)
+    data <- DBI::dbGetQuery(conn, query)
+    file_path <- file.path(save_dir, paste0(table_name, ".csv"))
+    readr::write_csv(data, file = file_path)
+  }
 }
 
+get_possible_trisk_combinations <- function(scenarios_data) {
+  scenarios_data <- scenarios_data |>
+    dplyr::mutate(prefix = stringr::str_extract(scenario, "^[^_]+"))
 
+  # Baseline dataframe
+  scenarios_data_baseline <- scenarios_data |>
+    dplyr::filter(.data$scenario_type == "baseline") |>
+    dplyr::select(.data$prefix, .data$scenario_geography, .data$scenario) |>
+    dplyr::rename(baseline_scenario = .data$scenario) |>
+    dplyr::distinct_all()
 
-load_backend_crispy_data <- function(backend_trisk_run_folder, run_id = NULL) {
-  backend_crispy_data <- base_data_load(
-    table_name = "crispy_output",
-    run_id = run_id,
-    backend_trisk_run_folder = backend_trisk_run_folder,
-    default_tibble = tibble::tibble(
-      run_id = character(),
-      company_id = character(),
-      ald_sector = character(),
-      ald_business_unit = character(),
-      term = numeric(),
-      net_present_value_baseline = numeric(),
-      net_present_value_shock = numeric(),
-      pd_baseline = numeric(),
-      pd_shock = numeric()
-    )
-  )
-  return(backend_crispy_data)
-}
+  # Target dataframe
+  scenarios_data_target <- scenarios_data |>
+    dplyr::filter(.data$scenario_type == "target") |>
+    dplyr::select(.data$prefix, .data$scenario_geography, .data$scenario) |>
+    dplyr::rename(target_scenario = .data$scenario) |>
+    dplyr::distinct_all()
 
+  # Merging the two dataframes
+  merged_scenarios_data <- scenarios_data_baseline |>
+    dplyr::inner_join(scenarios_data_target, by = c("prefix", "scenario_geography"))
 
-load_backend_trajectories_data <- function(backend_trisk_run_folder, run_id = NULL) {
-  backend_trajectories_data <- base_data_load(
-    table_name = "company_trajectories",
-    run_id = run_id,
-    backend_trisk_run_folder = backend_trisk_run_folder,
-    default_tibble = tibble::tibble(
-      run_id = character(),
-      year = numeric(),
-      company_id = character(),
-      ald_sector = character(),
-      ald_business_unit = character(),
-      production_baseline_scenario = character(),
-      production_target_scenario = numeric(),
-      production_shock_scenario = numeric()
-    )
-  )
-  return(backend_trajectories_data)
-}
+  # Extract unique values
+  possible_trisk_combinations <- merged_scenarios_data |>
+    dplyr::distinct(.data$scenario_geography, .data$baseline_scenario, .data$target_scenario)
 
-
-load_backend_trisk_run_metadata <- function(backend_trisk_run_folder, run_id = NULL) {
-  backend_trisk_run_metadata <- base_data_load(
-    table_name = "run_metadata",
-    run_id = run_id,
-    backend_trisk_run_folder = backend_trisk_run_folder,
-    default_tibble = tibble::tibble(
-      run_id = character(),
-      roll_up_type = character(),
-      baseline_scenario = character(),
-      shock_scenario = character(),
-      scenario_geography = character(),
-      risk_free_rate = numeric(),
-      discount_rate = numeric(),
-      dividend_rate = numeric(), # TODO remove
-      growth_rate = numeric(),
-      shock_year = numeric(),
-      div_netprofit_prop_coef = numeric(),
-      financial_stimulus = numeric(),
-      carbon_price_model = character(),
-      market_passthrough = numeric()
-    )
-  )
-
-  return(backend_trisk_run_metadata)
+  return(possible_trisk_combinations)
 }

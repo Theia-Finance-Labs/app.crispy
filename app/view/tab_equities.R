@@ -54,7 +54,9 @@ server <- function(id, perimeter, backend_trisk_run_folder, max_trisk_granularit
     colored_columns_names_equities <- c("crispy_perc_value_change", "crispy_value_loss")
 
     # MANAGE PORTFOLIO =========================
-
+    shiny::observe({
+      
+      shiny::req(crispy_data_r())
     # Manages the porfolio creator module
     # Create analysis data by merging crispy to portfolio, and aggrgating to the appropriate granularity
     analysis_data_r <- portfolio_analysis$server(
@@ -68,6 +70,7 @@ server <- function(id, perimeter, backend_trisk_run_folder, max_trisk_granularit
       editable_columns_names = editable_columns_names_equities,
       colored_columns_names = colored_columns_names_equities
     )
+    
 
     # CONSUME TRISK OUTPUTS =========================
 
@@ -83,6 +86,6 @@ server <- function(id, perimeter, backend_trisk_run_folder, max_trisk_granularit
       "plots_trajectories",
       trajectories_data_r = trajectories_data_r,
       max_trisk_granularity = max_trisk_granularity
-    )
+    )})
   })
 }

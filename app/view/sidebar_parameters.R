@@ -1,7 +1,7 @@
 box::use(
   shiny[
     moduleServer, NS, observe, div, tags, reactiveVal, reactiveValues, eventReactive, p, tagList, observeEvent, img,
-    HTML, conditionalPanel
+    HTML, conditionalPanel, reactive
   ],
   shiny.semantic[slider_input, dropdown_input, segment, update_dropdown_input, update_slider],
   shinyjs[useShinyjs],
@@ -99,7 +99,11 @@ ui <- function(id, max_trisk_granularity, available_vars) {
 
 
 
-server <- function(id, backend_trisk_run_folder, trisk_input_path,
+server <- function(id, 
+                  assets_data,
+                  scenarios_data,
+                  financial_data,
+                  carbon_data,
                    possible_trisk_combinations,
                    available_vars,
                    hide_vars,
@@ -139,17 +143,148 @@ server <- function(id, backend_trisk_run_folder, trisk_input_path,
       )
     })
 
-    results <- trisk_button$server(
+    reactive_trisk_results <- trisk_button$server(
       "trisk_button",
-      trisk_run_params_r = trisk_run_params_r,
-      trisk_granularity_r = trisk_granularity_r,
-      backend_trisk_run_folder = backend_trisk_run_folder,
-      trisk_input_path = trisk_input_path,
-      max_trisk_granularity = max_trisk_granularity
+      assets_data=assets_data,
+      scenarios_data=scenarios_data,
+      financial_data=financial_data,
+      carbon_data=carbon_data,
+      trisk_run_params_r = trisk_run_params_r
     )
+# Helper function to return an empty dataframe with specified columns and datatypes
+empty_dataframe <- function(column_info) {
+  # Create an empty dataframe with specific column types
+  data <- lapply(column_info, function(dtype) {
+    if (dtype == "numeric") {
+      return(numeric(0))
+    } else if (dtype == "character") {
+      return(character(0))
+    } else if (dtype == "integer") {
+      return(integer(0))
+    } else if (dtype == "logical") {
+      return(logical(0))
+    } else {
+      return(NA)  # Default if unknown type
+    }
+  })
+  return(as.data.frame(data, stringsAsFactors = FALSE))
+}
 
-    crispy_data_r <- results$crispy_data_r
-    trajectories_data_r <- results$trajectories_data_r
+# Define column information for crispy data
+crispy_column_info <- c(
+  run_id = "character", 
+  company_id = "character", 
+  asset_id = "character", 
+  company_name = "character", 
+  asset_name = "character", 
+  sector = "character", 
+  technology = "character", 
+  net_present_value_baseline = "numeric", 
+  net_present_value_shock = "numeric", 
+  pd_shock = "numeric", 
+  pd_baseline = "numeric", 
+  baseline_scenario = "character", 
+  target_scenario = "character", 
+  scenario_geography = "character", 
+  carbon_price_model = "character", 
+  risk_free_rate = "numeric", 
+  discount_rate = "numeric", 
+  growth_rate = "numeric", 
+  div_netprofit_prop_coef = "numeric", 
+  shock_year = "integer", 
+  market_passthrough = "numeric"
+)
+
+# Define column information for trajectories data
+trajectories_column_info <- c(
+  run_id = "character", 
+  asset_id = "character", 
+  asset_name = "character", 
+  company_id = "character", 
+  company_name = "character", 
+  year = "integer", 
+  sector = "character", 
+  technology = "character", 
+  production_plan_company_technology = "numeric", 
+  production_baseline_scenario = "numeric", 
+  production_target_scenario = "numeric", 
+  production_shock_scenario = "numeric", 
+  pd = "numeric", 
+  net_profit_margin = "numeric", 
+  debt_equity_ratio = "numeric", 
+  volatility = "numeric", 
+  scenario_price_baseline = "numeric", 
+  price_shock_scenario = "numeric", 
+  net_profits_baseline_scenario = "numeric", 
+  net_profits_shock_scenario = "numeric", 
+  discounted_net_profits_baseline_scenario = "numeric", 
+  discounted_net_profits_shock_scenario = "numeric", 
+  baseline_scenario = "character", 
+  target_scenario = "character", 
+  scenario_geography = "character", 
+  carbon_price_model = "character", 
+  risk_free_rate = "numeric", 
+  discount_rate = "numeric", 
+  growth_rate = "numeric", 
+  div_netprofit_prop_coef = "numeric", 
+  shock_year = "integer", 
+  market_passthrough = "numeric"
+)
+
+# Reactive for crispy data
+crispy_data_r <- reactive({
+  # Check if reactive values are NULL before trying to call them
+  if (is.null(reactive_trisk_results$npv_results) || 
+      is.null(reactive_trisk_results$pd_results) || 
+      is.null(reactive_trisk_results$params)) {
+    # Return an empty dataframe with appropriate datatypes
+    return(empty_dataframe(crispy_column_info))
+  }
+
+  # Fetch the actual data by calling the reactive functions
+  npv_results <- reactive_trisk_results$npv_results()
+  pd_results <- reactive_trisk_results$pd_results()
+  params <- reactive_trisk_results$params()
+
+  # If still any of the data is NULL after fetching, return an empty dataframe
+  if (is.null(npv_results) || is.null(pd_results) || is.null(params)) {
+    return(empty_dataframe(crispy_column_info))
+  }
+
+  # Proceed with normal operations if all data is available
+  npv_results |>
+    dplyr::inner_join(pd_results) |>
+    dplyr::inner_join(params) |>
+    main_load_multi_crispy_data(
+      granularity = trisk_granularity_r(),
+      filter_outliers = FALSE
+    )
+})
+
+# Reactive for trajectories data
+trajectories_data_r <- reactive({
+  # Check if reactive values are NULL before trying to call them
+  if (is.null(reactive_trisk_results$trajectories) || 
+      is.null(reactive_trisk_results$params)) {
+    # Return an empty dataframe with appropriate datatypes
+    return(empty_dataframe(trajectories_column_info))
+  }
+
+  # Fetch the actual data by calling the reactive functions
+  trajectories <- reactive_trisk_results$trajectories()
+  params <- reactive_trisk_results$params()
+
+  # If still any of the data is NULL after fetching, return an empty dataframe
+  if (is.null(trajectories) || is.null(params)) {
+    return(empty_dataframe(trajectories_column_info))
+  }
+
+  # Proceed with normal operations if all data is available
+  trajectories |>
+    dplyr::inner_join(params) |>
+    main_data_load_trajectories_data(granularity = trisk_granularity_r())
+})
+
 
     portfolio_uploaded_r <- portfolio_upload$server("portfolio_upload")
     

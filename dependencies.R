@@ -2,7 +2,7 @@
 #
 # Use the following commands to install theia packages (publix github repos)
 #   renv::install("2DegreesInvesting/r2dii.climate.stress.test@fix/speed_improvements")
-#   renv::install("2DegreesInvesting/stress.test.plot.report")
+#   renv::install("2DegreesInvesting/trisk.analysis")
 
 library(rhino)
 library(shiny)
@@ -29,7 +29,7 @@ library(RPostgres)
 library(aws.s3)
 
 
-library(r2dii.climate.stress.test)
-library(stress.test.plot.report)
+library(trisk.model)
+library(trisk.analysis)
 # library(r2dii.colours)
 # library(r2dii.plot)

@@ -11,20 +11,22 @@ box::use(
 box::use(
   # modules
   app/view/sidebar_parameters,
-  app/view/tab_documentation,
   app/view/tab_equities,
   app/view/tab_fixed_income,
   # logic
   app/logic/constant[
-    TRISK_API_SERVICE,
+    TRISK_INPUT_PATH,
     CRISPY_MODE,
-    trisk_input_path,
-    backend_trisk_run_folder,
+    TRISK_POSTGRES_DB,
+    TRISK_POSTGRES_HOST,
+    TRISK_POSTGRES_PASSWORD,
+    TRISK_POSTGRES_PORT,
+    TRISK_POSTGRES_USER,
     max_trisk_granularity,
     available_vars,
     hide_vars
   ],
-  app/logic/cloud_logic[get_possible_trisk_combinations_from_api]
+  app/logic/data_load[download_db_tables_postgres,get_possible_trisk_combinations]
 )
 
 
@@ -115,28 +117,52 @@ ui <- function(id) {
 #' @export
 server <- function(id) {
   moduleServer(id, function(input, output, session) {
-    if (Sys.getenv("CRISPY_APP_ENV") == "local") {
-      possible_trisk_combinations <- r2dii.climate.stress.test::get_scenario_geography_x_ald_sector(trisk_input_path)
-    } else if (Sys.getenv("CRISPY_APP_ENV") == "cloud") {
-      possible_trisk_combinations <- get_possible_trisk_combinations_from_api(trisk_api_service = TRISK_API_SERVICE)
-    } else {
-      stop("must set environment variable CRISPY_APP_ENV to 'local' or 'cloud'")
+
+    if (!dir.exists(TRISK_INPUT_PATH)) {
+      dir.create(TRISK_INPUT_PATH)
     }
+    if (length(dir(TRISK_INPUT_PATH)) == 0) {
+      tables <- c(
+        "assets_sampled",
+        "scenarios",
+        "ngfs_carbon_price",
+        "financial_features"
+      )
+
+      download_db_tables_postgres(
+        save_dir = TRISK_INPUT_PATH,
+        tables = tables,
+        dbname = TRISK_POSTGRES_DB,
+        host = TRISK_POSTGRES_HOST,
+        port = TRISK_POSTGRES_PORT,
+        user = TRISK_POSTGRES_USER,
+        password = TRISK_POSTGRES_PASSWORD
+      )
+    }
+
+    assets_data <- readr::read_csv(file.path(TRISK_INPUT_PATH, "assets_sampled.csv"), show_col_types = FALSE)
+    scenarios_data <- readr::read_csv(file.path(TRISK_INPUT_PATH, "scenarios.csv"), show_col_types = FALSE)
+    financial_data <- readr::read_csv(file.path(TRISK_INPUT_PATH, "financial_features.csv"), show_col_types = FALSE)
+    carbon_data <- readr::read_csv(file.path(TRISK_INPUT_PATH, "ngfs_carbon_price.csv"), show_col_types = FALSE)
+
+    possible_trisk_combinations <- get_possible_trisk_combinations(scenarios_data = scenarios_data)
+
+
     # the TRISK runs are generated In the sidebar module
     sidebar_parameters_out <- sidebar_parameters$server(
       "sidebar_parameters",
+assets_data=assets_data,
+scenarios_data=scenarios_data,
+financial_data=financial_data,
+carbon_data=carbon_data,
       max_trisk_granularity = max_trisk_granularity, # constant
       possible_trisk_combinations = possible_trisk_combinations, # computed constant
-      backend_trisk_run_folder = backend_trisk_run_folder, # constant
-      trisk_input_path = trisk_input_path, # constant
       available_vars = available_vars, # constant
       hide_vars = hide_vars # constant
     )
 
     perimeter <- sidebar_parameters_out$perimeter
     portfolio_uploaded_r <- sidebar_parameters_out$portfolio_uploaded_r
-
-    tab_documentation$server("tab_documentation")
 
     if ((CRISPY_MODE == "equity") | CRISPY_MODE == "") {
       tab_equities$server(
