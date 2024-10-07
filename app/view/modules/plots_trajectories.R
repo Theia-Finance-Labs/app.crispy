@@ -1,5 +1,6 @@
 box::use(
-  shiny[moduleServer, NS, tagList, plotOutput, uiOutput, observeEvent, renderPlot]
+  shiny[moduleServer, NS, tagList, plotOutput, uiOutput, observeEvent, renderPlot],
+  app/logic/crispy_trisk_lineplot[pipeline_crispy_trisk_line_plot]
 )
 
 
@@ -29,7 +30,7 @@ server <- function(id, trajectories_data_r, max_trisk_granularity) {
       granul_top_level <- names(max_trisk_granularity[granul_levels])[which.max(unlist(max_trisk_granularity[granul_levels]))]
 
       # Render plot
-      trisk_line_plot <- trisk.analysis::pipeline_crispy_trisk_line_plot(
+      trisk_line_plot <- pipeline_crispy_trisk_line_plot(
         trajectories_data = trajectories_data_r(),
         facet_var = granul_top_level
       )

@@ -14,7 +14,8 @@ box::use(
 
 box::use(
   app/logic/constant[DEFAULT_ASSET_EXPIRATION_DATE, FILTER_CRISPY_OUTLIERS],
-  app/logic/renamings[rename_tibble_columns]
+  app/logic/renamings[rename_tibble_columns],
+  app/logic/plot_input[load_input_plots_data_from_tibble]
 )
 
 
@@ -209,7 +210,7 @@ generate_analysis_data <- function(portfolio_data_r, crispy_data_r, trisk_granul
       if (all(granularity %in% trisk_granularity_r())) { # only does anything if things stable
         # Creates and aggregate Analysis data without portfolio with trisk.analysis fun
         if (nrow(portfolio_data_r() > 0)) {
-          analysis_data <- trisk.analysis:::load_input_plots_data_from_tibble(
+          analysis_data <- load_input_plots_data_from_tibble(
             portfolio_data = portfolio_data_r(),
             multi_crispy_data = crispy_data_r(),
             granularity = granularity,
@@ -484,11 +485,11 @@ update_ald_dropdowns <- function(input, session,
     # rename the scenarios to front end appropriate name
     # new_choices <- rename_string_vector(possible_shocks, words_class = "scenarios")
     new_choices <- possible_sectors
-    # Update shock_scenario dropdown with unique values from the filtered data
+    # Update target_scenario dropdown with unique values from the filtered data
     shiny.semantic::update_dropdown_input(session, "ald_sector_dropdown", choices = new_choices)
   })
 
-  # Observe changes in baseline_scenario dropdown and update shock_scenario dropdown
+  # Observe changes in baseline_scenario dropdown and update target_scenario dropdown
   observeEvent(c(input$ald_sector_dropdown, crispy_data_r()), ignoreInit = TRUE, {
     if (is.null(input$ald_sector_dropdown) || length(input$ald_sector_dropdown) == 0) {
       return() # Skip further execution if no selection is made

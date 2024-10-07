@@ -1,5 +1,5 @@
 # Function to run trisk analysis and return reactive values
-run_trisk_analysis <- function(assets_data, scenarios_data, financial_data, carbon_data, trisk_run_params, selected_country) {
+run_trisk_analysis <- function(assets_data, scenarios_data, financial_data, carbon_data, trisk_run_params, selected_countries) {
   tryCatch(
     {
       # Run trisk analysis
@@ -9,16 +9,15 @@ run_trisk_analysis <- function(assets_data, scenarios_data, financial_data, carb
         financial_data = financial_data,
         carbon_data = carbon_data,
         run_params = list(trisk_run_params),
-        country_iso2 = selected_country
+        country_iso2 = selected_countries
       )
 
       # Return results as a list
       list(
-        params = st_results$params |>
-          dplyr::mutate(country_iso2 = selected_country),
+        params = st_results$params,
         trajectories = st_results$trajectories,
-        npv_results = st_results$npv_results,
-        pd_results = st_results$pd_results
+        npv_results = st_results$npv,
+        pd_results = st_results$pd
       )
     },
     error = function(e) {

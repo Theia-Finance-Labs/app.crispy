@@ -84,7 +84,7 @@ hide_vars <- list(
     # "NGFS2023_REMIND_FW",
     # "NGFS2023_GCAM_FW"
   ),
-  hide_shock_scenario = c(
+  hide_target_scenario = c(
     # "NGFS2023_REMIND_NZ2050",
     # "NGFS2023_MESSAGE_NZ2050",
     # "NGFS2023_GCAM_NZ2050",

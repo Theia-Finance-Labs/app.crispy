@@ -7,6 +7,7 @@ box::use(
   app/logic/trisk_button_logic[run_trisk_analysis]
 )
 
+BENCH_REGIONS <- readr::read_csv(file.path("app", "data", "bench_regions_renamed.csv"))
 
 ####### UI
 
@@ -54,7 +55,6 @@ server <- function(
 
       # Convert reactive values to a list for use in the function
       trisk_run_params <- shiny::reactiveValuesToList(trisk_run_params_r())
-      selected_country <- selected_country_r()
 
       # Open modal dialog
       shinyjs::runjs(
@@ -63,6 +63,16 @@ server <- function(
         )
       )
 
+
+      if (trisk_run_params$scenario_geography != "Global"){
+          selected_countries <- BENCH_REGIONS |>
+            dplyr::filter(.data$scenario_geography == trisk_run_params$scenario_geography) |>
+            dplyr::distinct(.data$country_iso) |>
+            dplyr::pull()
+      }else {
+         selected_countries <- NULL
+      }
+
       # Run trisk analysis and get new results
       new_results <- run_trisk_analysis(
         assets_data = assets_data,
@@ -70,7 +80,7 @@ server <- function(
         financial_data = financial_data,
         carbon_data = carbon_data,
         trisk_run_params = trisk_run_params,
-        selected_country = selected_country
+        selected_countries = selected_countries
       )
 
       if (!is.null(new_results)) {

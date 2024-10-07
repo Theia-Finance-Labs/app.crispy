@@ -12,7 +12,7 @@
 
 # TEST_TRISK_PARAMS <- list(
 #   baseline_scenario = "Oxford2021_base",
-#   shock_scenario = "Oxford2021_fast",
+#   target_scenario = "Oxford2021_fast",
 #   discount_rate = 0.1,
 #   risk_free_rate = 0.0,
 #   growth_rate = 0.01,

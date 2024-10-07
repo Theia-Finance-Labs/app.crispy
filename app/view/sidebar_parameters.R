@@ -14,7 +14,9 @@ box::use(
   app/view/modules/params_trisk,
   app/view/modules/trisk_button,
   app/view/modules/portfolio_upload,
-  app/logic/renamings[rename_string_vector]
+  app/logic/renamings[rename_string_vector],
+  app/logic/load_multi_crispy[main_load_multi_crispy_data],
+  app/logic/load_trajectories[main_data_load_trajectories_data]
 )
 
 
@@ -131,7 +133,7 @@ server <- function(id,
     trisk_run_params_r <- shiny::reactive({
       reactiveValues(
         baseline_scenario = scenario_config_r()$baseline_scenario,
-        shock_scenario = scenario_config_r()$shock_scenario,
+        target_scenario = scenario_config_r()$target_scenario,
         scenario_geography = scenario_config_r()$scenario_geography,
         shock_year = trisk_config_r()$shock_year,
         discount_rate = trisk_config_r()$discount_rate,
@@ -208,17 +210,17 @@ trajectories_column_info <- c(
   production_plan_company_technology = "numeric", 
   production_baseline_scenario = "numeric", 
   production_target_scenario = "numeric", 
-  production_shock_scenario = "numeric", 
+  production_target_scenario = "numeric", 
   pd = "numeric", 
   net_profit_margin = "numeric", 
   debt_equity_ratio = "numeric", 
   volatility = "numeric", 
   scenario_price_baseline = "numeric", 
-  price_shock_scenario = "numeric", 
+  price_target_scenario = "numeric", 
   net_profits_baseline_scenario = "numeric", 
-  net_profits_shock_scenario = "numeric", 
+  net_profits_target_scenario = "numeric", 
   discounted_net_profits_baseline_scenario = "numeric", 
-  discounted_net_profits_shock_scenario = "numeric", 
+  discounted_net_profits_target_scenario = "numeric", 
   baseline_scenario = "character", 
   target_scenario = "character", 
   scenario_geography = "character", 
@@ -242,9 +244,9 @@ crispy_data_r <- reactive({
   }
 
   # Fetch the actual data by calling the reactive functions
-  npv_results <- reactive_trisk_results$npv_results()
-  pd_results <- reactive_trisk_results$pd_results()
-  params <- reactive_trisk_results$params()
+  npv_results <- reactive_trisk_results$npv_results
+  pd_results <- reactive_trisk_results$pd_results
+  params <- reactive_trisk_results$params
 
   # If still any of the data is NULL after fetching, return an empty dataframe
   if (is.null(npv_results) || is.null(pd_results) || is.null(params)) {
@@ -271,8 +273,8 @@ trajectories_data_r <- reactive({
   }
 
   # Fetch the actual data by calling the reactive functions
-  trajectories <- reactive_trisk_results$trajectories()
-  params <- reactive_trisk_results$params()
+  trajectories <- reactive_trisk_results$trajectories
+  params <- reactive_trisk_results$params
 
   # If still any of the data is NULL after fetching, return an empty dataframe
   if (is.null(trajectories) || is.null(params)) {
