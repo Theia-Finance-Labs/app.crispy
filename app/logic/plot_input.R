@@ -248,7 +248,7 @@ load_portfolio_data <- function(portfolio_data_path=NULL) {
         loss_given_default = "d",
         pd_portfolio = "d"
       )
-    ) %>%
+    ) |>
       convert_date_column(colname="expiration_date")
 
   } else {

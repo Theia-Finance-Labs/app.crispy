@@ -625,6 +625,22 @@
       ],
       "Hash": "44c6a2f8202d5b7e878ea274b1092426"
     },
+    "ggrepel": {
+      "Package": "ggrepel",
+      "Version": "0.9.5",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "Rcpp",
+        "ggplot2",
+        "grid",
+        "rlang",
+        "scales",
+        "withr"
+      ],
+      "Hash": "cc3361e234c4a5050e29697d675764aa"
+    },
     "glue": {
       "Package": "glue",
       "Version": "1.7.0",
@@ -1126,6 +1142,67 @@
         "vctrs"
       ],
       "Hash": "1cba04a4e9414bdefc9dcaa99649a8dc"
+    },
+    "r2dii.colours": {
+      "Package": "r2dii.colours",
+      "Version": "0.0.0.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteUsername": "RMI-PACTA",
+      "RemoteRepo": "r2dii.colours",
+      "RemoteRef": "main",
+      "RemoteSha": "10c5055cc3addd632e13d9d88bf4d6cf8d98d71b",
+      "RemoteHost": "api.github.com",
+      "Requirements": [
+        "R",
+        "dplyr",
+        "ggplot2",
+        "glue",
+        "magrittr",
+        "r2dii.plot",
+        "rlang",
+        "stats",
+        "stringr",
+        "tibble"
+      ],
+      "Hash": "68ef5a67a15b60010a61b4e227b39ebb"
+    },
+    "r2dii.data": {
+      "Package": "r2dii.data",
+      "Version": "0.5.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "lifecycle",
+        "stats",
+        "utils"
+      ],
+      "Hash": "a6cb22034187e6e6512ce20219baf4e8"
+    },
+    "r2dii.plot": {
+      "Package": "r2dii.plot",
+      "Version": "0.4.0.9001",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "RMI-PACTA",
+      "RemoteRepo": "r2dii.plot",
+      "RemoteRef": "main",
+      "RemoteSha": "4f3f4e5a24baefe66538aec0992434b3292b306c",
+      "Requirements": [
+        "R",
+        "dplyr",
+        "ggplot2",
+        "ggrepel",
+        "glue",
+        "magrittr",
+        "r2dii.data",
+        "rlang",
+        "scales",
+        "stringr"
+      ],
+      "Hash": "1adc44a5d9e18ada7b93dc315e5bc877"
     },
     "rappdirs": {
       "Package": "rappdirs",

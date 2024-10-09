@@ -2,6 +2,7 @@
 run_trisk_analysis <- function(assets_data, scenarios_data, financial_data, carbon_data, trisk_run_params, selected_countries) {
   tryCatch(
     {
+      
       # Run trisk analysis
       st_results <- trisk.analysis::run_trisk_sa(
         assets_data = assets_data,

@@ -1,5 +1,8 @@
 box::use(
-  shiny[moduleServer, NS, plotOutput, renderPlot, observeEvent, tags]
+  shiny[moduleServer, NS, plotOutput, renderPlot, observeEvent, tags],
+  app/logic/crispy_pd_term_plot[pipeline_crispy_pd_term_plot],
+  app/logic/crispy_expected_loss_plot[pipeline_crispy_expected_loss_plot]
+  
 )
 
 
@@ -36,7 +39,7 @@ server <- function(id, analysis_data_r, crispy_data_r, max_trisk_granularity) {
 
         num_facets <- length(unique(analysis_data_r()[[granul_top_level]]))
 
-        pd_term_plot <- trisk.analysis::pipeline_crispy_pd_term_plot(
+        pd_term_plot <- pipeline_crispy_pd_term_plot(
           crispy_data_agg = analysis_data_r(),
           facet_var = granul_top_level
         )
@@ -66,7 +69,7 @@ server <- function(id, analysis_data_r, crispy_data_r, max_trisk_granularity) {
 
         num_facets <- length(unique(analysis_data_all_granul_levels[[granul_top_level]]))
 
-        expected_loss_plot <- trisk.analysis::pipeline_crispy_expected_loss_plot(
+        expected_loss_plot <- pipeline_crispy_expected_loss_plot(
           analysis_data = analysis_data_all_granul_levels,
           facet_var = granul_top_level
         )

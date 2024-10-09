@@ -31,5 +31,5 @@ library(aws.s3)
 
 library(trisk.model)
 library(trisk.analysis)
-# library(r2dii.colours)
-# library(r2dii.plot)
+library(r2dii.colours)
+library(r2dii.plot)

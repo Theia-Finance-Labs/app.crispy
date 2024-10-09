@@ -47,5 +47,12 @@ get_possible_trisk_combinations <- function(scenarios_data) {
   possible_trisk_combinations <- merged_scenarios_data |>
     dplyr::distinct(.data$scenario_geography, .data$baseline_scenario, .data$target_scenario)
 
+
+
+  BENCH_REGIONS <- readr::read_csv(file.path("app", "data", "bench_regions_renamed.csv"))
+  available_geographies <- BENCH_REGIONS|> dplyr::distinct(.data$scenario_geography) |> dplyr::pull()
+  possible_trisk_combinations <- possible_trisk_combinations |>
+    dplyr::filter(.data$scenario_geography %in% c("Global", available_geographies))  
+
   return(possible_trisk_combinations)
 }

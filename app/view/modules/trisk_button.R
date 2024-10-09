@@ -20,7 +20,7 @@ ui <- function(id) {
       tags$div(class = "header", "Processing"),
       tags$div(
         class = "content",
-        tags$p("Please wait while the model is being run with the chosen parameters. This may take up to 10 minutes.")
+        tags$p("Please wait while the model is being ran with the chosen parameters. This may take up to 10 minutes.")
       )
     ),
     tags$button(
@@ -65,6 +65,7 @@ server <- function(
 
 
       if (trisk_run_params$scenario_geography != "Global"){
+        
           selected_countries <- BENCH_REGIONS |>
             dplyr::filter(.data$scenario_geography == trisk_run_params$scenario_geography) |>
             dplyr::distinct(.data$country_iso) |>
